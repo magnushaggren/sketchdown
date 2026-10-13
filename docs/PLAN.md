@@ -8,7 +8,7 @@ Update the Status column as work lands.
 
 | # | Milestone | Status |
 |---|---|---|
-| M0 | Repo scaffold and port of the prototype | todo |
+| M0 | Repo scaffold and port of the prototype | built, tests pass; owner's vault check pending |
 | M1 | Plugin UX: commands, editor modal, settings | todo |
 | M2 | Fast editing: paste-to-create, click-to-edit | todo |
 | M3 | Component library expansion | todo |
@@ -31,7 +31,9 @@ Update the Status column as work lands.
   - parser tests for every rule in SYNTAX.md;
   - layout snapshot tests of DrawOps for the prototype's EXAMPLE and the
     "New user" box form;
-  - a backwards-compatibility test that v1 and v2 sources parse.
+  - a differential test that runs the prototype's own code and the port
+    against a recording fake of ExcalidrawAutomate and compares every call;
+  - a backwards-compatibility test that v2 sources parse (v1 is out of scope).
 - **Done when** the owner's existing drawings regenerate with no visible
   difference, and `npm test` passes.
 
@@ -74,6 +76,21 @@ Update the Status column as work lands.
   to SVG in CI and commit the image, so visual regressions show up in diffs.
 - Modifiers: `(disabled)` and `(fill)`. Width negotiation in rows: two-pass
   layout where fill children share the leftover width.
+- Input for the priority order: the owner's portal web app (screenshots
+  shared 2026-10-13, not stored in the repo) is built from these patterns,
+  none of which can be drawn yet:
+  - app shell: dark sidebar, main area and a right-hand detail panel side by
+    side, each full height (needs columns and `(fill)`);
+  - sidebar navigation: icon + label items, one active, a user/avatar block
+    on top and a full-width action at the bottom;
+  - page header with a title, and a back or close icon button;
+  - segmented control (`ACTIVE | INACTIVE | ALL`) and underlined tabs
+    (`CONTENT | FILES`) as tab styles without a panel frame;
+  - search field with an icon, and round icon-only buttons (filter, more);
+  - borderless data table with striped rows, a status dot in a cell and a
+    highlighted selected row;
+  - detail list: rows of icon, bold label and value;
+  - full-width primary button at the bottom of a panel.
 
 ## M4 – Markdown notes
 

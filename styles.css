@@ -1,0 +1,5 @@
+.sketchdown-spec {
+  width: 100%;
+  font-family: var(--font-monospace);
+  resize: vertical;
+}

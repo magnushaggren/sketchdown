@@ -75,7 +75,7 @@ Every generated element gets
 `customData.sketchdown = { source: string, instance: string, v: number }`.
 - `source`: the full spec text of the whole component tree.
 - `instance`: shared id for all elements of one generated component.
-- `v`: format version (prototype wrote 1 and 2; both must keep working).
+- `v`: format version, currently 2. Only v2 sources need to keep working.
 All elements of an instance are also put in one group. Regenerating means:
 find every element with the same `instance`, take their bounding-box
 top-left, delete them, draw the new version at that point.
@@ -91,13 +91,18 @@ top-left, delete them, draw the new version at that point.
 
 ## Commands
 
-(Fill in when the scaffold exists.)
 - `npm run dev`: esbuild watch build to `main.js`
 - `npm run build`: type-check and production build
-- `npm test`: vitest
-- Manual testing: symlink the repo into `<vault>/.obsidian/plugins/sketchdown`
-  and use the Hot-Reload plugin. The owner tests in his own vault, so
-  describe exactly what to try after each change.
+- `npm test`: vitest (`tests/parity.test.ts` runs the prototype's own code
+  against the port, so it fails on any change to what is drawn)
+- `npm run lint`, `npm run format`: ESLint and Prettier
+- `npm run deploy`: build, then copy `main.js`, `manifest.json` and
+  `styles.css` to the plugin folder named in `deploy.local.json` (not
+  committed; `{ "pluginDir": "<vault>/.obsidian/plugins/sketchdown" }`)
+- Manual testing: run `npm run deploy`, then reload the plugin in Obsidian.
+  Do not symlink the repo into the vault: the owner's vault is in OneDrive,
+  which then tries to sync the whole repo. The owner tests in his own vault,
+  so describe exactly what to try after each change.
 
 ## Working agreements
 

@@ -1,0 +1,9 @@
+{
+  "id": "sketchdown",
+  "name": "Sketchdown",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Balsamiq-style wireframes drawn as native Excalidraw elements from a short text spec.",
+  "author": "Magnus Haggren",
+  "isDesktopOnly": false
+}
