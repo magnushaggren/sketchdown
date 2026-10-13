@@ -27,14 +27,19 @@ src/
     parse.ts     text -> AST (indentation-based tree)
     layout.ts    AST -> positioned draw ops; measuring is injected
     components/  one file per component: measure + draw into DrawOps
+    snippets.ts  starting points for the quick-insert palette
     types.ts     AST nodes, DrawOp = rect | line | text | ellipse, Style
   adapters/
     excalidraw.ts  DrawOps -> ExcalidrawAutomate calls (addRect/addLine/addText)
-    svg.ts         DrawOps -> SVG via rough.js (for markdown code blocks, tests)
+    svg.ts         DrawOps -> SVG string via rough.js (modal preview; later code blocks)
   plugin/
     main.ts      Obsidian Plugin: commands, settings, hooks
     edit.ts      select / edit / regenerate flow
-    modal.ts     spec editor modal
+    modal.ts     spec editor modal with live preview and error list
+    picker.ts    snippet palette
+    textedit.ts  indent, newline and snippet insertion as pure functions
+    settings.ts  settings shape, defaults, validation (no Obsidian imports)
+    settingsTab.ts  settings UI
 tests/           vitest; parser, layout and snapshot tests of DrawOps
 prototype/       Phase 1 script, kept as reference (do not edit)
 ```

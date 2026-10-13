@@ -9,7 +9,7 @@ Update the Status column as work lands.
 | # | Milestone | Status |
 |---|---|---|
 | M0 | Repo scaffold and port of the prototype | built, tests pass; owner's vault check pending |
-| M1 | Plugin UX: commands, editor modal, settings | todo |
+| M1 | Plugin UX: commands, editor modal, settings | built, tests pass; owner's vault check pending |
 | M2 | Fast editing: paste-to-create, click-to-edit | todo |
 | M3 | Component library expansion | todo |
 | M4 | Wireframes in markdown notes (SVG renderer) | todo |
@@ -51,7 +51,7 @@ Update the Status column as work lands.
   - font size;
   - gaps;
   - use canvas style vs fixed style;
-  - default fence keyword (see M2).
+  - default fence keyword: moved to M2, where it is first used.
 - **Done when** a screen can be built entirely from the modal without
   reading docs, using the snippet palette.
 
@@ -59,6 +59,7 @@ Update the Status column as work lands.
 
 - `onPasteHook`: pasting text that starts with a known keyword, or a fenced
   ```` ```sketchdown ```` block, creates a component at the pointer.
+- Setting for the default fence keyword (moved here from M1).
 - Click-to-edit. Investigate options and pick one with the owner:
   - (a) set an element `link` such as `obsidian://sketchdown?...` and handle
     it with `onLinkClickHook`;
