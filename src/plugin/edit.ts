@@ -1,7 +1,7 @@
 import { eaMeasure, renderOps } from "../adapters/excalidraw";
 import type { EaElement, ExcalidrawAutomate } from "../adapters/ea-types";
 import { EXAMPLE, KEY, VERSION } from "../constants";
-import { FONT_SIZE, layout, parse } from "../core";
+import { FONT_SIZE, formatError, layout, parse } from "../core";
 import type { Style } from "../core";
 
 export interface SketchdownTag {
@@ -86,7 +86,7 @@ export async function createOrEdit(ea: ExcalidrawAutomate, host: EditHost): Prom
   }
 
   const { tree, errors } = parse(source);
-  if (errors.length) host.notify(errors.join("\n"));
+  if (errors.length) host.notify(errors.map(formatError).join("\n"));
   if (!tree.children.length) return;
 
   if (!pos) {

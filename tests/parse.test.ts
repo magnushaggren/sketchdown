@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parse, parseOptions } from "../src/core";
+import { formatError, parse, parseOptions } from "../src/core";
 import type { SpecNode } from "../src/core";
 
 // One block per rule in docs/SYNTAX.md.
@@ -70,7 +70,7 @@ describe("keywords without a colon", () => {
   it.each(["button", "dropdown", "checkbox", "text"])("does not allow a bare %s", (keyword) => {
     const { tree, errors } = parse(keyword);
     expect(tree.children).toEqual([]);
-    expect(errors).toEqual([`line 1: don't understand "${keyword}"`]);
+    expect(errors).toEqual([{ line: 1, message: `don't understand "${keyword}"` }]);
   });
 
   it("treats a bare non-container keyword as a continuation line when one is open", () => {
@@ -130,7 +130,7 @@ describe("continuation lines", () => {
   it("ends the continuation at a blank line", () => {
     const { tree, errors } = parse("text: A\nB\n\nC");
     expect(tree.children[0].body).toEqual(["B"]);
-    expect(errors).toEqual([`line 4: don't understand "C"`]);
+    expect(errors).toEqual([{ line: 4, message: `don't understand "C"` }]);
   });
 
   it("keeps nesting across a blank line", () => {
@@ -143,9 +143,18 @@ describe("errors", () => {
   it("rejects a component indented under a non-container, with its line number", () => {
     const { tree, errors } = parse("button: A\n  button: B");
     expect(errors).toEqual([
-      `line 2: "button" can't contain other components (only tabs, box, row can)`,
+      {
+        line: 2,
+        message: `"button" can't contain other components (only tabs, box, row can)`,
+      },
     ]);
     expect(types(tree.children)).toEqual(["button"]);
+  });
+
+  it("formats an error as one line of text, starting with its line number", () => {
+    expect(parse("button: A\n\nnonsense").errors.map(formatError)).toEqual([
+      `line 3: don't understand "nonsense"`,
+    ]);
   });
 
   it("still returns the rest of the spec", () => {

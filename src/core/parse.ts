@@ -1,4 +1,4 @@
-import type { NodeType, ParseResult, SpecNode } from "./types";
+import type { NodeType, ParseError, ParseResult, SpecNode } from "./types";
 
 const KEYWORDS = new Map<string, NodeType>([
   ["button", "button"],
@@ -36,9 +36,14 @@ export function parseOptions(s: string): { rest: string; opts: Record<string, nu
   return { rest: s.slice(0, m.index).trim(), opts };
 }
 
+/** The one-line form shown in notices: `line 3: don't understand "x"`. */
+export function formatError(e: ParseError): string {
+  return `line ${e.line}: ${e.message}`;
+}
+
 export function parse(source: string): ParseResult {
   const root: SpecNode = { type: "root", text: "", body: [], children: [], opts: {} };
-  const errors: string[] = [];
+  const errors: ParseError[] = [];
   const stack: { node: SpecNode; indent: number }[] = [{ node: root, indent: -1 }];
   let last: SpecNode | null = null; // most recent component, receives continuation lines
   source
@@ -58,9 +63,10 @@ export function parse(source: string): ParseResult {
         while (stack[stack.length - 1].indent >= indent) stack.pop();
         const parent = stack[stack.length - 1].node;
         if (!CONTAINERS.has(parent.type)) {
-          errors.push(
-            `line ${i + 1}: "${parent.type}" can't contain other components (only tabs, box, row can)`,
-          );
+          errors.push({
+            line: i + 1,
+            message: `"${parent.type}" can't contain other components (only tabs, box, row can)`,
+          });
           last = null;
           return;
         }
@@ -72,7 +78,7 @@ export function parse(source: string): ParseResult {
       } else if (last) {
         last.body.push(s);
       } else {
-        errors.push(`line ${i + 1}: don't understand "${s}"`);
+        errors.push({ line: i + 1, message: `don't understand "${s}"` });
       }
     });
   return { tree: root, errors };

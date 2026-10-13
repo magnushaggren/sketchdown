@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { eaMeasure, renderOps } from "../src/adapters/excalidraw";
 import { EXAMPLE, KEY, VERSION } from "../src/constants";
-import { FONT_SIZE, layout, parse } from "../src/core";
+import { FONT_SIZE, formatError, layout, parse } from "../src/core";
 import type { Style } from "../src/core";
 import { ALL_SPECS, VALID_SPECS } from "./fixtures/specs";
 import { FakeEa } from "./helpers/fakeEa";
@@ -54,7 +54,8 @@ describe("constants match the prototype", () => {
 
 describe.each(Object.entries(ALL_SPECS))("parity: %s", (_name, source) => {
   it("parses to the same tree and errors", () => {
-    expect(parse(source)).toEqual(prototype.parse(source));
+    const { tree, errors } = parse(source);
+    expect({ tree, errors: errors.map(formatError) }).toEqual(prototype.parse(source));
   });
 
   it("draws the same elements", () => {

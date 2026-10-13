@@ -16,9 +16,15 @@ export interface SpecNode {
   line?: number;
 }
 
+export interface ParseError {
+  /** 1-based source line. */
+  line: number;
+  message: string;
+}
+
 export interface ParseResult {
   tree: SpecNode;
-  errors: string[];
+  errors: ParseError[];
 }
 
 // ---------- geometry ----------
