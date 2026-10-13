@@ -1,5 +1,114 @@
+.sketchdown-modal {
+  width: min(1100px, 94vw);
+  container-type: inline-size;
+}
+
+.sketchdown-panes {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: var(--size-4-3);
+  height: min(60vh, 560px);
+}
+
+.sketchdown-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+  min-height: 0;
+}
+
 .sketchdown-spec {
+  flex: 1 1 auto;
   width: 100%;
+  min-height: 8em;
   font-family: var(--font-monospace);
-  resize: vertical;
+  font-size: var(--font-ui-small);
+  line-height: 1.5;
+  tab-size: 4;
+  white-space: pre;
+  resize: none;
+}
+
+.sketchdown-errors {
+  flex: 0 1 auto;
+  max-height: 30%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sketchdown-errors:empty {
+  display: none;
+}
+
+button.sketchdown-error {
+  display: flex;
+  justify-content: flex-start;
+  gap: var(--size-4-2);
+  height: auto;
+  padding: var(--size-2-2) var(--size-4-2);
+  text-align: left;
+  white-space: normal;
+  font-size: var(--font-ui-small);
+  color: var(--text-error);
+  background: var(--background-modifier-error);
+  box-shadow: none;
+}
+
+.sketchdown-error-line {
+  flex: none;
+  font-weight: var(--font-semibold);
+}
+
+.sketchdown-preview {
+  overflow: auto;
+  padding: var(--size-4-2);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+}
+
+/* the same filter Excalidraw applies to its canvas in dark mode */
+.sketchdown-preview.is-dark {
+  filter: invert(93%) hue-rotate(180deg);
+}
+
+.sketchdown-preview svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.sketchdown-preview-empty {
+  color: #868e96;
+  font-size: var(--font-ui-small);
+}
+
+.sketchdown-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-4-3);
+  margin-top: var(--size-4-3);
+}
+
+.sketchdown-footer .modal-button-container {
+  margin-top: 0;
+}
+
+.sketchdown-hint {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+@container (max-width: 640px) {
+  .sketchdown-panes {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    height: 70vh;
+  }
+
+  .sketchdown-hint {
+    display: none;
+  }
 }
