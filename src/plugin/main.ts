@@ -1,7 +1,6 @@
 import { ItemView, Notice, Plugin } from "obsidian";
 import "../adapters/ea-types";
 import type { ExcalidrawAutomate } from "../adapters/ea-types";
-import { eaMeasure } from "../adapters/excalidraw";
 import { renderSvg } from "../adapters/svg";
 import {
   EXCALIDRAW_PLUGIN_ID,
@@ -10,12 +9,19 @@ import {
   PLUGIN_NAME,
 } from "../constants";
 import { layout, parse } from "../core";
-import { canvasStyle, createOrEdit } from "./edit";
+import { createOrEdit, drawEnv } from "./edit";
 import { promptForSpec } from "./modal";
 import type { Preview } from "./modal";
+import { normalizeSettings } from "./settings";
+import type { Settings } from "./settings";
+import { SketchdownSettingTab } from "./settingsTab";
 
 export default class SketchdownPlugin extends Plugin {
-  onload(): void {
+  settings!: Settings;
+
+  async onload(): Promise<void> {
+    this.settings = normalizeSettings(await this.loadData());
+    this.addSettingTab(new SketchdownSettingTab(this.app, this));
     this.addCommand({
       id: "create-or-edit",
       name: "Create or edit wireframe",
@@ -38,6 +44,10 @@ export default class SketchdownPlugin extends Plugin {
     });
   }
 
+  async saveSettings(): Promise<void> {
+    await this.saveData(this.settings);
+  }
+
   private activeExcalidrawView(): ItemView | null {
     const view = this.app.workspace.getActiveViewOfType(ItemView);
     return view && view.getViewType() === EXCALIDRAW_VIEW_TYPE ? view : null;
@@ -55,12 +65,11 @@ export default class SketchdownPlugin extends Plugin {
     placeholder: string,
     pickSnippet: boolean,
   ): Promise<string | null> {
-    const style = canvasStyle(ea);
-    const measure = eaMeasure(ea);
+    const { style, env } = drawEnv(ea, this.settings);
     const appState = ea.getExcalidrawAPI().getAppState();
     const render = (source: string): Preview => {
       const { tree, errors } = parse(source);
-      const { ops } = layout(tree, { x: 0, y: 0 }, { measure, style });
+      const { ops } = layout(tree, { x: 0, y: 0 }, env);
       return { svg: ops.length ? renderSvg(ops, style) : "", errors };
     };
     return promptForSpec(this.app, {
@@ -93,6 +102,7 @@ export default class SketchdownPlugin extends Plugin {
           notify: (message) => new Notice(`${PLUGIN_NAME}:\n${message}`, 8000),
         },
         mode,
+        this.settings,
       );
     } catch (e) {
       console.error(`${PLUGIN_NAME}:`, e);

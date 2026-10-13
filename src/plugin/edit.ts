@@ -2,7 +2,9 @@ import { eaMeasure, renderOps } from "../adapters/excalidraw";
 import type { EaElement, ExcalidrawAutomate } from "../adapters/ea-types";
 import { EXAMPLE, KEY, VERSION } from "../constants";
 import { FONT_SIZE, formatError, layout, parse } from "../core";
-import type { Style } from "../core";
+import type { LayoutEnv, Style } from "../core";
+import { DEFAULT_SETTINGS, styleOf, themeOf } from "./settings";
+import type { Settings } from "./settings";
 
 export interface SketchdownTag {
   source: string;
@@ -35,6 +37,15 @@ export function canvasStyle(ea: ExcalidrawAutomate): Style {
   };
 }
 
+/** Everything layout and the adapters need to draw on this canvas with these settings. */
+export function drawEnv(
+  ea: ExcalidrawAutomate,
+  settings: Settings,
+): { style: Style; env: LayoutEnv } {
+  const style = styleOf(settings, canvasStyle(ea));
+  return { style, env: { measure: eaMeasure(ea), style, theme: themeOf(settings) } };
+}
+
 function newInstanceId(): string {
   return "sd-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
@@ -52,8 +63,9 @@ export async function createOrEdit(
   ea: ExcalidrawAutomate,
   host: EditHost,
   mode: "edit" | "insert" = "edit",
+  settings: Settings = DEFAULT_SETTINGS,
 ): Promise<void> {
-  const style = canvasStyle(ea);
+  const { style, env } = drawEnv(ea, settings);
   const selected = ea.getViewSelectedElements();
   const all = ea.getViewElements();
   let source = "";
@@ -106,7 +118,7 @@ export async function createOrEdit(
     pos = { x: c.x - 200, y: c.y - 150 };
   }
 
-  const { ops } = layout(tree, pos, { measure: eaMeasure(ea), style });
+  const { ops } = layout(tree, pos, env);
   const ids = renderOps(ea, ops, style);
   const tag: SketchdownTag = { source, instance: newInstanceId(), v: VERSION };
   ids.forEach((id) => ea.addAppendUpdateCustomData(id, { [KEY]: tag }));
