@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { indentEdit, lineRange, newlineEdit } from "../src/plugin/textedit";
+import { FONT_SIZE, SNIPPETS, layout, parse } from "../src/core";
+import type { SpecNode } from "../src/core";
+import { indentEdit, lineRange, newlineEdit, snippetEdit } from "../src/plugin/textedit";
 import type { TextEdit } from "../src/plugin/textedit";
+import { fakeMeasure } from "./helpers/fakeMeasure";
 
 // "|" marks the selection: one for a caret, two for a range.
 function run(marked: string, edit: (value: string, start: number, end: number) => TextEdit) {
@@ -88,4 +91,58 @@ describe("lineRange", () => {
   it("gives the end of the text for a line past the end", () => {
     expect(lineRange(value, 9)).toEqual({ from: 10, to: 10 });
   });
+});
+
+describe("inserting a snippet", () => {
+  const insert = (marked: string, snippet: string) =>
+    run(marked, (v, s) => snippetEdit(v, s, snippet));
+
+  it("fills an empty editor", () => {
+    expect(insert("|", "row:\n  button: A")).toBe("row:\n  button: A|");
+  });
+
+  it("goes below the caret's line, with the same indentation", () => {
+    expect(insert("box: A\n  te|xt: B\nbutton: C", "row:\n  button: D")).toBe(
+      "box: A\n  text: B\n  row:\n    button: D|\nbutton: C",
+    );
+  });
+
+  it("replaces a blank line and uses its indentation", () => {
+    expect(insert("box: A\n  |\nbutton: C", "button: D")).toBe("box: A\n  button: D|\nbutton: C");
+  });
+});
+
+describe("snippets", () => {
+  it("have unique names", () => {
+    expect(new Set(SNIPPETS.map((s) => s.name)).size).toBe(SNIPPETS.length);
+  });
+
+  it("cover every component", () => {
+    const used = new Set<string>();
+    const walk = (n: SpecNode) => {
+      used.add(n.type);
+      n.children.forEach(walk);
+    };
+    SNIPPETS.forEach((s) => walk(parse(s.text).tree));
+    for (const type of ["button", "dropdown", "checkbox", "text", "grid", "tabs", "box", "row"]) {
+      expect(used).toContain(type);
+    }
+  });
+
+  it.each(SNIPPETS.map((s) => [s.name, s.text]))("%s parses and draws", (_name, text) => {
+    const { tree, errors } = parse(text);
+    expect(errors).toEqual([]);
+    const style = { fontSize: FONT_SIZE, fontFamily: 5 };
+    expect(
+      layout(tree, { x: 0, y: 0 }, { measure: fakeMeasure, style }).ops.length,
+    ).toBeGreaterThan(0);
+  });
+
+  it.each(SNIPPETS.map((s) => [s.name, s.text]))(
+    "%s still parses when indented in a box",
+    (_name, text) => {
+      const e = snippetEdit("box: A\n  ", 9, text);
+      expect(parse("box: A\n  ".slice(0, e.from) + e.insert).errors).toEqual([]);
+    },
+  );
 });

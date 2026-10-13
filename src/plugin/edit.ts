@@ -12,8 +12,11 @@ export interface SketchdownTag {
 
 /** What the flow needs from the host, kept out of this file so it runs in tests. */
 export interface EditHost {
-  /** Resolves to the edited spec, or null if the user cancelled. */
-  prompt(initial: string, placeholder: string): Promise<string | null>;
+  /**
+   * Resolves to the edited spec, or null if the user cancelled.
+   * pickSnippet asks for the snippet palette to be open from the start.
+   */
+  prompt(initial: string, placeholder: string, pickSnippet: boolean): Promise<string | null>;
   notify(message: string): void;
 }
 
@@ -41,8 +44,15 @@ function newInstanceId(): string {
  * 1. a selected Sketchdown component -> edit its spec and redraw it in place;
  * 2. a single selected text element -> convert it;
  * 3. nothing usable selected -> prompt, and place the result mid-view.
+ *
+ * In "insert" mode the editor opens on the snippet palette, and a new
+ * component starts empty instead of with the example.
  */
-export async function createOrEdit(ea: ExcalidrawAutomate, host: EditHost): Promise<void> {
+export async function createOrEdit(
+  ea: ExcalidrawAutomate,
+  host: EditHost,
+  mode: "edit" | "insert" = "edit",
+): Promise<void> {
   const style = canvasStyle(ea);
   const selected = ea.getViewSelectedElements();
   const all = ea.getViewElements();
@@ -67,6 +77,7 @@ export async function createOrEdit(ea: ExcalidrawAutomate, host: EditHost): Prom
     const bb = ea.getBoundingBox(toDelete);
     pos = { x: bb.topX, y: bb.topY };
   } else if (
+    mode === "edit" &&
     texts.length === 1 &&
     selected.every((el) => el === texts[0] || el.id === texts[0].containerId)
   ) {
@@ -80,7 +91,8 @@ export async function createOrEdit(ea: ExcalidrawAutomate, host: EditHost): Prom
   }
 
   if (askUser) {
-    const value = await host.prompt(source || EXAMPLE, EXAMPLE);
+    const insert = mode === "insert";
+    const value = await host.prompt(source || (insert ? "" : EXAMPLE), EXAMPLE, insert);
     if (value === null || !value.trim()) return;
     source = value;
   }

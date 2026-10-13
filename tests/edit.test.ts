@@ -322,3 +322,50 @@ describe("canvas style", () => {
     });
   });
 });
+
+describe("insert mode", () => {
+  function pickHost(answer: string | null) {
+    const prompts: { initial: string; pickSnippet: boolean }[] = [];
+    const h: EditHost = {
+      prompt: async (initial, _placeholder, pickSnippet) => {
+        prompts.push({ initial, pickSnippet });
+        return answer;
+      },
+      notify: () => {},
+    };
+    return { h, prompts };
+  }
+
+  it("opens an empty editor on the snippet palette", async () => {
+    const ea = new FakeEa();
+    const { h, prompts } = pickHost("button: A");
+    await createOrEdit(ea, h, "insert");
+    expect(prompts).toEqual([{ initial: "", pickSnippet: true }]);
+    expect(ea.view).toHaveLength(2);
+  });
+
+  it("keeps the source of a selected component", async () => {
+    const ea = new FakeEa();
+    await createOrEdit(ea, host("button: Old").h);
+    ea.selection = [ea.view[0].id];
+    const { h, prompts } = pickHost(null);
+    await createOrEdit(ea, h, "insert");
+    expect(prompts).toEqual([{ initial: "button: Old", pickSnippet: true }]);
+  });
+
+  it("does not convert a selected text element", async () => {
+    const ea = new FakeEa();
+    const text = canvasText(ea, "button: A", 0, 0);
+    ea.selection = [text.id];
+    const { h, prompts } = pickHost(null);
+    await createOrEdit(ea, h, "insert");
+    expect(prompts).toHaveLength(1);
+    expect(ea.view).toEqual([text]);
+  });
+
+  it("is off for the main command", async () => {
+    const { h, prompts } = pickHost(null);
+    await createOrEdit(new FakeEa(), h);
+    expect(prompts).toEqual([{ initial: EXAMPLE, pickSnippet: false }]);
+  });
+});

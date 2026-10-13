@@ -22,7 +22,17 @@ export default class SketchdownPlugin extends Plugin {
       checkCallback: (checking) => {
         const view = this.activeExcalidrawView();
         if (!view) return false;
-        if (!checking) void this.run(view);
+        if (!checking) void this.run(view, "edit");
+        return true;
+      },
+    });
+    this.addCommand({
+      id: "insert-component",
+      name: "Insert component",
+      checkCallback: (checking) => {
+        const view = this.activeExcalidrawView();
+        if (!view) return false;
+        if (!checking) void this.run(view, "insert");
         return true;
       },
     });
@@ -43,6 +53,7 @@ export default class SketchdownPlugin extends Plugin {
     ea: ExcalidrawAutomate,
     initial: string,
     placeholder: string,
+    pickSnippet: boolean,
   ): Promise<string | null> {
     const style = canvasStyle(ea);
     const measure = eaMeasure(ea);
@@ -56,12 +67,13 @@ export default class SketchdownPlugin extends Plugin {
       initial,
       placeholder,
       render,
+      pickSnippet,
       background: (appState.viewBackgroundColor as string) || "#ffffff",
       dark: appState.theme === "dark",
     });
   }
 
-  private async run(view: ItemView): Promise<void> {
+  private async run(view: ItemView, mode: "edit" | "insert"): Promise<void> {
     if (!this.excalidrawLoaded()) {
       new Notice(`${PLUGIN_NAME} needs the Excalidraw plugin to be installed and enabled.`);
       return;
@@ -73,10 +85,15 @@ export default class SketchdownPlugin extends Plugin {
         return;
       }
       ea.setView(view);
-      await createOrEdit(ea, {
-        prompt: (initial, placeholder) => this.prompt(ea, initial, placeholder),
-        notify: (message) => new Notice(`${PLUGIN_NAME}:\n${message}`, 8000),
-      });
+      await createOrEdit(
+        ea,
+        {
+          prompt: (initial, placeholder, pickSnippet) =>
+            this.prompt(ea, initial, placeholder, pickSnippet),
+          notify: (message) => new Notice(`${PLUGIN_NAME}:\n${message}`, 8000),
+        },
+        mode,
+      );
     } catch (e) {
       console.error(`${PLUGIN_NAME}:`, e);
       new Notice(`${PLUGIN_NAME} failed: ${e instanceof Error ? e.message : String(e)}`);

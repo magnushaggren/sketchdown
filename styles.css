@@ -112,3 +112,8 @@ button.sketchdown-error {
     display: none;
   }
 }
+
+.sketchdown-snippet-note {
+  display: block;
+  color: var(--text-muted);
+}

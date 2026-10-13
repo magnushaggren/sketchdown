@@ -65,3 +65,23 @@ export function lineRange(value: string, line: number): { from: number; to: numb
   }
   return { from, to: lineEndAt(value, from) };
 }
+
+/**
+ * Inserts a snippet on lines of its own, indented like the caret's line:
+ * in place of that line if it is blank, otherwise below it.
+ */
+export function snippetEdit(value: string, selStart: number, snippet: string): TextEdit {
+  const lineStart = lineStartAt(value, selStart);
+  const lineEnd = lineEndAt(value, selStart);
+  const line = value.slice(lineStart, lineEnd);
+  const indent = (line.match(/^[ \t]*/) ?? [""])[0];
+  const text = snippet
+    .split("\n")
+    .map((l) => indent + l)
+    .join("\n");
+  const blank = !line.trim();
+  const from = blank ? lineStart : lineEnd;
+  const insert = blank ? text : "\n" + text;
+  const caret = from + insert.length;
+  return { from, to: lineEnd, insert, selStart: caret, selEnd: caret };
+}

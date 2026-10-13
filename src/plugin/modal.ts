@@ -1,7 +1,8 @@
 import { App, Modal } from "obsidian";
 import { PLUGIN_NAME } from "../constants";
 import type { ParseError } from "../core";
-import { indentEdit, lineRange, newlineEdit } from "./textedit";
+import { SnippetPicker } from "./picker";
+import { indentEdit, lineRange, newlineEdit, snippetEdit } from "./textedit";
 import type { TextEdit } from "./textedit";
 
 export interface Preview {
@@ -19,6 +20,8 @@ export interface SpecModalOptions {
   background: string;
   /** Excalidraw inverts colours in dark mode; the preview does the same. */
   dark: boolean;
+  /** Open the snippet palette straight away. */
+  pickSnippet?: boolean;
 }
 
 const PREVIEW_DELAY_MS = 120;
@@ -62,9 +65,12 @@ export class SpecModal extends Modal {
     const footer = this.contentEl.createDiv({ cls: "sketchdown-footer" });
     footer.createSpan({
       cls: "sketchdown-hint",
-      text: "Tab / Shift+Tab to indent · Ctrl/Cmd+Enter to apply",
+      text: "Ctrl/Cmd+Space to insert · Tab / Shift+Tab to indent · Ctrl/Cmd+Enter to apply",
     });
     const buttons = footer.createDiv({ cls: "modal-button-container" });
+    buttons
+      .createEl("button", { text: "Insert…" })
+      .addEventListener("click", () => this.pickSnippet());
     buttons
       .createEl("button", { text: "Apply", cls: "mod-cta" })
       .addEventListener("click", () => this.apply());
@@ -72,6 +78,7 @@ export class SpecModal extends Modal {
 
     this.updatePreview();
     this.textarea.focus();
+    if (this.options.pickSnippet) this.pickSnippet();
   }
 
   onClose(): void {
@@ -85,12 +92,22 @@ export class SpecModal extends Modal {
     this.close();
   }
 
+  private pickSnippet(): void {
+    new SnippetPicker(this.app, (snippet) => {
+      const { value, selectionStart } = this.textarea;
+      this.edit(snippetEdit(value, selectionStart, snippet.text));
+    }).open();
+  }
+
   private onKeydown(e: KeyboardEvent): void {
     if (e.isComposing) return;
     const { value, selectionStart, selectionEnd } = this.textarea;
     if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       this.apply();
+    } else if (e.key === " " && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.pickSnippet();
     } else if (e.key === "Tab" && !e.ctrlKey && !e.metaKey && !e.altKey) {
       e.preventDefault();
       this.edit(indentEdit(value, selectionStart, selectionEnd, e.shiftKey));
