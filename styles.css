@@ -79,6 +79,7 @@ button.sketchdown-error {
   height: auto;
 }
 
+/* on the drawing's paper colour, not the theme's, so a fixed grey */
 .sketchdown-preview-empty {
   color: #868e96;
   font-size: var(--font-ui-small);
