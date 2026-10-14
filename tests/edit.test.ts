@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EXAMPLE, KEY, VERSION } from "../src/constants";
-import { canvasStyle, createOrEdit, getTag } from "../src/plugin/edit";
+import { canvasStyle, createOrEdit, drawSpec, getTag } from "../src/plugin/edit";
 import type { EditHost } from "../src/plugin/edit";
 import { FakeEa } from "./helpers/fakeEa";
 import type { FakeElement } from "./helpers/fakeEa";
@@ -367,5 +367,36 @@ describe("insert mode", () => {
     const { h, prompts } = pickHost(null);
     await createOrEdit(new FakeEa(), h);
     expect(prompts).toEqual([{ initial: EXAMPLE, pickSnippet: false }]);
+  });
+});
+
+describe("drawSpec", () => {
+  it("draws with its top-left at the given position, without prompting", async () => {
+    const ea = new FakeEa();
+    expect(await drawSpec(ea, "button: A\nbutton: B", { x: 300, y: 40 })).toBe(true);
+    expect(topLeft(ea.view)).toEqual({ x: 300, y: 40 });
+    expect(getTag(ea.view[0])?.source).toBe("button: A\nbutton: B");
+  });
+
+  it("uses the middle of the view without a position", async () => {
+    const ea = new FakeEa();
+    ea.center = { x: 1000, y: 800 };
+    await drawSpec(ea, "button: A", null);
+    expect(topLeft(ea.view)).toEqual({ x: 800, y: 650 });
+  });
+
+  it("reports errors and returns false when nothing can be drawn", async () => {
+    const ea = new FakeEa();
+    const notices: string[] = [];
+    expect(await drawSpec(ea, "nonsense", null, { notify: (m) => notices.push(m) })).toBe(false);
+    expect(notices).toEqual([`line 1: don't understand "nonsense"`]);
+    expect(ea.view).toEqual([]);
+  });
+
+  it("leaves group editing, so editing from inside the group works", async () => {
+    const ea = new FakeEa();
+    ea.editingGroupId = "old-group";
+    await drawSpec(ea, "button: A", null);
+    expect(ea.editingGroupId).toBeNull();
   });
 });

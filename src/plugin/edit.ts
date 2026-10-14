@@ -65,7 +65,6 @@ export async function createOrEdit(
   mode: "edit" | "insert" = "edit",
   settings: Settings = DEFAULT_SETTINGS,
 ): Promise<void> {
-  const { style, env } = drawEnv(ea, settings);
   const selected = ea.getViewSelectedElements();
   const all = ea.getViewElements();
   let source = "";
@@ -109,9 +108,33 @@ export async function createOrEdit(
     source = value;
   }
 
+  await drawSpec(ea, source, pos, { settings, notify: host.notify, replace: toDelete });
+}
+
+export interface DrawOptions {
+  settings?: Settings;
+  /** Receives parse errors as one message. */
+  notify?(message: string): void;
+  /** Elements to delete once the new ones are added, i.e. the old version. */
+  replace?: EaElement[];
+}
+
+/**
+ * Draws a spec with its top-left at pos, or around the middle of the view
+ * if pos is null. Tags, groups and selects the result. Returns false if
+ * there was nothing to draw.
+ */
+export async function drawSpec(
+  ea: ExcalidrawAutomate,
+  source: string,
+  pos: { x: number; y: number } | null,
+  options: DrawOptions = {},
+): Promise<boolean> {
+  const { settings = DEFAULT_SETTINGS, notify, replace = [] } = options;
+  const { style, env } = drawEnv(ea, settings);
   const { tree, errors } = parse(source);
-  if (errors.length) host.notify(errors.map(formatError).join("\n"));
-  if (!tree.children.length) return;
+  if (errors.length) notify?.(errors.map(formatError).join("\n"));
+  if (!tree.children.length) return false;
 
   if (!pos) {
     const c = ea.getViewCenterPosition() || { x: 0, y: 0 };
@@ -124,9 +147,13 @@ export async function createOrEdit(
   ids.forEach((id) => ea.addAppendUpdateCustomData(id, { [KEY]: tag }));
   const groupId = ea.addToGroup(ids);
 
-  if (toDelete.length) ea.deleteViewElements(toDelete);
+  if (replace.length) ea.deleteViewElements(replace);
   await ea.addElementsToView(false, true, true);
   ea.selectElementsInView(ids);
   // Select the group as well, or Excalidraw outlines every element separately.
-  ea.getExcalidrawAPI().updateScene({ appState: { selectedGroupIds: { [groupId]: true } } });
+  // Leave group editing, which may point at the deleted old version.
+  ea.getExcalidrawAPI().updateScene({
+    appState: { selectedGroupIds: { [groupId]: true }, editingGroupId: null },
+  });
+  return true;
 }

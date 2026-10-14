@@ -69,6 +69,7 @@ export class FakeEa implements ExcalidrawAutomate {
   view: FakeElement[] = [];
   selection: string[] = [];
   selectedGroupIds: Record<string, boolean> = {};
+  editingGroupId: string | null = null;
   appState: Record<string, unknown> = {};
   center: { x: number; y: number } | null = { x: 0, y: 0 };
   destroyed = false;
@@ -101,6 +102,9 @@ export class FakeEa implements ExcalidrawAutomate {
       updateScene: (scene: { appState?: Record<string, unknown> }) => {
         const groups = scene.appState?.selectedGroupIds;
         if (groups) this.selectedGroupIds = groups as Record<string, boolean>;
+        if (scene.appState && "editingGroupId" in scene.appState) {
+          this.editingGroupId = scene.appState.editingGroupId as string | null;
+        }
       },
     };
   }
