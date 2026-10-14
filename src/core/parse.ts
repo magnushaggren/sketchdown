@@ -57,6 +57,15 @@ const KEYWORDS = new Map<string, NodeType>([
   ["switch", "toggle"],
   ["slider", "slider"],
   ["range", "slider"],
+  ["alert", "alert"],
+  ["message", "alert"],
+  ["notice", "alert"],
+  ["progress", "progress"],
+  ["tooltip", "tooltip"],
+  ["hint", "tooltip"],
+  ["image", "image"],
+  ["img", "image"],
+  ["picture", "image"],
 ]);
 const FRAMES: NodeType[] = ["window", "dialog", "browser", "phone"];
 const CONTAINERS = new Set<NodeType>(["root", "box", "tabs", "row", "columns", ...FRAMES]);

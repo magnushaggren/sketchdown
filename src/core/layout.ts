@@ -25,6 +25,7 @@ const LIGHT_SURFACES = new Set<NodeType>([
   "dialog",
   "browser",
   "phone",
+  "alert",
 ]);
 
 export interface LayoutEnv {

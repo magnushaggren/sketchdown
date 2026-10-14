@@ -186,6 +186,22 @@ export const SNIPPETS: Snippet[] = [
   },
   { name: "Slider", description: "A value from 0 to 100%", text: "slider: 40%" },
   {
+    name: "Alert",
+    description: "Tinted message box; icons and [links] work",
+    text: "alert: {info} Saved! [Undo]",
+  },
+  {
+    name: "Progress bar",
+    description: "Text above, the bar filled to the percentage",
+    text: "progress: Uploading 60%",
+  },
+  { name: "Tooltip", description: "Small dark box with a pointer", text: "tooltip: Copied!" },
+  {
+    name: "Image",
+    description: "Crossed placeholder: width x height and a caption",
+    text: "image: 320x180 Team photo",
+  },
+  {
     name: "Link",
     description: "Blue, underlined text; [text] does the same inside any label",
     text: "link: Forgot password?",

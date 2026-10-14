@@ -28,7 +28,11 @@ export type ComponentType =
   | "paragraph"
   | "radio"
   | "toggle"
-  | "slider";
+  | "slider"
+  | "alert"
+  | "progress"
+  | "tooltip"
+  | "image";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {

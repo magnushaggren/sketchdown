@@ -7,6 +7,7 @@ import { columns } from "./columns";
 import { radio, slider, toggle } from "./controls";
 import { details } from "./details";
 import { dropdown } from "./dropdown";
+import { alert, image, progress, tooltip } from "./feedback";
 import { browser, buttons, dialog, phone, windowFrame } from "./frames";
 import { grid } from "./grid";
 import { heading } from "./heading";
@@ -52,4 +53,8 @@ export const COMPONENTS: Record<NodeType, Component> = {
   radio,
   toggle,
   slider,
+  alert,
+  progress,
+  tooltip,
+  image,
 };

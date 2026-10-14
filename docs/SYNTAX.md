@@ -83,6 +83,10 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `radio` (radios, option) [M3b] | `radio: Small \| *Medium \| Large` | stacked like checkboxes; `*` marks the chosen one, or write `(o)` and `( )`; items split on `\|` and continuation lines |
 | `toggle` (switch) [M3b] | `toggle: [on] Wi-Fi \| [off] Bluetooth` | stacked switches; `[on]` or `*` is on, anything else off |
 | `slider` (range) [M3b] | `slider: 40%` | track with a knob at the value (50% when missing), 200 wide, or `(w=...)` or `(fill)` |
+| `alert` (message, notice) [M3b] | `alert: {info} Saved! [Undo]` | light blue box around the text; continuation lines are more lines; icons and links allowed; `(w=...)`, `(fill)` |
+| `progress` [M3b] | `progress: Uploading 60%` | bar filled to the percentage (empty when missing), 200 wide, or `(w=...)` or `(fill)`; other text goes above the bar |
+| `tooltip` (hint) [M3b] | `tooltip: Copied!` | small dark box with light text and a pointer below |
+| `image` (img, picture) [M3b] | `image: 320x180 Team photo` | crossed placeholder, 200×120 by default; `(w=...)`, `(h=...)` and `(fill)` override the size; other text is a grey caption in the middle |
 
 ### Grid [v2]
 
@@ -209,6 +213,4 @@ Agree on these with the owner before building. They're listed roughly by value.
 
 - Navigation: `menu:`, `breadcrumb: Home > Users > Anna`, `list:`, `tree:`
   (indentation-based), `pagination:`.
-- Feedback: `alert: Saved!`, `progress: 60%`, `tooltip:`.
-- Media: `image: 320x180` (crossed placeholder).
 - Alignment in rows.
