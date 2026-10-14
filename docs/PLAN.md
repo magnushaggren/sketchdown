@@ -10,7 +10,7 @@ Update the Status column as work lands.
 |---|---|---|
 | M0 | Repo scaffold and port of the prototype | done (checked in owner's vault 2026-10-14) |
 | M1 | Plugin UX: commands, editor modal, settings | done (checked in owner's vault 2026-10-14) |
-| M2 | Fast editing: paste-to-create, click-to-edit | built, tests pass; owner's vault check pending |
+| M2 | Fast editing: paste-to-create, click-to-edit | done (checked in owner's vault 2026-10-14) |
 | M3 | Component library expansion | todo |
 | M4 | Wireframes in markdown notes (SVG renderer) | todo |
 | M5 | Polish and release | todo |
