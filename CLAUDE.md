@@ -126,6 +126,8 @@ top-left, delete them, draw the new version at that point.
   shadow is the disabled grey, offset 8. Nothing may draw outside the size a
   component returns (e.g. the slider knob), because regenerating keeps the
   bounding box's top-left.
+- M6: `placeholder` is a dashed, rounded, unfilled box (`dashed` on a rect
+  op, left out when solid) with its name grey in the middle.
 - Layout contract: a parent may pass a `Slot` ({w, h}) to a child, which
   then makes itself at least that big. Parents only pass one to `(fill)`
   children (and heights to `columns` panels), so specs without the new

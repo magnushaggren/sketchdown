@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { renderOps } from "../src/adapters/excalidraw";
+import { renderSvg } from "../src/adapters/svg";
 import { DEFAULT_THEME, FONT_SIZE, layout, parse } from "../src/core";
 import type { DrawOp, LineOp, RectOp, Style, TextOp } from "../src/core";
+import { FakeEa } from "./helpers/fakeEa";
 import { CHAR_W, LINE_H, fakeMeasure } from "./helpers/fakeMeasure";
 
 const style: Style = { stroke: "#1e1e1e", fontFamily: 5, roughness: 1, fontSize: FONT_SIZE };
@@ -135,5 +138,77 @@ describe("image", () => {
     const patch = rects(ops)[1];
     expect(patch).toMatchObject({ fill: colors.paper, stroke: false });
     expect(ops.indexOf(patch)).toBeGreaterThan(ops.indexOf(lines(ops)[1]));
+  });
+});
+
+describe("placeholder", () => {
+  it("parses", () => {
+    expect(parse("placeholder: 10x10").tree.children[0].type).toBe("placeholder");
+  });
+
+  it("draws a dashed, rounded, unfilled box of the given size", () => {
+    const { ops, size } = draw("placeholder: 240x60");
+    expect(rects(ops)).toEqual([
+      expect.objectContaining({
+        x: 0,
+        y: 0,
+        w: 240,
+        h: 60,
+        fill: null,
+        rounded: true,
+        dashed: true,
+      }),
+    ]);
+    expect(texts(ops)).toEqual([]);
+    expect(size).toEqual({ w: 240, h: 60 });
+  });
+
+  it("centres the name in grey", () => {
+    const { ops } = draw("placeholder: 300x100 {calendar} Date picker");
+    const t = texts(ops)[0];
+    expect(t.text).toBe("Date picker");
+    expect(t.color).toBe(colors.muted);
+    expect(t.y + t.h / 2).toBe(50);
+  });
+
+  it("fits the name when no size is given, and is at least 120 by 40", () => {
+    expect(draw("placeholder:").size).toEqual({ w: 120, h: 40 });
+    const name = "Rich text editor";
+    expect(draw(`placeholder: ${name}`).size).toEqual({ w: name.length * CHAR_W + 24, h: 40 });
+  });
+
+  it("grows to fit its name rather than drawing outside its size", () => {
+    expect(draw("placeholder: 40x10 Avatar").size).toEqual({
+      w: 6 * CHAR_W + 24,
+      h: LINE_H + 16,
+    });
+  });
+
+  it("takes (w=...), (h=...) and (fill)", () => {
+    expect(draw("placeholder: (w=300, h=80)").size).toEqual({ w: 300, h: 80 });
+    expect(
+      draw("box (w=400)\n  placeholder: 100x50 (fill)").ops.some(
+        (o) => o.kind === "rect" && o.w === 368 && o.dashed,
+      ),
+    ).toBe(true);
+  });
+
+  it("is grey with (disabled)", () => {
+    const { ops } = draw("placeholder: Map (disabled)");
+    expect(rects(ops)[0].color).toBe(colors.disabled);
+    expect(texts(ops)[0].color).toBe(colors.disabled);
+  });
+
+  it("leaves the dashed key out of other rectangles", () => {
+    expect(rects(draw("image: 10x10").ops).every((r) => !("dashed" in r))).toBe(true);
+  });
+
+  it("is dashed in Excalidraw and in SVG", () => {
+    const { ops } = draw("placeholder: 100x40");
+    const ea = new FakeEa();
+    renderOps(ea, ops, style);
+    expect(ea.calls[0].style.strokeStyle).toBe("dashed");
+    expect(renderSvg(ops, style)).toContain("stroke-dasharray");
+    expect(renderSvg(draw("image: 10x10").ops, style)).not.toContain("stroke-dasharray");
   });
 });

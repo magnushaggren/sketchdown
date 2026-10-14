@@ -69,6 +69,7 @@ export function layout(
         strokeWidth: o.width || 1,
         rounded: !!o.rounded,
         ...color(o.color ?? ctx.ink),
+        ...(o.dashed ? { dashed: true as const } : {}),
       });
     },
     ellipse(x, y, w, h, o = {}) {

@@ -1,6 +1,6 @@
 # Sketchdown syntax
 
-Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milestone M3a, **[M3b]** added in milestone M3b, **[planned]** not built yet.
+Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milestone M3a, **[M3b]** added in milestone M3b, **[M6]** added in milestone M6, **[planned]** not built yet.
 
 ## Structure [v2]
 
@@ -109,6 +109,7 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `pagination` (pager, pages) [M3b] | `pagination: < 1 *2 3 … 10 >` | items split on spaces; a box per page, `*` filled; `<` `>` (or `«` `»`) are arrows; `…` or `...` has no box |
 | `menu` (contextmenu) [M3b] | `menu: Copy \| Ctrl+C` | see Menus and trees below |
 | `tree` [M3b] | `tree: Project` | see Menus and trees below |
+| `placeholder` [M6] | `placeholder: 240x40 Date picker` | dashed box for a component the syntax can't draw yet; 120×40 by default; `(w=...)`, `(h=...)` and `(fill)` override the size; grows to fit its name, which is grey in the middle; icons allowed |
 
 ### Grid [v2]
 
@@ -223,7 +224,7 @@ tree: {folder} Project
   `text: {user} Signed in as Anna`. Works in `text` (on every line), `button`,
   `input`, `search`, headings, `nav`, `tabs`, `details`, grid cells, `link`,
   `radio`, `toggle`, `alert`, `progress`, `tooltip`, `image` captions,
-  `breadcrumb`, `menu` and `tree`. Not in `checkbox`, `dropdown`,
+  `placeholder`, `breadcrumb`, `menu` and `tree`. Not in `checkbox`, `dropdown`,
   `password`, `textarea`, `paragraph`, `pagination` or frame titles.
   The same goes for `[link]` and `-grey-` text.
   Unknown names stay as literal text, so `{anything}` is safe to write.

@@ -111,6 +111,7 @@ icon, `[text]` a link and `-text-` grey text. The full reference is
 | `pagination` (pager, pages) | `pagination: < 1 *2 3 … 10 >` |
 | `menu` (contextmenu) | `menu: Copy \| Ctrl+C` |
 | `tree` | `tree: Project` |
+| `placeholder` | `placeholder: 240x40 Date picker` |
 
 <!-- cheatsheet:end -->
 

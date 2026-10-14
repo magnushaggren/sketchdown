@@ -202,6 +202,11 @@ export const SNIPPETS: Snippet[] = [
     text: "image: 320x180 Team photo",
   },
   {
+    name: "Placeholder",
+    description: "Dashed box for something not drawn yet: width x height and a name",
+    text: "placeholder: 240x40 Date picker",
+  },
+  {
     name: "Breadcrumb",
     description: "Links separated by >; the last (or starred) is current",
     text: "breadcrumb: Home > Users > Anna Svensson",

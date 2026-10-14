@@ -100,3 +100,29 @@ export const image: Component = (ctx, node, x, y, slot) => {
   }
   return { w: W, h: H };
 };
+
+/**
+ * A dashed box for a component the syntax can't draw yet:
+ * "placeholder: 240x40 Date picker". It grows to fit its name.
+ */
+export const placeholder: Component = (ctx, node, x, y, slot) => {
+  const PAD_X = 12,
+    PAD_Y = 8,
+    MIN_W = 120,
+    MIN_H = 40;
+  const str = contentLines(node).join(" ");
+  const m = str.match(/(\d+)\s*[x×]\s*(\d+)/);
+  const name = (m ? str.replace(m[0], "") : str).trim();
+  const label = name ? measureLabel(ctx, name) : null;
+  const fitW = label ? label.w + 2 * PAD_X : 0,
+    fitH = label ? label.h + 2 * PAD_Y : 0;
+  const W = Math.max(fitW, Math.max(node.opts.w || 0, slot?.w || 0) || (m ? Number(m[1]) : MIN_W));
+  const H = Math.max(fitH, Math.max(node.opts.h || 0, slot?.h || 0) || (m ? Number(m[2]) : MIN_H));
+  const { colors } = ctx.theme;
+  ctx.rect(x, y, W, H, { rounded: true, dashed: true });
+  if (label) {
+    const grey = ctx.ink === colors.disabled ? {} : { color: colors.muted };
+    drawLabel(ctx, x + (W - label.w) / 2, y + (H - label.h) / 2, label, grey);
+  }
+  return { w: W, h: H };
+};

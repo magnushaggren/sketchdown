@@ -77,13 +77,14 @@ export function renderSvg(ops: DrawOp[], style: Style, options: SvgOptions = {})
   let seed = options.seed ?? 1;
   const out: string[] = [];
 
-  const emit = (drawable: Drawable) => {
+  const emit = (drawable: Drawable, dashed = false) => {
     for (const p of gen.toPaths(drawable)) {
       // rough.js writes full float precision; two decimals keep the markup small
       const d = p.d.replace(/-?\d+\.\d{3,}(e-?\d+)?/g, (n) => num(Number(n)));
       out.push(
         `<path d="${d}" stroke="${p.stroke}" stroke-width="${p.strokeWidth}" ` +
-          `fill="${p.fill ?? "none"}" stroke-linecap="round" stroke-linejoin="round"/>`,
+          `fill="${p.fill ?? "none"}"${dashed ? ' stroke-dasharray="8 6"' : ""} ` +
+          `stroke-linecap="round" stroke-linejoin="round"/>`,
       );
     }
   };
@@ -106,9 +107,9 @@ export function renderSvg(ops: DrawOp[], style: Style, options: SvgOptions = {})
         if (op.kind === "ellipse") {
           emit(gen.ellipse(op.x + op.w / 2, op.y + op.h / 2, op.w, op.h, o));
         } else if (op.rounded) {
-          emit(gen.path(roundedRectPath(op.x, op.y, op.w, op.h), o));
+          emit(gen.path(roundedRectPath(op.x, op.y, op.w, op.h), o), op.dashed);
         } else {
-          emit(gen.rectangle(op.x, op.y, op.w, op.h, o));
+          emit(gen.rectangle(op.x, op.y, op.w, op.h, o), op.dashed);
         }
         break;
       }

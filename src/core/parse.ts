@@ -66,6 +66,7 @@ const KEYWORDS = new Map<string, NodeType>([
   ["image", "image"],
   ["img", "image"],
   ["picture", "image"],
+  ["placeholder", "placeholder"],
   ["breadcrumb", "breadcrumb"],
   ["breadcrumbs", "breadcrumb"],
   ["crumbs", "breadcrumb"],

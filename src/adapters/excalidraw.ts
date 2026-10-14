@@ -44,6 +44,7 @@ export function renderOps(ea: ExcalidrawAutomate, ops: DrawOp[], style: Style): 
             op.fill === INK ? (op.color ?? style.stroke) : (op.fill ?? "transparent"),
           strokeWidth: op.strokeWidth,
           roundness: op.kind === "rect" && op.rounded ? { type: 3 } : null,
+          ...(op.kind === "rect" && op.dashed ? { strokeStyle: "dashed" } : {}),
         });
         ids.push(
           op.kind === "rect"

@@ -104,6 +104,7 @@ export const GALLERY = lines(
   "    progress: Uploading 60% (fill)",
   "    tooltip: Copied!",
   "  image: 240x160 Team photo",
+  "  placeholder: 160x160 {calendar} Date picker",
   "breadcrumb: {home} Home > Users > Anna Svensson",
   "pagination: < 1 *2 3 … 10 >",
   "row:",

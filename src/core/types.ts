@@ -36,7 +36,8 @@ export type ComponentType =
   | "breadcrumb"
   | "pagination"
   | "menu"
-  | "tree";
+  | "tree"
+  | "placeholder";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {
@@ -88,6 +89,8 @@ export interface RectOp {
   rounded: boolean;
   /** Stroke colour. */
   color?: string;
+  /** A dashed outline; the key is left out when solid. */
+  dashed?: true;
 }
 export interface LineOp {
   kind: "line";
@@ -161,6 +164,7 @@ export interface RectOptions {
   rounded?: boolean;
   /** Stroke colour; defaults to the context's ink. */
   color?: string;
+  dashed?: boolean;
 }
 
 export interface TextOptions {
