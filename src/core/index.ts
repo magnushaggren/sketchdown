@@ -1,3 +1,4 @@
+export { FENCE_KEYWORD, extractSpec } from "./detect";
 export { formatError, parse, parseOptions } from "./parse";
 export { layout } from "./layout";
 export type { LayoutEnv } from "./layout";
