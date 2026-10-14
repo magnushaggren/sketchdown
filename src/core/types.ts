@@ -126,6 +126,8 @@ export interface Theme {
     dark: string;
     /** Text and lines on (dark) panels. */
     onDark: string;
+    /** Every other row of a (striped) grid. */
+    stripe: string;
   };
   gap: { root: number; stack: number; row: number; pad: number };
 }

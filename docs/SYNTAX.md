@@ -58,7 +58,7 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `checkbox` (check, checkboxes) [v2] | `checkbox: [x] Email \| [ ] SMS` | stacked vertically |
 | `text` (label) [v2] | `text: Role` | continuation lines become more lines of text |
 | `grid` (table, datagrid) [v2] | see below | first row is the header |
-| `tabs` (tab) [v2] | `tabs: A \| *B \| C` | container; empty panel 360×160 by default |
+| `tabs` (tab) [v2] | `tabs: A \| *B \| C` | container; empty panel 360×160 by default; `(segmented)` and `(underline)` styles below |
 | `box` (panel, group) [v2] | `box: New user` | container with an optional title bar |
 | `row` [v2] | `row:` | container, children side by side, centred vertically |
 | `icon` [M3a] | `icon: search` | one icon; `(w=32)` sets its size; unknown names are an error |
@@ -85,12 +85,26 @@ Anna, Developer, 52 000 kr, [x]
 - `[x]` and `[ ]` draw a checkbox, optionally followed by a label.
 - Numeric-looking cells are right-aligned, except in the header.
 - A leading `*` selects a row (light blue fill).
+- **[M3a]** `grid (plain)` drops the outer frame, the column lines and the
+  header fill, keeping the lines between rows. `grid (striped)` fills every
+  other body row. They combine: `grid (plain, striped)`.
+- **[M3a]** Text cells may hold icons: `Anna, {dot} Active`.
+
+### Tab styles [M3a]
+
+- `tabs: ACTIVE | *INACTIVE | ALL (segmented)`: one bordered strip split
+  into parts, the active part filled. With `(w=...)` or `(fill)` the parts
+  share the width.
+- `tabs: *CONTENT | FILES (underline)`: labels on a thin line, the active
+  one underlined thickly and the others grey.
+- Neither style has a panel frame. Children, if any, are stacked below.
+- Labels may hold icons: `tabs: {file} Files | *{users} People (underline)`.
 
 ## Icons [M3a]
 
 - `{name}` inside a label draws an icon there: `button: {plus} Add`,
   `text: {user} Signed in as Anna`. Works in `text` (on every line), `button`,
-  `input`, `search`, `h1`, `h2` and `nav`; more components follow as they are built.
+  `input`, `search`, `h1`, `h2`, `nav`, `tabs` and grid cells; more components follow as they are built.
   Unknown names stay as literal text, so `{anything}` is safe to write.
 - A button with only icons is square: `button: {filter}`. With `(round)`
   it is a circle: `button: {more} (round)`.

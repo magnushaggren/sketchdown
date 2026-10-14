@@ -16,6 +16,7 @@ const COLORS: [keyof Settings["colors"], string, string][] = [
   ["muted", "Secondary text", "Placeholders and the values in detail lists."],
   ["dark", "Dark panels", "Background of boxes and navigation marked (dark)."],
   ["onDark", "Text on dark panels", "Text and lines on (dark) panels."],
+  ["stripe", "Striped rows", "Every other row of a grid marked (striped)."],
 ];
 
 const GAPS: [keyof Settings["gap"], string, string][] = [

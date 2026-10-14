@@ -1,4 +1,6 @@
 import type { Component, Size } from "../types";
+import { drawLabel, measureLabel } from "./label";
+import type { Label } from "./label";
 import { BOX, checkMark, contentLines, parseCheck } from "./shared";
 
 const NUMERIC = /^[-+]?[$€£]?\s?\d[\d\s.,:]*\s?(%|kr|sek|€|\$|£)?$/i;
@@ -9,6 +11,8 @@ interface Cell {
   checked?: boolean;
   numeric?: boolean;
   m: Size;
+  /** Text cells, which may hold icons such as {dot}. */
+  lab?: Label;
 }
 
 export const grid: Component = (ctx, node, x, y, slot) => {
@@ -29,7 +33,8 @@ export const grid: Component = (ctx, node, x, y, slot) => {
       .map((t): Cell => {
         const cb = parseCheck(t);
         if (cb) return { check: true, ...cb, m: ctx.measure(cb.label) };
-        return { label: t, numeric: NUMERIC.test(t), m: ctx.measure(t) };
+        const lab = measureLabel(ctx, t);
+        return { label: t, numeric: NUMERIC.test(t), m: { w: lab.w, h: lab.h }, lab };
       });
     return { selected, cells };
   });
@@ -62,13 +67,19 @@ export const grid: Component = (ctx, node, x, y, slot) => {
   colW.forEach((w, i) => colX.push(colX[i] + w));
 
   const { colors } = ctx.theme;
-  ctx.rect(x, y, W, rowH, { fill: colors.fill, noStroke: true });
+  // (plain): no frame, no column lines, no header fill
+  const plain = !!node.opts.plain;
+  if (!plain) ctx.rect(x, y, W, rowH, { fill: colors.fill, noStroke: true });
   parsed.forEach((r, ri) => {
-    if (r.selected && ri > 0) {
-      ctx.rect(x, y + ri * rowH, W, rowH, { fill: colors.selected, noStroke: true });
-    }
+    if (ri === 0) return;
+    const fill = r.selected
+      ? colors.selected
+      : node.opts.striped && ri % 2 === 0
+        ? colors.stripe
+        : null;
+    if (fill) ctx.rect(x, y + ri * rowH, W, rowH, { fill, noStroke: true });
   });
-  ctx.rect(x, y, W, H, { width: 2 });
+  if (!plain) ctx.rect(x, y, W, H, { width: 2 });
   for (let ri = 1; ri < parsed.length; ri++) {
     ctx.line(
       [
@@ -78,7 +89,7 @@ export const grid: Component = (ctx, node, x, y, slot) => {
       ri === 1 ? 2 : 1,
     );
   }
-  for (let ci = 1; ci < ncols; ci++) {
+  for (let ci = 1; ci < ncols && !plain; ci++) {
     ctx.line(
       [
         [colX[ci], y],
@@ -98,7 +109,7 @@ export const grid: Component = (ctx, node, x, y, slot) => {
         if (cell.label) ctx.text(bx + BOX + gap, cy + (rowH - cell.m.h) / 2, cell.label, cell.m);
       } else if (cell.label) {
         const tx = cell.numeric && ri > 0 ? colX[ci] + colW[ci] - padX - cell.m.w : colX[ci] + padX;
-        ctx.text(tx, cy + (rowH - cell.m.h) / 2, cell.label, cell.m);
+        drawLabel(ctx, tx, cy + (rowH - cell.m.h) / 2, cell.lab!);
       }
     }),
   );

@@ -1,10 +1,14 @@
 import type { Component } from "../types";
 import { contentLines, needsWidthFirst, splitItems, stackSize, starred } from "./shared";
+import { tabStrip } from "./tabstrip";
 
 export const tabs: Component = (ctx, node, x, y, slot) => {
   const { pad, stack } = ctx.theme.gap;
   const raw = splitItems(contentLines(node).join("|"));
   const { sel, labels } = starred(raw.length ? raw : ["Tab 1", "Tab 2", "Tab 3"]);
+  if (node.opts.segmented || node.opts.underline) {
+    return tabStrip(ctx, node, x, y, labels, sel, slot);
+  }
   const padX = 16,
     padY = 8,
     lift = 4;

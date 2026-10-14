@@ -12,6 +12,7 @@ export const DEFAULT_THEME: Theme = {
     muted: "#868e96", // secondary text
     dark: "#343a40", // background of (dark) panels
     onDark: "#f8f9fa", // text and lines on (dark) panels
+    stripe: "#f1f3f5", // every other row of a (striped) grid
   },
   gap: { root: 24, stack: 14, row: 12, pad: 16 },
 };
