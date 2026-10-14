@@ -18,8 +18,15 @@ function bounds(ops: DrawOp[]) {
   const xs: number[] = [],
     ys: number[] = [];
   for (const op of ops) {
-    if (op.kind === "line") op.points.forEach(([x, y]) => (xs.push(x), ys.push(y)));
-    else (xs.push(op.x, op.x + op.w), ys.push(op.y, op.y + op.h));
+    if (op.kind === "line") {
+      op.points.forEach(([x, y]) => {
+        xs.push(x);
+        ys.push(y);
+      });
+    } else {
+      xs.push(op.x, op.x + op.w);
+      ys.push(op.y, op.y + op.h);
+    }
   }
   return { x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
 }
