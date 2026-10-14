@@ -18,7 +18,12 @@ export type ComponentType =
   | "columns"
   | "nav"
   | "avatar"
-  | "details";
+  | "details"
+  | "window"
+  | "dialog"
+  | "browser"
+  | "phone"
+  | "buttons";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {

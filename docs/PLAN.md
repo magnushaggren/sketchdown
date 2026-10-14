@@ -12,7 +12,7 @@ Update the Status column as work lands.
 | M1 | Plugin UX: commands, editor modal, settings | done (checked in owner's vault 2026-10-14) |
 | M2 | Fast editing: paste-to-create, click-to-edit | done (checked in owner's vault 2026-10-14) |
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
-| M3b | Rest of the component library | in progress |
+| M3b | Rest of the component library | in progress: step 1 built, awaiting vault check |
 | M4 | Wireframes in markdown notes (SVG renderer) | todo |
 | M5 | Polish and release | todo |
 

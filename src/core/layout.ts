@@ -21,6 +21,10 @@ const LIGHT_SURFACES = new Set<NodeType>([
   "textarea",
   "grid",
   "avatar",
+  "window",
+  "dialog",
+  "browser",
+  "phone",
 ]);
 
 export interface LayoutEnv {

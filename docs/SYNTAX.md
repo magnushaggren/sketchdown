@@ -1,13 +1,14 @@
 # Sketchdown syntax
 
-Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milestone M3a, **[planned]** not built yet.
+Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milestone M3a, **[M3b]** added in milestone M3b, **[planned]** not built yet.
 
 ## Structure [v2]
 
 - One component per line: `keyword: content (options)`.
-- `grid`, `tabs`, `box` and `row` may also appear without a colon.
+- `grid`, `tabs`, `box`, `row`, `columns` and the frames (`window`,
+  `dialog`, `browser`, `phone`) may also appear without a colon.
 - Indentation nests components. Anything indented deeper than a container
-  line (`tabs`, `box`, `row`) goes inside it. Tabs count as 4 spaces.
+  line (`tabs`, `box`, `row`, `columns` and the frames) goes inside it. Tabs count as 4 spaces.
 - Lines that don't start with a keyword are **continuation lines** of the
   most recent component, for example grid rows, extra tab names or more
   checkbox items. A blank line ends the continuation.
@@ -72,6 +73,11 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `nav` (navigation) [M3a] | `nav: {home} Home \| *{users} Users \| - \| Log out` | vertical list; `*` marks the active item, `-` a divider; items split on `\|` only; `(dark)` adds its own dark background |
 | `avatar` [M3a] | `avatar: AS` | circle with initials (a user icon when empty), twice the line height; `(w=48)` sets its size |
 | `details` (properties) [M3a] | `details: {phone} Phone \| 070-123` | one row per line, `label \| value`; values line up in a second column and are grey |
+| `window` [M3b] | `window: Settings` | container; see Frames below |
+| `dialog` (modal) [M3b] | `dialog: Delete user?` | container; see Frames below |
+| `browser` [M3b] | `browser: My app \| example.com` | container; see Frames below |
+| `phone` [M3b] | `phone: Users` | container; see Frames below |
+| `buttons` [M3b] | `buttons: Cancel \| *OK` | buttons side by side on the right of the parent's width; always `(fill)` |
 
 ### Grid [v2]
 
@@ -100,6 +106,31 @@ Anna, Developer, 52 000 kr, [x]
   one underlined thickly and the others grey.
 - Neither style has a panel frame. Children, if any, are stacked below.
 - Labels may hold icons: `tabs: {file} Files | *{users} People (underline)`.
+
+## Frames [M3b]
+
+Frames are containers like `box`: children stack inside with the same
+padding, and `(w=...)`, `(h=...)`, `(fill)` and `(disabled)` work the same
+way. They are white, so they cover what lies under them.
+
+- `window: Settings`: a title bar with minimise, maximise and close controls.
+  At least 320 wide.
+- `dialog: Delete user?` (alias `modal`): a title bar with a close control,
+  and a grey shadow to the bottom right. At least 280 wide.
+- `browser: My app | example.com/users`: a tab with the title, then back and
+  forward arrows and an address field. Without a title, `browser: | url`,
+  there is no tab. At least 480 wide.
+- `phone: Users`: a rounded phone, 375×667 unless `(w=...)` or `(h=...)`
+  says otherwise, with a status bar and a home indicator. The text, if any,
+  is the title of an app bar under the status bar.
+- `buttons: Cancel | *Delete` puts buttons on the right, as in a dialog
+  footer:
+
+  ```
+  dialog: Delete user?
+    text: Anna Svensson will lose access.
+    buttons: Cancel | *Delete
+  ```
 
 ## Icons [M3a]
 
@@ -159,7 +190,6 @@ Agree on these with the owner before building. They're listed roughly by value.
 
 - Inputs: `radio: (o) A | ( ) B`, `toggle: [on] Wi-Fi`, `slider: 40%`.
 - Text: `link: [Forgot password?]`, `paragraph: lorem` (placeholder text).
-- Frames: `browser: Title | url`, `phone:`, `modal: Title`, `window:`.
 - Navigation: `menu:`, `breadcrumb: Home > Users > Anna`, `list:`, `tree:`
   (indentation-based), `pagination:`.
 - Feedback: `alert: Saved!`, `progress: 60%`, `tooltip:`.

@@ -40,9 +40,19 @@ const KEYWORDS = new Map<string, NodeType>([
   ["avatar", "avatar"],
   ["details", "details"],
   ["properties", "details"],
+  ["window", "window"],
+  ["dialog", "dialog"],
+  ["modal", "dialog"],
+  ["browser", "browser"],
+  ["phone", "phone"],
+  ["buttons", "buttons"],
 ]);
-const CONTAINERS = new Set<NodeType>(["root", "tabs", "box", "row", "columns"]);
-const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row", "columns"]); // may appear without a colon
+const FRAMES: NodeType[] = ["window", "dialog", "browser", "phone"];
+const CONTAINERS = new Set<NodeType>(["root", "box", "tabs", "row", "columns", ...FRAMES]);
+const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row", "columns", ...FRAMES]); // may appear without a colon
+const CONTAINER_NAMES = [...CONTAINERS].filter((t) => t !== "root");
+/** Options a component has without writing them. */
+const DEFAULT_OPTS: Partial<Record<NodeType, Record<string, number>>> = { buttons: { fill: 1 } };
 
 /** Words that may stand alone in the options brackets; each sets its option to 1. */
 export const FLAGS = new Set([
@@ -113,13 +123,20 @@ export function parse(source: string): ParseResult {
         if (!CONTAINERS.has(parent.type)) {
           errors.push({
             line: i + 1,
-            message: `"${parent.type}" can't contain other components (only tabs, box, row and columns can)`,
+            message: `"${parent.type}" can't contain other components (only ${CONTAINER_NAMES.slice(0, -1).join(", ")} and ${CONTAINER_NAMES[CONTAINER_NAMES.length - 1]} can)`,
           });
           last = null;
           return;
         }
         const { rest, opts } = bareOpts ?? parseOptions(m[2] || "");
-        const node: SpecNode = { type, text: rest, body: [], children: [], opts, line: i + 1 };
+        const node: SpecNode = {
+          type,
+          text: rest,
+          body: [],
+          children: [],
+          opts: { ...DEFAULT_OPTS[type], ...opts },
+          line: i + 1,
+        };
         parent.children.push(node);
         if (type === "icon" && !isIcon(rest)) {
           errors.push({

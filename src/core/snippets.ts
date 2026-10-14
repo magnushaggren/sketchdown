@@ -175,6 +175,35 @@ export const SNIPPETS: Snippet[] = [
     ),
   },
   {
+    name: "Window",
+    description: "Desktop window with a title bar; indent the content under it",
+    text: lines("window: Settings", "  text: Window content"),
+  },
+  {
+    name: "Dialog",
+    description: "Pop-up with a shadow and buttons on the right",
+    text: lines(
+      "dialog: Delete user?",
+      "  text: Anna Svensson will lose access.",
+      "  buttons: Cancel | *Delete",
+    ),
+  },
+  {
+    name: "Browser",
+    description: "Browser window: title | address",
+    text: lines("browser: My app | example.com/users", "  h1: Users"),
+  },
+  {
+    name: "Phone",
+    description: "Phone screen; the text is the app bar title",
+    text: lines("phone: Users", "  search: (fill)", "  button: *{plus} New user (fill)"),
+  },
+  {
+    name: "Buttons",
+    description: "Buttons on the right, as in a dialog footer",
+    text: "buttons: Cancel | *OK",
+  },
+  {
     name: "App shell",
     description: "Dark sidebar, main area and detail panel, full height",
     text: lines(

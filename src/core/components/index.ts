@@ -6,6 +6,7 @@ import { checkbox } from "./checkbox";
 import { columns } from "./columns";
 import { details } from "./details";
 import { dropdown } from "./dropdown";
+import { browser, buttons, dialog, phone, windowFrame } from "./frames";
 import { grid } from "./grid";
 import { heading } from "./heading";
 import { icon } from "./icon";
@@ -38,4 +39,9 @@ export const COMPONENTS: Record<NodeType, Component> = {
   nav,
   avatar,
   details,
+  window: windowFrame,
+  dialog,
+  browser,
+  phone,
+  buttons,
 };
