@@ -71,6 +71,7 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `columns` (cols) [M3a] | `columns: (w=1200, h=700)` | container; panels side by side, touching, all full height; `(gap=12)` adds space |
 | `nav` (navigation) [M3a] | `nav: {home} Home \| *{users} Users \| - \| Log out` | vertical list; `*` marks the active item, `-` a divider; items split on `\|` only; `(dark)` adds its own dark background |
 | `avatar` [M3a] | `avatar: AS` | circle with initials (a user icon when empty), twice the line height; `(w=48)` sets its size |
+| `details` (properties) [M3a] | `details: {phone} Phone \| 070-123` | one row per line, `label \| value`; values line up in a second column and are grey |
 
 ### Grid [v2]
 
@@ -104,7 +105,7 @@ Anna, Developer, 52 000 kr, [x]
 
 - `{name}` inside a label draws an icon there: `button: {plus} Add`,
   `text: {user} Signed in as Anna`. Works in `text` (on every line), `button`,
-  `input`, `search`, `h1`, `h2`, `nav`, `tabs` and grid cells; more components follow as they are built.
+  `input`, `search`, `h1`, `h2`, `nav`, `tabs`, `details` and grid cells; more components follow as they are built.
   Unknown names stay as literal text, so `{anything}` is safe to write.
 - A button with only icons is square: `button: {filter}`. With `(round)`
   it is a circle: `button: {more} (round)`.

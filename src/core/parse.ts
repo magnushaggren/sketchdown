@@ -38,6 +38,8 @@ const KEYWORDS = new Map<string, NodeType>([
   ["nav", "nav"],
   ["navigation", "nav"],
   ["avatar", "avatar"],
+  ["details", "details"],
+  ["properties", "details"],
 ]);
 const CONTAINERS = new Set<NodeType>(["root", "tabs", "box", "row", "columns"]);
 const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row", "columns"]); // may appear without a colon

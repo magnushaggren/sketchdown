@@ -17,7 +17,8 @@ export type ComponentType =
   | "h2"
   | "columns"
   | "nav"
-  | "avatar";
+  | "avatar"
+  | "details";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {

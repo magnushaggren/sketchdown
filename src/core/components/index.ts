@@ -4,6 +4,7 @@ import { box } from "./box";
 import { button } from "./button";
 import { checkbox } from "./checkbox";
 import { columns } from "./columns";
+import { details } from "./details";
 import { dropdown } from "./dropdown";
 import { grid } from "./grid";
 import { heading } from "./heading";
@@ -36,4 +37,5 @@ export const COMPONENTS: Record<NodeType, Component> = {
   columns,
   nav,
   avatar,
+  details,
 };
