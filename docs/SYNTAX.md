@@ -203,7 +203,11 @@ tree: {folder} Project
 
 - `{name}` inside a label draws an icon there: `button: {plus} Add`,
   `text: {user} Signed in as Anna`. Works in `text` (on every line), `button`,
-  `input`, `search`, `h1`, `h2`, `nav`, `tabs`, `details` and grid cells; more components follow as they are built.
+  `input`, `search`, headings, `nav`, `tabs`, `details`, grid cells, `link`,
+  `radio`, `toggle`, `alert`, `progress`, `tooltip`, `image` captions,
+  `breadcrumb`, `menu` and `tree`. Not in `checkbox`, `dropdown`,
+  `password`, `textarea`, `paragraph`, `pagination` or frame titles.
+  The same goes for `[link]` and `-grey-` text.
   Unknown names stay as literal text, so `{anything}` is safe to write.
 - A button with only icons is square: `button: {filter}`. With `(round)`
   it is a circle: `button: {more} (round)`.

@@ -12,7 +12,7 @@ Update the Status column as work lands.
 | M1 | Plugin UX: commands, editor modal, settings | done (checked in owner's vault 2026-10-14) |
 | M2 | Fast editing: paste-to-create, click-to-edit | done (checked in owner's vault 2026-10-14) |
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
-| M3b | Rest of the component library | in progress: steps 1–4 done, step 5 built, awaiting vault check |
+| M3b | Rest of the component library | built; steps 1–5 checked in owner's vault 2026-10-14, step 6 awaiting check |
 | M4 | Wireframes in markdown notes (SVG renderer) | todo |
 | M5 | Polish and release | todo |
 
@@ -107,7 +107,7 @@ are bigger, and secondary text is grey.
 
 **Done when** the owner can redraw a portal screenshot from a spec.
 
-## M3b – Rest of the component library
+## M3b – Rest of the component library (built)
 
 Order agreed 2026-10-14. As in M3a, each step gets parser tests first, a
 snapshot test, a gallery entry and a SYNTAX.md update, and is deployed for a

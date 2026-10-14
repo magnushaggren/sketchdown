@@ -116,6 +116,11 @@ top-left, delete them, draw the new version at that point.
 - M3a colours: disabled `#adb5bd`, secondary text `#868e96`, dark panel
   `#343a40` with text `#f8f9fa`, striped rows `#f1f3f5`. Headings are 1.75
   (h1) and 1.375 (h2) times the font size; there is no bold.
+- M3b: links `#1971c2` (a setting). Frames (`window`, `dialog`, `browser`,
+  `phone`) are filled white and drawn before their content; the dialog
+  shadow is the disabled grey, offset 8. Nothing may draw outside the size a
+  component returns (e.g. the slider knob), because regenerating keeps the
+  bounding box's top-left.
 - Layout contract: a parent may pass a `Slot` ({w, h}) to a child, which
   then makes itself at least that big. Parents only pass one to `(fill)`
   children (and heights to `columns` panels), so specs without the new
