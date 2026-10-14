@@ -11,7 +11,7 @@ Update the Status column as work lands.
 | M0 | Repo scaffold and port of the prototype | done (checked in owner's vault 2026-10-14) |
 | M1 | Plugin UX: commands, editor modal, settings | done (checked in owner's vault 2026-10-14) |
 | M2 | Fast editing: paste-to-create, click-to-edit | done (checked in owner's vault 2026-10-14) |
-| M3a | Foundations and the portal patterns | built, tests pass; owner's vault check pending |
+| M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | todo |
 | M4 | Wireframes in markdown notes (SVG renderer) | todo |
 | M5 | Polish and release | todo |
@@ -75,7 +75,7 @@ Update the Status column as work lands.
   the spec does the job and is documented in SYNTAX.md.
 - **Done when** paste → tweak → regenerate takes a few seconds.
 
-## M3a – Foundations and the portal patterns
+## M3a – Foundations and the portal patterns (done)
 
 Agreed 2026-10-14. Input: the owner's portal web app (screenshots shared
 2026-10-13, not stored in the repo). Each step gets parser tests first, a
