@@ -2,7 +2,11 @@ import { ItemView, MarkdownView, Notice, Plugin, debounce } from "obsidian";
 import type { WorkspaceLeaf } from "obsidian";
 import "../adapters/ea-types";
 import { eaMeasure } from "../adapters/excalidraw";
-import type { ExcalidrawAutomate, PasteHookData } from "../adapters/ea-types";
+import type {
+  ExcalidrawAutomate,
+  ExcalidrawAutomateGlobal,
+  PasteHookData,
+} from "../adapters/ea-types";
 import { renderSvg } from "../adapters/svg";
 import {
   EXCALIDRAW_PLUGIN_ID,
@@ -43,6 +47,8 @@ export default class SketchdownPlugin extends Plugin {
   private toolbars: ToolbarRegistration[] = [];
   /** True while an editor is open or a wireframe is being drawn. */
   private busy = false;
+  /** The Excalidraw API the paste hook is installed on, if any. */
+  private pasteHookOn: ExcalidrawAutomateGlobal | null = null;
   /** The drawing used most recently, where "Send to Excalidraw" draws. */
   private lastDrawing: WorkspaceLeaf | null = null;
 
@@ -105,22 +111,12 @@ export default class SketchdownPlugin extends Plugin {
     );
 
     this.app.workspace.onLayoutReady(() => {
-      if (!this.excalidrawLoaded()) return;
-      this.register(
-        installPasteHook(window.ExcalidrawAutomate!, (data) => {
-          // Excalidraw also sees pastes into other inputs, such as our editor
-          if (this.busy || !pastedOnCanvas(data)) return false;
-          const source = specFromPaste(data, this.settings);
-          if (source === null || !data.view) return false;
-          void this.paste(data.view as unknown as ItemView, source, data.pointerPosition ?? null);
-          return true;
-        }),
-      );
-      this.attachToolbars();
-      // drawings open and reload at any time; the check is cheap
-      this.registerEvent(this.app.workspace.on("layout-change", () => this.attachToolbars()));
-      this.registerEvent(this.app.workspace.on("file-open", () => this.attachToolbars()));
-      this.registerInterval(window.setInterval(() => this.attachToolbars(), 2000));
+      // Excalidraw may be enabled after this plugin, so keep checking:
+      // drawings also open and reload at any time, and the check is cheap
+      this.connectExcalidraw();
+      this.registerEvent(this.app.workspace.on("layout-change", () => this.connectExcalidraw()));
+      this.registerEvent(this.app.workspace.on("file-open", () => this.connectExcalidraw()));
+      this.registerInterval(window.setInterval(() => this.connectExcalidraw(), 2000));
     });
   }
 
@@ -154,6 +150,30 @@ export default class SketchdownPlugin extends Plugin {
     const plugins = (this.app as unknown as { plugins?: { plugins?: Record<string, unknown> } })
       .plugins;
     return !!plugins?.plugins?.[EXCALIDRAW_PLUGIN_ID] && !!window.ExcalidrawAutomate;
+  }
+
+  /**
+   * Installs the paste hook once Excalidraw is there, and adds toolbar
+   * buttons to drawings that lack one. Safe to call repeatedly.
+   */
+  private connectExcalidraw(): void {
+    if (!this.excalidrawLoaded()) return;
+    const hookServer = window.ExcalidrawAutomate!;
+    if (this.pasteHookOn !== hookServer) {
+      // a new instance after Excalidraw was reloaded; the old one went with it
+      this.pasteHookOn = hookServer;
+      this.register(
+        installPasteHook(hookServer, (data) => {
+          // Excalidraw also sees pastes into other inputs, such as our editor
+          if (this.busy || !pastedOnCanvas(data)) return false;
+          const source = specFromPaste(data, this.settings);
+          if (source === null || !data.view) return false;
+          void this.paste(data.view as unknown as ItemView, source, data.pointerPosition ?? null);
+          return true;
+        }),
+      );
+    }
+    this.attachToolbars();
   }
 
   /** Adds the "Edit wireframe" toolbar button to every open drawing that lacks it. */
