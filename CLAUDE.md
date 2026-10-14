@@ -81,9 +81,13 @@ Rules:
   tells whether Shift is held.
 - `registerElementActionProvider(getActions)` (not in older versions, so
   feature-detect) adds buttons to the toolbar above a **single** selected
-  element; a selected group doesn't show it. The registration lasts as long
-  as the EA instance and the view's menu, which is recreated when the view
-  loads another drawing.
+  element; a selected group doesn't show it. It returns an unregister
+  function, which a plugin must call on unload: `ea.destroy()` only removes
+  providers registered by Excalidraw scripts, so a forgotten one survives a
+  plugin reload and keeps running the old code. The view's menu (and its
+  providers) is recreated when the view loads another drawing.
+- Excalidraw sees paste events from the whole window, including text
+  fields in Obsidian modals; check the event target before acting on one.
 - Not used yet: `onSceneChangeHook`, `onLinkClickHook`, `onDropHook`.
 - Line points passed to `addLine` are absolute canvas coordinates.
 - Style must be set on `ea.style` before every add call. Set it fully each
