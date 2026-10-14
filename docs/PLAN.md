@@ -14,7 +14,7 @@ Update the Status column as work lands.
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
-| M5 | Polish and release | todo |
+| M5 | Polish and release | in progress |
 
 ## M0 – Scaffold and port
 
@@ -170,19 +170,38 @@ can reach a drawing in one step.
 
 ## M5 – Polish and release
 
-- Dark-mode check (Excalidraw inverts colours; confirm the fills look right).
-- Performance with large grids (100+ rows).
-- README with GIFs, a syntax cheat-sheet and credits (Balsamiq inspiration,
-  Wireframy syntax ideas, Excalidraw and the Obsidian Excalidraw plugin).
-- Decide the final name and check it's free on GitHub, npm and the Obsidian
-  directory. Then submit to the community plugins list.
+Agreed 2026-10-14.
 
-## Open questions for the owner
+1. Name: Sketchdown stays (decided 2026-10-14). Check it is free in the
+   Obsidian community list, on GitHub and on npm. `sketchdown` stays the
+   customData key and fence keyword for good.
+2. Review against Obsidian's plugin guidelines: command names and settings
+   wording, no default hotkeys, no unsafe HTML, cleanup on unload, the
+   2-second toolbar polling, the right `minAppVersion`, bundle size.
+3. Mobile: one pass on a phone or tablet (paste, modal, note blocks, copy).
+   If something is broken and not cheap to fix, release desktop-only.
+4. Performance: time 100- and 500-row grids, on the canvas and as a note
+   block; fix what is slow (likely by caching measurements).
+5. Dark mode: the rest of the check started in M4 (dialog shadow, tooltip,
+   disabled grey, links), on the canvas and in notes.
+6. README: install, a syntax cheat sheet generated from SYNTAX.md, the
+   gallery, settings, credits (Balsamiq, Wireframy, Excalidraw and the
+   Obsidian Excalidraw plugin). The owner records two or three GIFs.
+7. Release machinery: a GitHub Actions workflow that builds on a version tag
+   and attaches `main.js`, `manifest.json` and `styles.css`; a version bump
+   script for `manifest.json`, `versions.json` and `package.json`.
+8. Publish: a public GitHub repo under the owner's account (created with
+   `gh`, checked with the owner before the first push), a 0.9 beta for
+   BRAT, then 1.0 and the pull request to `obsidianmd/obsidian-releases`,
+   which the owner opens from his account.
 
-1. Final name: Sketchdown, Kladd, or something else? It affects the plugin
-   id and the fence keyword.
-2. Fence keyword in notes: `sketchdown`, `wf` (Wireframy-compatible) or `kladd`?
-3. Should hand edits inside a component group survive regeneration, or is
-   "text is the truth" fine for good?
-4. Support for plain Excalidraw outside Obsidian (excalidraw.com) later? If
-   yes, keep `core` publishable as its own npm package.
+**Done when** the plugin is listed or the submission is open, and a new user
+can install it and draw a first wireframe from the README alone.
+
+## Decided questions
+
+1. Name: Sketchdown, fence keyword `sketchdown` (2026-10-14).
+2. Hand edits inside a component group don't survive regeneration: the text
+   is the truth, and the README says so (2026-10-14).
+3. Plain Excalidraw outside Obsidian is deferred. `core` stays free of
+   Obsidian and Excalidraw imports, so it remains possible (2026-10-14).
