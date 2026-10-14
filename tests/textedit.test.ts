@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FONT_SIZE, SNIPPETS, layout, parse } from "../src/core";
+import { COMPONENTS } from "../src/core/components";
 import type { SpecNode } from "../src/core";
 import { indentEdit, lineRange, newlineEdit, snippetEdit } from "../src/plugin/textedit";
 import type { TextEdit } from "../src/plugin/textedit";
@@ -124,7 +125,7 @@ describe("snippets", () => {
       n.children.forEach(walk);
     };
     SNIPPETS.forEach((s) => walk(parse(s.text).tree));
-    for (const type of ["button", "dropdown", "checkbox", "text", "grid", "tabs", "box", "row"]) {
+    for (const type of Object.keys(COMPONENTS).filter((t) => t !== "root")) {
       expect(used).toContain(type);
     }
   });
