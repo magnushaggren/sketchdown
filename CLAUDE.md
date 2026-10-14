@@ -28,6 +28,8 @@ src/
     detect.ts    find a spec in pasted text (fence or plain)
     layout.ts    AST -> positioned draw ops; measuring is injected
     components/  one file per component: measure + draw into DrawOps
+                 (label.ts: text with {icon} tokens; shared.ts: helpers)
+    icons.ts     built-in icons drawn with lines and ellipses
     snippets.ts  starting points for the quick-insert palette
     types.ts     AST nodes, DrawOp = rect | line | text | ellipse, Style
   adapters/
@@ -106,6 +108,15 @@ top-left, delete them, draw the new version at that point.
 - Font size 16. Colours: fill `#e9ecef`, primary `#a5d8ff`, selected row
   `#d0ebff`, inputs `#ffffff`. Outer frames strokeWidth 2, inner lines 1.
 - Gaps: root stack 24, container stack 14, row 12, container padding 16.
+- M3a colours: disabled `#adb5bd`, secondary text `#868e96`, dark panel
+  `#343a40` with text `#f8f9fa`, striped rows `#f1f3f5`. Headings are 1.75
+  (h1) and 1.375 (h2) times the font size; there is no bold.
+- Layout contract: a parent may pass a `Slot` ({w, h}) to a child, which
+  then makes itself at least that big. Parents only pass one to `(fill)`
+  children (and heights to `columns` panels), so specs without the new
+  options draw exactly as the prototype did.
+- Draw ops only carry `color`/`fontSize` keys when set; the parity test
+  depends on that.
 - Match the prototype's output pixel-for-pixel until a change is agreed.
 
 ## Commands
