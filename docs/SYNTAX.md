@@ -61,6 +61,7 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `tabs` (tab) [v2] | `tabs: A \| *B \| C` | container; empty panel 360×160 by default |
 | `box` (panel, group) [v2] | `box: New user` | container with an optional title bar |
 | `row` [v2] | `row:` | container, children side by side, centred vertically |
+| `icon` [M3a] | `icon: search` | one icon; `(w=32)` sets its size; unknown names are an error |
 
 ### Grid [v2]
 
@@ -75,6 +76,22 @@ Anna, Developer, 52 000 kr, [x]
 - `[x]` and `[ ]` draw a checkbox, optionally followed by a label.
 - Numeric-looking cells are right-aligned, except in the header.
 - A leading `*` selects a row (light blue fill).
+
+## Icons [M3a]
+
+- `{name}` inside a label draws an icon there: `button: {plus} Add`,
+  `text: {user} Signed in as Anna`. Works in `text` (on every line) and
+  `button`; more components follow as they are built. Unknown names stay as
+  literal text, so `{anything}` is safe to write.
+- A button with only icons is square: `button: {filter}`. With `(round)`
+  it is a circle: `button: {more} (round)`.
+- `icon: name` on its own line draws one icon (see the table above).
+- Icons are drawn with lines in the canvas's stroke colour and roughness.
+  They are a little smaller than a line of text.
+- Names (case doesn't matter): search, filter, more, close, back, menu,
+  home, user, users, settings, plus, edit, trash, bell, calendar, file,
+  folder, star, info, check, chevron-down, chevron-right, mail, phone,
+  lock, dot.
 
 ## Modifiers [M3a]
 
@@ -109,7 +126,7 @@ Agree on these with the owner before building. They're listed roughly by value.
 - Navigation: `menu:`, `breadcrumb: Home > Users > Anna`, `list:`, `tree:`
   (indentation-based), `pagination:`.
 - Feedback: `alert: Saved!`, `progress: 60%`, `tooltip:`.
-- Media: `image: 320x180` (crossed placeholder), `avatar: MH`, `icon: name`.
+- Media: `image: 320x180` (crossed placeholder), `avatar: MH`.
 - Alignment in rows.
 - Inline formatting in labels, as in Balsamiq: `*bold*`, `_italic_`, `[link]`,
   `-disabled-`.

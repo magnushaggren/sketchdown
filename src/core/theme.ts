@@ -12,3 +12,6 @@ export const DEFAULT_THEME: Theme = {
   },
   gap: { root: 24, stack: 14, row: 12, pad: 16 },
 };
+
+/** A fill that means "the stroke colour", for solid dots and icons. */
+export const INK = "ink";

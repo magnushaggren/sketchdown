@@ -1,6 +1,6 @@
 // ---------- AST ----------
 export type ComponentType =
-  "button" | "dropdown" | "checkbox" | "text" | "grid" | "tabs" | "box" | "row";
+  "button" | "dropdown" | "checkbox" | "text" | "grid" | "tabs" | "box" | "row" | "icon";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {
@@ -45,7 +45,7 @@ export interface RectOp {
   y: number;
   w: number;
   h: number;
-  /** Hex colour, or null for transparent. */
+  /** Hex colour, INK for the stroke colour, or null for transparent. */
   fill: string | null;
   stroke: boolean;
   strokeWidth: 1 | 2;
@@ -143,6 +143,8 @@ export interface DrawContext {
   ink: string | null;
   measure(text: string, fontSize?: number): Size;
   rect(x: number, y: number, w: number, h: number, o?: RectOptions): void;
+  /** Ellipse inside the box; o.rounded is ignored. */
+  ellipse(x: number, y: number, w: number, h: number, o?: RectOptions): void;
   line(points: Point[], strokeWidth?: 1 | 2, color?: string): void;
   /** size is the measured size of str, which the caller already has. */
   text(x: number, y: number, str: string, size: Size, o?: TextOptions): void;

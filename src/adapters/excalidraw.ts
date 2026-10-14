@@ -1,3 +1,4 @@
+import { INK } from "../core/theme";
 import type { DrawOp, MeasureText, Style } from "../core/types";
 import type { EaStyle, ExcalidrawAutomate } from "./ea-types";
 
@@ -39,7 +40,8 @@ export function renderOps(ea: ExcalidrawAutomate, ops: DrawOp[], style: Style): 
       case "ellipse":
         setStyle(ea, style, {
           strokeColor: op.stroke ? (op.color ?? style.stroke) : "transparent",
-          backgroundColor: op.fill ?? "transparent",
+          backgroundColor:
+            op.fill === INK ? (op.color ?? style.stroke) : (op.fill ?? "transparent"),
           strokeWidth: op.strokeWidth,
           roundness: op.kind === "rect" && op.rounded ? { type: 3 } : null,
         });

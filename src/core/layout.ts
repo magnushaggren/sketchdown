@@ -42,6 +42,20 @@ export function layout(
         ...color(o.color ?? ctx.ink),
       });
     },
+    ellipse(x, y, w, h, o = {}) {
+      if (ctx.dry) return;
+      ops.push({
+        kind: "ellipse",
+        x,
+        y,
+        w,
+        h,
+        fill: o.fill || null,
+        stroke: !o.noStroke,
+        strokeWidth: o.width || 1,
+        ...color(o.color ?? ctx.ink),
+      });
+    },
     line(pts, strokeWidth = 1, c) {
       if (ctx.dry) return;
       const points = pts.filter(

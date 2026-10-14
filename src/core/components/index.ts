@@ -4,6 +4,7 @@ import { button } from "./button";
 import { checkbox } from "./checkbox";
 import { dropdown } from "./dropdown";
 import { grid } from "./grid";
+import { icon } from "./icon";
 import { row } from "./row";
 import { tabs } from "./tabs";
 import { text } from "./text";
@@ -20,4 +21,5 @@ export const COMPONENTS: Record<NodeType, Component> = {
   dropdown,
   checkbox,
   grid,
+  icon,
 };

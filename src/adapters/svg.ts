@@ -1,4 +1,5 @@
 import rough from "roughjs";
+import { INK } from "../core/theme";
 import type { DrawOp, Style } from "../core/types";
 
 export interface SvgOptions {
@@ -99,7 +100,7 @@ export function renderSvg(ops: DrawOp[], style: Style, options: SvgOptions = {})
         const o = {
           ...base,
           stroke: op.stroke ? (op.color ?? style.stroke) : "none",
-          fill: op.fill ?? undefined,
+          fill: op.fill === INK ? (op.color ?? style.stroke) : (op.fill ?? undefined),
           fillStyle: "solid",
         };
         if (op.kind === "ellipse") {

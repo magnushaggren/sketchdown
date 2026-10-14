@@ -1,3 +1,4 @@
+import { ICON_NAMES, isIcon } from "./icons";
 import type { NodeType, ParseError, ParseResult, SpecNode } from "./types";
 
 const KEYWORDS = new Map<string, NodeType>([
@@ -21,6 +22,7 @@ const KEYWORDS = new Map<string, NodeType>([
   ["panel", "box"],
   ["group", "box"],
   ["row", "row"],
+  ["icon", "icon"],
 ]);
 const CONTAINERS = new Set<NodeType>(["root", "tabs", "box", "row"]);
 const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row"]); // may appear without a colon
@@ -102,6 +104,12 @@ export function parse(source: string): ParseResult {
         const { rest, opts } = bareOpts ?? parseOptions(m[2] || "");
         const node: SpecNode = { type, text: rest, body: [], children: [], opts, line: i + 1 };
         parent.children.push(node);
+        if (type === "icon" && !isIcon(rest)) {
+          errors.push({
+            line: i + 1,
+            message: `unknown icon "${rest}"; known icons: ${ICON_NAMES.join(", ")}`,
+          });
+        }
         stack.push({ node, indent });
         last = node;
       } else if (last) {
