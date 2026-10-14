@@ -148,7 +148,7 @@ export const ERROR_SPECS: Record<string, string> = {
   "unknown first line": lines("hello world", "button: A"),
   "unknown after blank line": lines("button: A", "", "what is this", "button: B"),
   "keyword that needs a colon": lines("button", "text", "box"),
-  "options without a colon": "box (w=50)",
+  // "box (w=50)" was an error in v2; M3a made options after a bare keyword valid.
   "nothing drawable": lines("just some words", "", "more words"),
   empty: "",
 };

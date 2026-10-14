@@ -205,3 +205,75 @@ describe("options", () => {
     expect(kids("grid\nA, B (w=5)")[0]).toMatchObject({ body: ["A, B (w=5)"], opts: {} });
   });
 });
+
+describe("flags", () => {
+  it("reads known flag words as options set to 1", () => {
+    expect(kids("button: Save (fill, disabled)")[0]).toMatchObject({
+      text: "Save",
+      opts: { fill: 1, disabled: 1 },
+    });
+  });
+
+  it.each(["fill", "disabled", "dark", "round", "segmented", "underline", "plain", "striped"])(
+    "knows %s",
+    (flag) => {
+      expect(parseOptions(`x (${flag})`)).toEqual({ rest: "x", opts: { [flag]: 1 } });
+    },
+  );
+
+  it("ignores case and spaces", () => {
+    expect(parseOptions("x ( Fill ,DISABLED )")).toEqual({
+      rest: "x",
+      opts: { fill: 1, disabled: 1 },
+    });
+  });
+
+  it("mixes with numeric options", () => {
+    expect(parseOptions("x (w=200, fill)")).toEqual({ rest: "x", opts: { w: 200, fill: 1 } });
+  });
+
+  it("leaves brackets with any unknown word in the text", () => {
+    expect(parseOptions("Title (optional)")).toEqual({ rest: "Title (optional)", opts: {} });
+    expect(parseOptions("x (fill, maybe)")).toEqual({ rest: "x (fill, maybe)", opts: {} });
+    expect(parseOptions("x ()")).toEqual({ rest: "x ()", opts: {} });
+  });
+
+  it("keeps skipping unknown words when the brackets hold a k=v pair, as before", () => {
+    expect(parseOptions("x (w=5, wide)")).toEqual({ rest: "x", opts: { w: 5 } });
+  });
+
+  it("works on keywords with only options after the colon", () => {
+    expect(kids("grid: (plain, striped)\na, b")[0]).toMatchObject({
+      text: "",
+      opts: { plain: 1, striped: 1 },
+    });
+  });
+});
+
+describe("options on keywords without a colon", () => {
+  it("are read on grid, tabs, box and row", () => {
+    expect(kids("grid (plain)\na, b")[0]).toMatchObject({
+      type: "grid",
+      text: "",
+      body: ["a, b"],
+      opts: { plain: 1 },
+    });
+    expect(kids("row (fill)")[0]).toMatchObject({ type: "row", opts: { fill: 1 } });
+  });
+
+  it("are not accepted on keywords that need a colon", () => {
+    expect(parse("button (fill)").errors).toHaveLength(1);
+  });
+
+  it("still make a continuation line when the brackets are not options", () => {
+    expect(kids("text: A\ngrid (see below)")[0].body).toEqual(["grid (see below)"]);
+  });
+});
+
+describe("changes from v2", () => {
+  it("accepts options after a bare keyword, which v2 reported as an error", () => {
+    const { tree, errors } = parse("box (w=50)");
+    expect(errors).toEqual([]);
+    expect(tree.children[0]).toMatchObject({ type: "box", text: "", opts: { w: 50 } });
+  });
+});

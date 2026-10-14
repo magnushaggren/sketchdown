@@ -25,12 +25,38 @@ const KEYWORDS = new Map<string, NodeType>([
 const CONTAINERS = new Set<NodeType>(["root", "tabs", "box", "row"]);
 const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row"]); // may appear without a colon
 
+/** Words that may stand alone in the options brackets; each sets its option to 1. */
+export const FLAGS = new Set([
+  "fill",
+  "disabled",
+  "dark",
+  "round",
+  "segmented",
+  "underline",
+  "plain",
+  "striped",
+]);
+
+/**
+ * Reads "(k=v, flag, ...)" at the end of a line. Brackets with a k=v pair
+ * are always options (pairs that aren't numeric are skipped, as in v2).
+ * Brackets without one are options only if every entry is a known flag,
+ * so "box: Title (optional)" keeps its text.
+ */
 export function parseOptions(s: string): { rest: string; opts: Record<string, number> } {
   const opts: Record<string, number> = {};
-  const m = s.match(/\(([^()]*=[^()]*)\)\s*$/);
+  const m = s.match(/\(([^()]*)\)\s*$/);
   if (!m || m.index === undefined) return { rest: s.trim(), opts };
-  m[1].split(",").forEach((kv) => {
-    const [k, v] = kv.split("=").map((t) => t.trim());
+  const entries = m[1].split(",").map((t) => t.trim());
+  if (!m[1].includes("=") && !entries.every((e) => FLAGS.has(e.toLowerCase()))) {
+    return { rest: s.trim(), opts };
+  }
+  entries.forEach((entry) => {
+    if (FLAGS.has(entry.toLowerCase())) {
+      opts[entry.toLowerCase()] = 1;
+      return;
+    }
+    const [k, v] = entry.split("=").map((t) => t.trim());
     if (k && v && !isNaN(Number(v))) opts[k.toLowerCase()] = Number(v);
   });
   return { rest: s.slice(0, m.index).trim(), opts };
@@ -56,10 +82,13 @@ export function parse(source: string): ParseResult {
       }
       const indent = (raw.match(/^[ \t]*/) ?? [""])[0].replace(/\t/g, "    ").length;
       const s = raw.trim();
-      const m = s.match(/^([a-zA-Z]+)\s*(?::\s*(.*))?$/);
+      // "keyword: content", or a bare keyword optionally followed by options
+      const m = s.match(/^([a-zA-Z]+)\s*(?::\s*(.*)|(\([^()]*\)))?$/);
       const type = m ? KEYWORDS.get(m[1].toLowerCase()) : undefined;
       const hasColon = /^[a-zA-Z]+\s*:/.test(s);
-      if (m && type && (hasColon || BARE_OK.has(type))) {
+      const bareOpts = m?.[3] ? parseOptions(m[3]) : null;
+      const bareOk = !bareOpts || bareOpts.rest === "";
+      if (m && type && (hasColon || (BARE_OK.has(type) && bareOk))) {
         while (stack[stack.length - 1].indent >= indent) stack.pop();
         const parent = stack[stack.length - 1].node;
         if (!CONTAINERS.has(parent.type)) {
@@ -70,7 +99,7 @@ export function parse(source: string): ParseResult {
           last = null;
           return;
         }
-        const { rest, opts } = parseOptions(m[2] || "");
+        const { rest, opts } = bareOpts ?? parseOptions(m[2] || "");
         const node: SpecNode = { type, text: rest, body: [], children: [], opts, line: i + 1 };
         parent.children.push(node);
         stack.push({ node, indent });

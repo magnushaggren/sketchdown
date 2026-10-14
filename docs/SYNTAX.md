@@ -1,6 +1,6 @@
 # Sketchdown syntax
 
-Status markers: **[v2]** implemented in the prototype, **[planned]** not built yet.
+Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milestone M3a, **[planned]** not built yet.
 
 ## Structure [v2]
 
@@ -14,10 +14,17 @@ Status markers: **[v2]** implemented in the prototype, **[planned]** not built y
 - Indenting a component under a non-container is an error. Errors list the
   line number and the rest of the spec is still drawn.
 - Top-level components stack vertically with a gap of 24.
-- Options at the end of a line, in brackets: `(w=500, h=220)`. Only numeric
-  `k=v` pairs. `w` sets a minimum width on `box`, `tabs`, `button` and
+- Options at the end of a line, in brackets: `(w=500, h=220)`. Numeric
+  `k=v` pairs: `w` sets a minimum width on `box`, `tabs`, `button` and
   `dropdown`; `h` a minimum height on `box`, `tabs` and `button`. Use them
   to keep a component wide when its content shrinks.
+- **[M3a]** Flags may stand alone in the same brackets: `(fill, disabled)`.
+  Known flags: `fill`, `disabled`, `dark`, `round`, `segmented`,
+  `underline`, `plain`, `striped`. Brackets that hold an unknown word and no
+  `k=v` pair are part of the text, so `box: Title (optional)` keeps its
+  title. Flags and pairs mix: `(w=200, fill)`. What each flag does is listed
+  under the components that use it.
+- **[M3a]** Bare keywords take options too: `grid (plain)`, `box (w=50)`.
 - `*` marks the selected or active item: tab, dropdown value, grid row, or
   primary button.
 - Lists split on `|`, and on `,` if no `|` is present. Exception: checkbox
