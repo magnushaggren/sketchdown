@@ -13,7 +13,7 @@ Update the Status column as work lands.
 | M2 | Fast editing: paste-to-create, click-to-edit | done (checked in owner's vault 2026-10-14) |
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
-| M4 | Wireframes in markdown notes (SVG renderer) | todo |
+| M4 | Wireframes in markdown notes (SVG renderer) | in progress |
 | M5 | Polish and release | todo |
 
 ## M0 – Scaffold and port
@@ -143,11 +143,30 @@ spec.
 
 ## M4 – Markdown notes
 
-- `registerMarkdownCodeBlockProcessor("sketchdown", ...)` renders the same
-  spec as an SVG in reading view and live preview, using the shared core and
-  the SVG adapter. Use Excalifont where possible, so it looks like the canvas.
-- Command "Send to Excalidraw": copy a code block into the active or a new
-  drawing as native elements.
+Agreed 2026-10-14. A ```` ```sketchdown ```` block in a note renders as the
+same wireframe, in reading view and live preview.
+
+1. `renderBlock(source, env)` → SVG and errors, from the shared core and the
+   SVG adapter, without Obsidian imports; vitest tests.
+2. Text measuring outside a drawing: the Excalidraw plugin's `measureText`
+   when it is loaded, else a canvas measurer with the same font. Wait for
+   the font, and re-render once it has loaded.
+3. `registerMarkdownCodeBlockProcessor("sketchdown", ...)`: the SVG scaled
+   down to the note's width, errors listed below it, colours inverted in a
+   dark theme as in the modal. Style from the "fixed style" settings. A
+   setting turns block rendering off.
+4. Moving a block to a drawing: a "Copy for Excalidraw" button on the block
+   (pasting uses the M2 paste hook), and a "Send to Excalidraw" command that
+   draws the block under the cursor in the most recently used drawing,
+   tagged so it can be edited. Creating a new drawing can come later.
+5. Docs, a test that every gallery spec renders as a block, deploy.
+
+Decisions (2026-10-14): reuse the fonts the Excalidraw plugin loads, with a
+fallback, rather than bundling Excalifont. Blocks use the fixed-style
+settings. Wide blocks are scaled down to fit, not scrolled.
+
+**Done when** a block in a note looks like the same spec on a canvas, and
+can reach a drawing in one step.
 
 ## M5 – Polish and release
 
