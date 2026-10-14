@@ -36,8 +36,42 @@ export interface EaBoundingBox {
   height: number;
 }
 
+export interface PasteHookData {
+  payload?: {
+    text?: string;
+    elements?: readonly unknown[];
+    files?: Record<string, unknown> | null;
+  } | null;
+  event?: ClipboardEvent | null;
+  /** The ExcalidrawView; modifierKeyDown is the view's own key tracking. */
+  view?: { modifierKeyDown?: { shiftKey?: boolean } } | null;
+  /** Scene coordinates of the pointer. */
+  pointerPosition?: { x: number; y: number } | null;
+}
+
+/** Return false to stop Excalidraw's own paste. */
+export type PasteHook = (data: PasteHookData) => boolean;
+
+export interface ElementAction {
+  id: string;
+  title: string;
+  /** A Lucide icon name. */
+  icon: string;
+  action: () => void;
+}
+
 export interface ExcalidrawAutomate {
   style: EaStyle;
+  /** Hook slot; only used on the global instance, which views call by default. */
+  onPasteHook?: PasteHook | null;
+  /**
+   * Adds buttons to the toolbar above a single selected element of the
+   * target view. Removed when this instance is destroyed or the view's
+   * scene unmounts. Missing in older plugin versions.
+   */
+  registerElementActionProvider?(
+    getActions: (element: EaElement) => readonly ElementAction[],
+  ): (() => void) | null;
   setView(view?: unknown, show?: boolean): unknown;
   destroy(): void;
   verifyMinimumPluginVersion?(requiredVersion: string): boolean;
@@ -68,6 +102,8 @@ export interface ExcalidrawAutomate {
 
 export interface ExcalidrawAutomateGlobal {
   getAPI(view?: unknown): ExcalidrawAutomate;
+  /** Views call the hooks of this instance unless a script registered its own. */
+  onPasteHook?: PasteHook | null;
 }
 
 declare global {

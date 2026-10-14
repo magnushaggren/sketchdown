@@ -11,6 +11,8 @@ export interface Settings {
   /** Take stroke colour, font and roughness from the drawing; otherwise use `fixed`. */
   useCanvasStyle: boolean;
   fixed: { stroke: string; fontFamily: number; roughness: number };
+  /** Draw pasted text that parses without errors. Fenced blocks are drawn regardless. */
+  pastePlainSpecs: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -19,6 +21,7 @@ export const DEFAULT_SETTINGS: Settings = {
   fontSize: FONT_SIZE,
   useCanvasStyle: true,
   fixed: { stroke: "#1e1e1e", fontFamily: 5, roughness: 1 },
+  pastePlainSpecs: true,
 };
 
 export const LIMITS = {
@@ -74,6 +77,8 @@ export function normalizeSettings(data: unknown): Settings {
           : def.fixed.fontFamily,
       roughness: number(fixed.roughness, def.fixed.roughness, LIMITS.roughness),
     },
+    pastePlainSpecs:
+      typeof d.pastePlainSpecs === "boolean" ? d.pastePlainSpecs : def.pastePlainSpecs,
   };
 }
 

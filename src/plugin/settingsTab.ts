@@ -97,6 +97,19 @@ export class SketchdownSettingTab extends PluginSettingTab {
       );
     }
 
+    new Setting(containerEl).setName("Pasting").setHeading();
+    new Setting(containerEl)
+      .setName("Create wireframes from pasted specs")
+      .setDesc(
+        "Pasting text that is a valid spec draws it at the pointer. A ```sketchdown code block is drawn even when this is off. Ctrl/Cmd+Shift+V pastes as plain text.",
+      )
+      .addToggle((toggle) =>
+        toggle.setValue(settings.pastePlainSpecs).onChange((value) => {
+          settings.pastePlainSpecs = value;
+          save();
+        }),
+      );
+
     new Setting(containerEl).setName("Stroke and font").setHeading();
     new Setting(containerEl)
       .setName("Use the canvas style")
