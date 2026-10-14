@@ -113,7 +113,10 @@ top-left, delete them, draw the new version at that point.
 - `npm run dev`: esbuild watch build to `main.js`
 - `npm run build`: type-check and production build
 - `npm test`: vitest (`tests/parity.test.ts` runs the prototype's own code
-  against the port, so it fails on any change to what is drawn)
+  against the port, so it fails on any change to what is drawn).
+  `tests/gallery.test.ts` renders `tests/fixtures/gallery.ts` to
+  `docs/gallery.svg` and fails when it differs; add every new component to
+  the gallery, and run `npm test -- -u` to accept an intended change.
 - `npm run lint`, `npm run format`: ESLint and Prettier
 - `npm run deploy`: build, then copy `main.js`, `manifest.json` and
   `styles.css` to the plugin folder named in `deploy.local.json` (not
