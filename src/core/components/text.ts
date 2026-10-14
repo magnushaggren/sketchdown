@@ -1,12 +1,12 @@
 import type { Component } from "../types";
-import { drawLabel, hasIcons, measureLabel } from "./label";
+import { drawLabel, isRich, measureLabel } from "./label";
 import { contentLines } from "./shared";
 
 export const text: Component = (ctx, node, x, y, slot) => {
   const str = contentLines(node).join("\n") || "Text";
   let w: number, h: number;
-  if (hasIcons(str)) {
-    // one label per line, so each line can mix icons and text
+  if (isRich(str)) {
+    // one label per line, so each line can mix icons, links and text
     const labels = str.split("\n").map((line) => measureLabel(ctx, line));
     h = 0;
     for (const label of labels) {

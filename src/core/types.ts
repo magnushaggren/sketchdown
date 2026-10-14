@@ -23,7 +23,9 @@ export type ComponentType =
   | "dialog"
   | "browser"
   | "phone"
-  | "buttons";
+  | "buttons"
+  | "link"
+  | "paragraph";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {
@@ -134,6 +136,8 @@ export interface Theme {
     onDark: string;
     /** Every other row of a (striped) grid. */
     stripe: string;
+    /** Text of [links]. */
+    link: string;
   };
   gap: { root: number; stack: number; row: number; pad: number };
 }

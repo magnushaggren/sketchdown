@@ -13,6 +13,7 @@ export const DEFAULT_THEME: Theme = {
     dark: "#343a40", // background of (dark) panels
     onDark: "#f8f9fa", // text and lines on (dark) panels
     stripe: "#f1f3f5", // every other row of a (striped) grid
+    link: "#1971c2", // [links] in labels and link:
   },
   gap: { root: 24, stack: 14, row: 12, pad: 16 },
 };

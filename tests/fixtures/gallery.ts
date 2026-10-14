@@ -93,4 +93,8 @@ export const GALLERY = lines(
   "  phone: Users (w=300, h=420)",
   "    search: (fill)",
   "    button: *{plus} New user (fill)",
+  "box: Text (w=420)",
+  "  text: Forgot [password]? -Not now-",
+  "  link: {file} Report.pdf",
+  "  paragraph: lorem (fill, lines=3)",
 );

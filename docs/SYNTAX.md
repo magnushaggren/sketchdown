@@ -78,6 +78,8 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `browser` [M3b] | `browser: My app \| example.com` | container; see Frames below |
 | `phone` [M3b] | `phone: Users` | container; see Frames below |
 | `buttons` [M3b] | `buttons: Cancel \| *OK` | buttons side by side on the right of the parent's width; always `(fill)` |
+| `link` [M3b] | `link: Forgot password?` | blue, underlined text; icons allowed |
+| `paragraph` (p, lorem) [M3b] | `paragraph: lorem (lines=4)` | text wrapped to 320 wide, or `(w=...)` or `(fill)`; `lorem` or no text gives placeholder text, 4 lines unless `(lines=...)`; continuation lines join the text |
 
 ### Grid [v2]
 
@@ -131,6 +133,20 @@ way. They are white, so they cover what lies under them.
     text: Anna Svensson will lose access.
     buttons: Cancel | *Delete
   ```
+
+## Inline formatting [M3b]
+
+Inside any label (`text`, `button`, headings, `nav`, tabs, `details`, grid
+cells and the like):
+
+- `[text]` is a link: blue and underlined. `text: Forgot [password]?`
+  Checkbox and toggle marks (`[x]`, `[ ]`, `[on]`, `[off]`) are not links.
+- `-text-` is grey, as for something disabled: `text: -Archived- users`.
+  The dashes need a space, the line's start or end, or punctuation after
+  them, so `070-123 45-67` and `2021-03-01` stay as written.
+- There is no italic or bold: Excalidraw text has neither.
+- In a `(disabled)` component links are grey too.
+- `paragraph` text is not formatted.
 
 ## Icons [M3a]
 
@@ -189,11 +205,8 @@ way. They are white, so they cover what lies under them.
 Agree on these with the owner before building. They're listed roughly by value.
 
 - Inputs: `radio: (o) A | ( ) B`, `toggle: [on] Wi-Fi`, `slider: 40%`.
-- Text: `link: [Forgot password?]`, `paragraph: lorem` (placeholder text).
 - Navigation: `menu:`, `breadcrumb: Home > Users > Anna`, `list:`, `tree:`
   (indentation-based), `pagination:`.
 - Feedback: `alert: Saved!`, `progress: 60%`, `tooltip:`.
 - Media: `image: 320x180` (crossed placeholder).
 - Alignment in rows.
-- Inline formatting in labels, as in Balsamiq: `_italic_`, `[link]`, `-disabled-`. No `*bold*`: Excalidraw text
-  has no font weight (agreed 2026-10-14).

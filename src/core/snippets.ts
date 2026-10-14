@@ -175,6 +175,21 @@ export const SNIPPETS: Snippet[] = [
     ),
   },
   {
+    name: "Link",
+    description: "Blue, underlined text; [text] does the same inside any label",
+    text: "link: Forgot password?",
+  },
+  {
+    name: "Inline formatting",
+    description: "[link] is a link, -text- is grey",
+    text: "text: Read the [terms] or -skip for now-",
+  },
+  {
+    name: "Paragraph",
+    description: "Wrapped text; lorem gives placeholder text",
+    text: "paragraph: lorem (lines=4)",
+  },
+  {
     name: "Window",
     description: "Desktop window with a title bar; indent the content under it",
     text: lines("window: Settings", "  text: Window content"),

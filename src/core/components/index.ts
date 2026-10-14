@@ -11,7 +11,9 @@ import { grid } from "./grid";
 import { heading } from "./heading";
 import { icon } from "./icon";
 import { input, textarea } from "./input";
+import { link } from "./link";
 import { nav } from "./nav";
+import { paragraph } from "./paragraph";
 import { row } from "./row";
 import { tabs } from "./tabs";
 import { text } from "./text";
@@ -44,4 +46,6 @@ export const COMPONENTS: Record<NodeType, Component> = {
   browser,
   phone,
   buttons,
+  link,
+  paragraph,
 };

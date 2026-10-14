@@ -46,6 +46,10 @@ const KEYWORDS = new Map<string, NodeType>([
   ["browser", "browser"],
   ["phone", "phone"],
   ["buttons", "buttons"],
+  ["link", "link"],
+  ["paragraph", "paragraph"],
+  ["p", "paragraph"],
+  ["lorem", "paragraph"],
 ]);
 const FRAMES: NodeType[] = ["window", "dialog", "browser", "phone"];
 const CONTAINERS = new Set<NodeType>(["root", "box", "tabs", "row", "columns", ...FRAMES]);
