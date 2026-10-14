@@ -11,7 +11,8 @@
     "deploy": "npm run build && node scripts/deploy.mjs",
     "test": "vitest run",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "cheatsheet": "node scripts/cheatsheet.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

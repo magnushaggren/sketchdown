@@ -76,7 +76,7 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `dropdown` (select, combo, combobox) [v2] | `dropdown: *Sweden \| Norway` | shows the starred or first value; width fits the longest option |
 | `checkbox` (check, checkboxes) [v2] | `checkbox: [x] Email \| [ ] SMS` | stacked vertically |
 | `text` (label) [v2] | `text: Role` | continuation lines become more lines of text |
-| `grid` (table, datagrid) [v2] | see below | first row is the header |
+| `grid` (table, datagrid) [v2] | `grid`, then rows like `Anna, Developer` | first row is the header |
 | `tabs` (tab) [v2] | `tabs: A \| *B \| C` | container; empty panel 360×160 by default; `(segmented)` and `(underline)` styles below |
 | `box` (panel, group) [v2] | `box: New user` | container with an optional title bar |
 | `row` [v2] | `row:` | container, children side by side, centred vertically |
