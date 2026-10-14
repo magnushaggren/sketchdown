@@ -11,7 +11,8 @@ Update the Status column as work lands.
 | M0 | Repo scaffold and port of the prototype | done (checked in owner's vault 2026-10-14) |
 | M1 | Plugin UX: commands, editor modal, settings | done (checked in owner's vault 2026-10-14) |
 | M2 | Fast editing: paste-to-create, click-to-edit | done (checked in owner's vault 2026-10-14) |
-| M3 | Component library expansion | todo |
+| M3a | Foundations and the portal patterns | in progress |
+| M3b | Rest of the component library | todo |
 | M4 | Wireframes in markdown notes (SVG renderer) | todo |
 | M5 | Polish and release | todo |
 
@@ -74,29 +75,43 @@ Update the Status column as work lands.
   the spec does the job and is documented in SYNTAX.md.
 - **Done when** paste → tweak → regenerate takes a few seconds.
 
-## M3 – Component library
+## M3a – Foundations and the portal patterns
 
-- Build the [planned] list in SYNTAX.md in the agreed priority order, each
-  with parser tests, a snapshot test and a gallery entry.
-- Add a "gallery" test fixture: a spec that uses every component. Render it
-  to SVG in CI and commit the image, so visual regressions show up in diffs.
-- Modifiers: `(disabled)` and `(fill)`. Width negotiation in rows: two-pass
-  layout where fill children share the leftover width.
-- Input for the priority order: the owner's portal web app (screenshots
-  shared 2026-10-13, not stored in the repo) is built from these patterns,
-  none of which can be drawn yet:
-  - app shell: dark sidebar, main area and a right-hand detail panel side by
-    side, each full height (needs columns and `(fill)`);
-  - sidebar navigation: icon + label items, one active, a user/avatar block
-    on top and a full-width action at the bottom;
-  - page header with a title, and a back or close icon button;
-  - segmented control (`ACTIVE | INACTIVE | ALL`) and underlined tabs
-    (`CONTENT | FILES`) as tab styles without a panel frame;
-  - search field with an icon, and round icon-only buttons (filter, more);
-  - borderless data table with striped rows, a status dot in a cell and a
-    highlighted selected row;
-  - detail list: rows of icon, bold label and value;
-  - full-width primary button at the bottom of a panel.
+Agreed 2026-10-14. Input: the owner's portal web app (screenshots shared
+2026-10-13, not stored in the repo). Each step gets parser tests first, a
+snapshot test and a gallery entry.
+
+1. Foundations:
+   - flag options `(fill, disabled, dark, round, segmented, underline, plain,
+     striped)`; brackets holding anything else stay part of the text;
+   - parents pass a size down to `(fill)` children, so they stretch; without
+     `(fill)` everything draws as before;
+   - per-op text colour and font size;
+   - `(disabled)` greys out any component.
+2. Gallery: one spec using every component, rendered by `npm test` to
+   `docs/gallery.svg`; the test fails if the committed file differs.
+3. Icons, a built-in set drawn with lines and circles: `icon: search` on its
+   own line, `{search}` inside labels.
+4. `input:`, `search:`, `password:`, `textarea:`, `heading:` (`h1:`,
+   `h2:`), icon-only buttons and `(round)`.
+5. `columns:` for full-height panels side by side, `(fill)` in rows, boxes
+   and columns, `(dark)` panels.
+6. `nav:` (icon + label items, one active) and `avatar:`.
+7. Tab styles `(segmented)` and `(underline)`; grid styles `(plain)` and
+   `(striped)`; `{dot}` status dots.
+8. `details:`: rows of icon, label and value.
+9. A "Portal screen" snippet, docs, deploy.
+
+Decisions: there is no bold, because Excalidraw text has no weight. Headings
+are bigger, and secondary text is grey.
+
+**Done when** the owner can redraw a portal screenshot from a spec.
+
+## M3b – Rest of the component library
+
+In an order to agree with the owner: radio, toggle, slider, link, paragraph
+(lorem), breadcrumb, pagination, alert, progress, tooltip, image placeholder,
+browser/phone/modal frames, menu, tree, and inline `_italic_` and `[link]`.
 
 ## M4 – Markdown notes
 
