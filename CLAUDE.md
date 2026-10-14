@@ -86,8 +86,9 @@ Rules:
   providers registered by Excalidraw scripts, so a forgotten one survives a
   plugin reload and keeps running the old code. The view's menu (and its
   providers) is recreated when the view loads another drawing.
-- Excalidraw sees paste events from the whole window, including text
-  fields in Obsidian modals; check the event target before acting on one.
+- Excalidraw may see paste events from the whole window, including text
+  fields in Obsidian modals (suspected, not confirmed); the paste hook
+  ignores pastes into text fields outside the drawing.
 - Not used yet: `onSceneChangeHook`, `onLinkClickHook`, `onDropHook`.
 - Line points passed to `addLine` are absolute canvas coordinates.
 - Style must be set on `ea.style` before every add call. Set it fully each
