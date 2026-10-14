@@ -24,7 +24,7 @@ Sketchdown needs the
 
 While Sketchdown is in beta, install it with
 [BRAT](https://github.com/TfTHacker/obsidian42-brat): run **BRAT: Add a beta
-plugin for testing** and enter `OWNER/sketchdown`. Then enable Sketchdown
+plugin for testing** and enter `magnushaggren/sketchdown`. Then enable Sketchdown
 under Community plugins.
 
 ## Use

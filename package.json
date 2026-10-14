@@ -29,5 +29,9 @@
   },
   "dependencies": {
     "roughjs": "^4.6.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/magnushaggren/sketchdown.git"
   }
 }
