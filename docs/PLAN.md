@@ -10,7 +10,7 @@ Update the Status column as work lands.
 |---|---|---|
 | M0 | Repo scaffold and port of the prototype | done (checked in owner's vault 2026-10-14) |
 | M1 | Plugin UX: commands, editor modal, settings | done (checked in owner's vault 2026-10-14) |
-| M2 | Fast editing: paste-to-create, click-to-edit | todo |
+| M2 | Fast editing: paste-to-create, click-to-edit | built, tests pass; owner's vault check pending |
 | M3 | Component library expansion | todo |
 | M4 | Wireframes in markdown notes (SVG renderer) | todo |
 | M5 | Polish and release | todo |
@@ -57,16 +57,21 @@ Update the Status column as work lands.
 
 ## M2 – Fast editing
 
-- `onPasteHook`: pasting text that starts with a known keyword, or a fenced
-  ```` ```sketchdown ```` block, creates a component at the pointer.
-- Setting for the default fence keyword (moved here from M1).
-- Click-to-edit. Investigate options and pick one with the owner:
-  - (a) set an element `link` such as `obsidian://sketchdown?...` and handle
-    it with `onLinkClickHook`;
-  - (b) a toolbar or context-menu entry when a tagged element is selected;
-  - (c) a hotkey only, which is the current behaviour.
-- Preserve the position when the size changes. Optionally keep the
-  user-adjusted width for `tabs` and `box` by storing the last bounding box.
+- `onPasteHook`: pasting a fenced ```` ```sketchdown ```` block, or text
+  that parses without errors, creates a component at the pointer. A setting
+  turns off the unfenced case; Shift+paste pastes plain text.
+- Fence keyword: only `sketchdown` for now (agreed 2026-10-14). A
+  configurable keyword (such as Wireframy's `wf`) is a possible later
+  addition, if needed.
+- Click-to-edit, agreed 2026-10-14: (b) an "Edit wireframe" button in
+  Excalidraw's element toolbar (`registerElementActionProvider`), plus (c)
+  the hotkey. Rejected: (a) an element link with `onLinkClickHook`, because
+  the link icon shows on the canvas and ends up in exports. Possible later:
+  (d) double-click opens the editor, as an opt-in setting; there's no API
+  for it, so it would listen to DOM events.
+- Position is kept: regenerating keeps the top-left. Keeping a resized width
+  was dropped, because resizing a group scales its text too; `(w=...)` in
+  the spec does the job and is documented in SYNTAX.md.
 - **Done when** paste → tweak → regenerate takes a few seconds.
 
 ## M3 – Component library

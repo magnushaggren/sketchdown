@@ -25,6 +25,7 @@ so it can be renamed.
 src/
   core/          pure TypeScript, no Obsidian or Excalidraw imports
     parse.ts     text -> AST (indentation-based tree)
+    detect.ts    find a spec in pasted text (fence or plain)
     layout.ts    AST -> positioned draw ops; measuring is injected
     components/  one file per component: measure + draw into DrawOps
     snippets.ts  starting points for the quick-insert palette
@@ -33,8 +34,9 @@ src/
     excalidraw.ts  DrawOps -> ExcalidrawAutomate calls (addRect/addLine/addText)
     svg.ts         DrawOps -> SVG string via rough.js (modal preview; later code blocks)
   plugin/
-    main.ts      Obsidian Plugin: commands, settings, hooks
-    edit.ts      select / edit / regenerate flow
+    main.ts      Obsidian Plugin: commands, settings, hook and toolbar setup
+    edit.ts      select / edit / regenerate flow, drawSpec
+    hooks.ts     paste handling and the toolbar button, testable without Obsidian
     modal.ts     spec editor modal with live preview and error list
     picker.ts    snippet palette
     textedit.ts  indent, newline and snippet insertion as pure functions
@@ -53,7 +55,7 @@ Rules:
 - Text measurement is an injected function `(text, style) => {w, h}`.
   In Excalidraw use `ea.measureText`; in tests use a fixed-width fake.
 
-## Excalidraw integration facts (verified against plugin v2.29.0 source)
+## Excalidraw integration facts (verified against plugin v2.29.0 source; the owner's vault runs 2.27.3)
 
 - Get the API with `window.ExcalidrawAutomate.getAPI(view)`; call
   `ea.destroy()` when finished with an instance. The `obsidian-excalidraw-plugin`
@@ -67,8 +69,20 @@ Rules:
   `measureText`, `style`, `addToGroup`, `addAppendUpdateCustomData(id, data)`,
   `addElementsToView(false, true, true)`, `selectElementsInView`,
   `getViewCenterPosition`, `getExcalidrawAPI().getAppState()`.
-- Hooks available for later milestones: `onPasteHook` (return false to stop
-  default paste), `onSceneChangeHook`, `onLinkClickHook`, `onDropHook`.
+- Hooks live on an EA instance. A view calls the hooks of its "hook server",
+  which is the global `window.ExcalidrawAutomate` unless a script called
+  `registerThisAsViewEA`. Each hook is one shared slot, so chain to the
+  previous value and restore it on unload (see `installPasteHook`).
+- `onPasteHook({ payload, event, view, pointerPosition })`: `payload.text`,
+  `payload.elements`, `payload.files`; `pointerPosition` is in scene
+  coordinates; return false to stop the default paste. `view.modifierKeyDown`
+  tells whether Shift is held.
+- `registerElementActionProvider(getActions)` (not in older versions, so
+  feature-detect) adds buttons to the toolbar above a **single** selected
+  element; a selected group doesn't show it. The registration lasts as long
+  as the EA instance and the view's menu, which is recreated when the view
+  loads another drawing.
+- Not used yet: `onSceneChangeHook`, `onLinkClickHook`, `onDropHook`.
 - Line points passed to `addLine` are absolute canvas coordinates.
 - Style must be set on `ea.style` before every add call. Set it fully each
   time (stroke, background, fillStyle "solid", strokeWidth, roughness,

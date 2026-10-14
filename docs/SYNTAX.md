@@ -15,11 +15,32 @@ Status markers: **[v2]** implemented in the prototype, **[planned]** not built y
   line number and the rest of the spec is still drawn.
 - Top-level components stack vertically with a gap of 24.
 - Options at the end of a line, in brackets: `(w=500, h=220)`. Only numeric
-  `k=v` pairs.
+  `k=v` pairs. `w` sets a minimum width on `box`, `tabs`, `button` and
+  `dropdown`; `h` a minimum height on `box`, `tabs` and `button`. Use them
+  to keep a component wide when its content shrinks.
 - `*` marks the selected or active item: tab, dropdown value, grid row, or
   primary button.
 - Lists split on `|`, and on `,` if no `|` is present. Exception: checkbox
   items split on `|` only.
+
+## Pasting onto the canvas
+
+- A fenced block with the info string `sketchdown` is always drawn when
+  pasted. If the pasted text has several, the first one is used and the text
+  around it is ignored. The keyword is not case-sensitive; backticks and
+  tildes both work.
+
+  ````
+  ```sketchdown
+  button: *Save
+  ```
+  ````
+
+- Pasted text without a fence is drawn only if the whole text parses without
+  errors. This can be switched off in the settings.
+- The component's top-left goes where the pointer is. Indentation shared by
+  every line is removed first, so a spec copied from an indented list works.
+- Ctrl/Cmd+Shift+V pastes as plain text, and Ctrl/Cmd+Z undoes a paste.
 
 ## Components
 
