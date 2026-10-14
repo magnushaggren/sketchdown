@@ -87,6 +87,10 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `progress` [M3b] | `progress: Uploading 60%` | bar filled to the percentage (empty when missing), 200 wide, or `(w=...)` or `(fill)`; other text goes above the bar |
 | `tooltip` (hint) [M3b] | `tooltip: Copied!` | small dark box with light text and a pointer below |
 | `image` (img, picture) [M3b] | `image: 320x180 Team photo` | crossed placeholder, 200×120 by default; `(w=...)`, `(h=...)` and `(fill)` override the size; other text is a grey caption in the middle |
+| `breadcrumb` (breadcrumbs, crumbs) [M3b] | `breadcrumb: Home > Users > Anna` | links with chevrons between; the `*` item, or else the last, is current and not a link; splits on `\|` when there is no `>`; icons allowed |
+| `pagination` (pager, pages) [M3b] | `pagination: < 1 *2 3 … 10 >` | items split on spaces; a box per page, `*` filled; `<` `>` (or `«` `»`) are arrows; `…` or `...` has no box |
+| `menu` (contextmenu) [M3b] | `menu: Copy \| Ctrl+C` | see Menus and trees below |
+| `tree` [M3b] | `tree: Project` | see Menus and trees below |
 
 ### Grid [v2]
 
@@ -155,6 +159,46 @@ cells and the like):
 - In a `(disabled)` component links are grey too.
 - `paragraph` text is not formatted.
 
+## Menus and trees [M3b]
+
+A menu has one item per line: the text after `menu:`, then continuation
+lines.
+
+```
+menu: Cut | Ctrl+X
+*Copy | Ctrl+C
+-Paste- | Ctrl+V
+-
+[x] Show ruler
+Zoom >
+```
+
+- `label | shortcut`: the shortcut is grey and right-aligned.
+- `*` highlights an item, `-` on its own line is a divider, and `-text-`
+  greys an item out.
+- `[x]` and `[ ]` put a tick, or room for one, in a column on the left.
+- A trailing `>` draws a submenu arrow.
+- At least 160 wide; `(w=...)` widens it.
+
+A tree takes its levels from the indentation of its lines. Any consistent
+step works: the smallest indentation is the first level, the next one the
+second, and so on. The text after `tree:` is the root, one level above the
+rest.
+
+```
+tree: {folder} Project
+  - {folder} src
+    *{file} index.ts
+    {file} main.ts
+  + {folder} docs
+```
+
+- `+ name` is a closed folder (a right chevron), `- name` an open one (a down
+  chevron). The space after the sign is needed, so `-old-` is grey text.
+- `*` selects a row (light blue across the tree's width).
+- Lines in a tree are continuation lines, so a line that starts with a
+  keyword (like `row` or `box: x`) is read as a component, not an item.
+
 ## Icons [M3a]
 
 - `{name}` inside a label draws an icon there: `button: {plus} Add`,
@@ -168,7 +212,7 @@ cells and the like):
   They are a little smaller than a line of text.
 - Names (case doesn't matter): search, filter, more, close, back, menu,
   home, user, users, settings, plus, edit, trash, bell, calendar, file,
-  folder, star, info, check, chevron-down, chevron-right, mail, phone,
+  folder, star, info, check, chevron-down, chevron-right, chevron-left, chevron-up, mail, phone,
   lock, dot.
 
 ## Modifiers [M3a]
@@ -211,6 +255,5 @@ cells and the like):
 
 Agree on these with the owner before building. They're listed roughly by value.
 
-- Navigation: `menu:`, `breadcrumb: Home > Users > Anna`, `list:`, `tree:`
-  (indentation-based), `pagination:`.
+- `list:` (a plain list of items).
 - Alignment in rows.

@@ -32,7 +32,11 @@ export type ComponentType =
   | "alert"
   | "progress"
   | "tooltip"
-  | "image";
+  | "image"
+  | "breadcrumb"
+  | "pagination"
+  | "menu"
+  | "tree";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {

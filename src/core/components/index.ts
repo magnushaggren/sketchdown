@@ -15,6 +15,7 @@ import { icon } from "./icon";
 import { input, textarea } from "./input";
 import { link } from "./link";
 import { nav } from "./nav";
+import { breadcrumb, menu, pagination, tree } from "./navigation";
 import { paragraph } from "./paragraph";
 import { row } from "./row";
 import { tabs } from "./tabs";
@@ -57,4 +58,8 @@ export const COMPONENTS: Record<NodeType, Component> = {
   progress,
   tooltip,
   image,
+  breadcrumb,
+  pagination,
+  menu,
+  tree,
 };

@@ -66,6 +66,15 @@ const KEYWORDS = new Map<string, NodeType>([
   ["image", "image"],
   ["img", "image"],
   ["picture", "image"],
+  ["breadcrumb", "breadcrumb"],
+  ["breadcrumbs", "breadcrumb"],
+  ["crumbs", "breadcrumb"],
+  ["pagination", "pagination"],
+  ["pager", "pagination"],
+  ["pages", "pagination"],
+  ["menu", "menu"],
+  ["contextmenu", "menu"],
+  ["tree", "tree"],
 ]);
 const FRAMES: NodeType[] = ["window", "dialog", "browser", "phone"];
 const CONTAINERS = new Set<NodeType>(["root", "box", "tabs", "row", "columns", ...FRAMES]);
@@ -167,7 +176,8 @@ export function parse(source: string): ParseResult {
         stack.push({ node, indent });
         last = node;
       } else if (last) {
-        last.body.push(s);
+        // a tree's lines keep their indentation, which gives their level
+        last.body.push(last.type === "tree" ? raw.replace(/\t/g, "    ").trimEnd() : s);
       } else {
         errors.push({ line: i + 1, message: `don't understand "${s}"` });
       }

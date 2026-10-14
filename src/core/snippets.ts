@@ -202,6 +202,39 @@ export const SNIPPETS: Snippet[] = [
     text: "image: 320x180 Team photo",
   },
   {
+    name: "Breadcrumb",
+    description: "Links separated by >; the last (or starred) is current",
+    text: "breadcrumb: Home > Users > Anna Svensson",
+  },
+  {
+    name: "Pagination",
+    description: "Page boxes; * is the current page, < > are arrows",
+    text: "pagination: < 1 *2 3 … 10 >",
+  },
+  {
+    name: "Menu",
+    description: "One item per line: label | shortcut, - divider, > submenu",
+    text: lines(
+      "menu: Cut | Ctrl+X",
+      "*Copy | Ctrl+C",
+      "Paste | Ctrl+V",
+      "-",
+      "[x] Show ruler",
+      "Zoom >",
+    ),
+  },
+  {
+    name: "Tree",
+    description: "Indented lines; + closed folder, - open folder, * selected",
+    text: lines(
+      "tree: {folder} Project",
+      "  - {folder} src",
+      "    *{file} index.ts",
+      "    {file} main.ts",
+      "  + {folder} docs",
+    ),
+  },
+  {
     name: "Link",
     description: "Blue, underlined text; [text] does the same inside any label",
     text: "link: Forgot password?",
