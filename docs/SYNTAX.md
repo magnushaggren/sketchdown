@@ -69,6 +69,8 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `h1` (heading) [M3a] | `h1: Users` | text 1.75 times the font size; there is no bold |
 | `h2` (subheading) [M3a] | `h2: Details` | text 1.375 times the font size |
 | `columns` (cols) [M3a] | `columns: (w=1200, h=700)` | container; panels side by side, touching, all full height; `(gap=12)` adds space |
+| `nav` (navigation) [M3a] | `nav: {home} Home \| *{users} Users \| - \| Log out` | vertical list; `*` marks the active item, `-` a divider; items split on `\|` only; `(dark)` adds its own dark background |
+| `avatar` [M3a] | `avatar: AS` | circle with initials (a user icon when empty), twice the line height; `(w=48)` sets its size |
 
 ### Grid [v2]
 
@@ -88,7 +90,7 @@ Anna, Developer, 52 000 kr, [x]
 
 - `{name}` inside a label draws an icon there: `button: {plus} Add`,
   `text: {user} Signed in as Anna`. Works in `text` (on every line), `button`,
-  `input`, `search`, `h1` and `h2`; more components follow as they are built.
+  `input`, `search`, `h1`, `h2` and `nav`; more components follow as they are built.
   Unknown names stay as literal text, so `{anything}` is safe to write.
 - A button with only icons is square: `button: {filter}`. With `(round)`
   it is a circle: `button: {more} (round)`.
@@ -122,7 +124,7 @@ Anna, Developer, 52 000 kr, [x]
     ```
 - `(disabled)` draws the component's lines and text grey, including
   everything inside a container. Fills keep their colour.
-- `(dark)` on a `box` fills it with the dark colour and draws its text and
+- `(dark)` on a `box` or `nav` fills it with the dark colour and draws its text and
   icons light. Buttons, fields, dropdowns and grids inside keep their normal
   look. Example app shell:
 
@@ -146,7 +148,7 @@ Agree on these with the owner before building. They're listed roughly by value.
 - Navigation: `menu:`, `breadcrumb: Home > Users > Anna`, `list:`, `tree:`
   (indentation-based), `pagination:`.
 - Feedback: `alert: Saved!`, `progress: 60%`, `tooltip:`.
-- Media: `image: 320x180` (crossed placeholder), `avatar: MH`.
+- Media: `image: 320x180` (crossed placeholder).
 - Alignment in rows.
 - Inline formatting in labels, as in Balsamiq: `_italic_`, `[link]`, `-disabled-`. No `*bold*`: Excalidraw text
   has no font weight (agreed 2026-10-14).

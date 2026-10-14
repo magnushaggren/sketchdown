@@ -1,4 +1,5 @@
 import type { Component, NodeType } from "../types";
+import { avatar } from "./avatar";
 import { box } from "./box";
 import { button } from "./button";
 import { checkbox } from "./checkbox";
@@ -8,6 +9,7 @@ import { grid } from "./grid";
 import { heading } from "./heading";
 import { icon } from "./icon";
 import { input, textarea } from "./input";
+import { nav } from "./nav";
 import { row } from "./row";
 import { tabs } from "./tabs";
 import { text } from "./text";
@@ -32,4 +34,6 @@ export const COMPONENTS: Record<NodeType, Component> = {
   h1: heading,
   h2: heading,
   columns,
+  nav,
+  avatar,
 };

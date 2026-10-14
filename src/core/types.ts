@@ -15,7 +15,9 @@ export type ComponentType =
   | "textarea"
   | "h1"
   | "h2"
-  | "columns";
+  | "columns"
+  | "nav"
+  | "avatar";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {

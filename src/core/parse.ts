@@ -35,6 +35,9 @@ const KEYWORDS = new Map<string, NodeType>([
   ["subheading", "h2"],
   ["columns", "columns"],
   ["cols", "columns"],
+  ["nav", "nav"],
+  ["navigation", "nav"],
+  ["avatar", "avatar"],
 ]);
 const CONTAINERS = new Set<NodeType>(["root", "tabs", "box", "row", "columns"]);
 const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row", "columns"]); // may appear without a colon

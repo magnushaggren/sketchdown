@@ -20,6 +20,7 @@ const LIGHT_SURFACES = new Set<NodeType>([
   "password",
   "textarea",
   "grid",
+  "avatar",
 ]);
 
 export interface LayoutEnv {
