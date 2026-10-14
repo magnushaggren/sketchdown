@@ -52,7 +52,7 @@ button.sketchdown-error {
   white-space: normal;
   font-size: var(--font-ui-small);
   color: var(--text-error);
-  background: var(--background-modifier-error);
+  background: rgba(var(--color-red-rgb), 0.12);
   box-shadow: none;
 }
 
@@ -152,7 +152,7 @@ button.sketchdown-error {
   padding: var(--size-2-2) var(--size-4-2);
   font-size: var(--font-ui-small);
   color: var(--text-error);
-  background: var(--background-modifier-error);
+  background: rgba(var(--color-red-rgb), 0.12);
   border-radius: var(--radius-s);
 }
 
