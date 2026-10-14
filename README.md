@@ -13,8 +13,7 @@ dialog: Delete user?
 
 ![Every component, drawn from one spec](docs/gallery.svg)
 
-<!-- GIFs to record: paste a spec onto a canvas; edit a wireframe with the
-toolbar button; send a note block to a drawing. -->
+![Pasting a spec onto a drawing](docs/media/paste.gif)
 
 ## Install
 
@@ -41,6 +40,9 @@ under Community plugins.
   - with a single text element selected, it turns the text into a wireframe;
   - with nothing selected, it starts a new one.
 - **Edit wireframe**, a button above a selected wireframe, does the same.
+
+![Editing a wireframe with the toolbar button](docs/media/edit.gif)
+
 - **Sketchdown: Insert component** opens the editor on a palette of
   snippets, from a single button to a whole app screen.
 
@@ -50,6 +52,8 @@ A ```` ```sketchdown ```` code block is drawn as a wireframe in reading view
 and live preview. **Copy for Excalidraw** under it copies the block for
 pasting into a drawing, and **Sketchdown: Send wireframe to Excalidraw**,
 with the cursor in the block, draws it in the drawing you used last.
+
+![Sending a note block to a drawing](docs/media/send.gif)
 
 ### The text is the truth
 
