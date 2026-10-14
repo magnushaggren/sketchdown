@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import type { ParseResult, SpecNode } from "../../src/core";
+import type { SpecNode } from "../../src/core";
 
 // Loads the core of the Phase 1 script straight from prototype/Sketchdown.md,
 // so the port can be compared against the code that is known to work.
@@ -15,7 +15,8 @@ export interface PrototypeCanvasStyle {
 }
 
 export interface PrototypeCore {
-  parse(source: string): ParseResult;
+  /** The prototype reports errors as "line N: message" strings. */
+  parse(source: string): { tree: SpecNode; errors: string[] };
   build(ea: unknown, tree: SpecNode, x: number, y: number, st: PrototypeCanvasStyle): string[];
   EXAMPLE: string;
   KEY: string;
