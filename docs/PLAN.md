@@ -14,7 +14,7 @@ Update the Status column as work lands.
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
-| M5 | Polish and release | in progress: 0.9.0 beta released for BRAT (2026-10-14); GIFs and the 1.0 submission to come |
+| M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
 
 ## M0 – Scaffold and port
 
