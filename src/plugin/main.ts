@@ -1,6 +1,6 @@
 import { ItemView, Notice, Plugin } from "obsidian";
 import "../adapters/ea-types";
-import type { ExcalidrawAutomate } from "../adapters/ea-types";
+import type { ExcalidrawAutomate, PasteHookData } from "../adapters/ea-types";
 import { renderSvg } from "../adapters/svg";
 import {
   EXCALIDRAW_PLUGIN_ID,
@@ -24,12 +24,19 @@ interface ToolbarRegistration {
   view: ExcalidrawView;
   /** The view recreates its menu when it loads another drawing. */
   menu: object;
-  ea: ExcalidrawAutomate;
+  /**
+   * Removes the button. Destroying the EA does not: Excalidraw only ties
+   * providers to the EA's lifetime for scripts, so a plugin must remove its
+   * own, or the button outlives a plugin reload.
+   */
+  unregister: () => void;
 }
 
 export default class SketchdownPlugin extends Plugin {
   settings!: Settings;
   private toolbars: ToolbarRegistration[] = [];
+  /** True while an editor is open or a wireframe is being drawn. */
+  private busy = false;
 
   async onload(): Promise<void> {
     this.settings = normalizeSettings(await this.loadData());
@@ -59,6 +66,8 @@ export default class SketchdownPlugin extends Plugin {
       if (!this.excalidrawLoaded()) return;
       this.register(
         installPasteHook(window.ExcalidrawAutomate!, (data) => {
+          // Excalidraw also sees pastes into other inputs, such as our editor
+          if (this.busy || !pastedOnCanvas(data)) return false;
           const source = specFromPaste(data, this.settings);
           if (source === null || !data.view) return false;
           void this.paste(data.view as unknown as ItemView, source, data.pointerPosition ?? null);
@@ -74,7 +83,7 @@ export default class SketchdownPlugin extends Plugin {
   }
 
   onunload(): void {
-    for (const t of this.toolbars) t.ea.destroy();
+    for (const t of this.toolbars) t.unregister();
     this.toolbars = [];
   }
 
@@ -97,11 +106,7 @@ export default class SketchdownPlugin extends Plugin {
   private attachToolbars(): void {
     if (!this.excalidrawLoaded()) return;
     // drop registrations whose menu is gone; the menu took its buttons with it
-    this.toolbars = this.toolbars.filter((t) => {
-      if (t.view.selectedElementActionsMenu === t.menu) return true;
-      t.ea.destroy();
-      return false;
-    });
+    this.toolbars = this.toolbars.filter((t) => t.view.selectedElementActionsMenu === t.menu);
     for (const leaf of this.app.workspace.getLeavesOfType(EXCALIDRAW_VIEW_TYPE)) {
       const view = leaf.view as ExcalidrawView;
       const menu = view.selectedElementActionsMenu;
@@ -111,11 +116,11 @@ export default class SketchdownPlugin extends Plugin {
         ea.destroy(); // older Excalidraw: the hotkey is the way to edit
         return;
       }
-      const ok = ea.registerElementActionProvider((el) =>
+      const unregister = ea.registerElementActionProvider((el) =>
         editActions(el, () => void this.run(view, "edit")),
       );
-      if (ok) this.toolbars.push({ view, menu, ea });
-      else ea.destroy();
+      ea.destroy(); // the provider doesn't need the EA after registering
+      if (unregister) this.toolbars.push({ view, menu, unregister });
     }
   }
 
@@ -171,16 +176,25 @@ export default class SketchdownPlugin extends Plugin {
     );
   }
 
-  /** Runs fn with an ExcalidrawAutomate for the view, and reports failures. */
+  /**
+   * Runs fn with an ExcalidrawAutomate for the view, and reports failures.
+   * One at a time: a second edit started while an editor is open would
+   * draw a copy, because the first one has already replaced the original.
+   */
   private async withEa(
     view: ItemView,
     fn: (ea: ExcalidrawAutomate) => Promise<unknown>,
   ): Promise<void> {
+    if (this.busy) {
+      new Notice(`${PLUGIN_NAME}: finish the open wireframe editor first.`);
+      return;
+    }
     if (!this.excalidrawLoaded()) {
       new Notice(`${PLUGIN_NAME} needs the Excalidraw plugin to be installed and enabled.`);
       return;
     }
     const ea = window.ExcalidrawAutomate!.getAPI(view);
+    this.busy = true;
     try {
       if (!ea.verifyMinimumPluginVersion?.(MIN_EXCALIDRAW_VERSION)) {
         new Notice(`${PLUGIN_NAME} needs Excalidraw plugin ${MIN_EXCALIDRAW_VERSION} or newer.`);
@@ -192,7 +206,20 @@ export default class SketchdownPlugin extends Plugin {
       console.error(`${PLUGIN_NAME}:`, e);
       new Notice(`${PLUGIN_NAME} failed: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
+      this.busy = false;
       ea.destroy();
     }
   }
+}
+
+/** False when the paste went into a text field outside the drawing, e.g. our editor. */
+function pastedOnCanvas(data: PasteHookData): boolean {
+  const target = data.event?.target;
+  const container = (data.view as { containerEl?: HTMLElement } | null | undefined)?.containerEl;
+  if (!(target instanceof HTMLElement) || !container || container.contains(target)) return true;
+  const editable =
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target.isContentEditable;
+  return !editable;
 }
