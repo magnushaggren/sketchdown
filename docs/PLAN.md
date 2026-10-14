@@ -12,7 +12,7 @@ Update the Status column as work lands.
 | M1 | Plugin UX: commands, editor modal, settings | done (checked in owner's vault 2026-10-14) |
 | M2 | Fast editing: paste-to-create, click-to-edit | done (checked in owner's vault 2026-10-14) |
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
-| M3b | Rest of the component library | todo |
+| M3b | Rest of the component library | in progress |
 | M4 | Wireframes in markdown notes (SVG renderer) | todo |
 | M5 | Polish and release | todo |
 
@@ -109,9 +109,37 @@ are bigger, and secondary text is grey.
 
 ## M3b – Rest of the component library
 
-In an order to agree with the owner: radio, toggle, slider, link, paragraph
-(lorem), breadcrumb, pagination, alert, progress, tooltip, image placeholder,
-browser/phone/modal frames, menu, tree, and inline `_italic_` and `[link]`.
+Order agreed 2026-10-14. As in M3a, each step gets parser tests first, a
+snapshot test, a gallery entry and a SYNTAX.md update, and is deployed for a
+vault check.
+
+1. Frames, containers built on `box` with one shared frame helper:
+   - `window: Title`: title bar with minimise, maximise and close controls;
+   - `dialog: Title` (alias `modal`): title bar with a close ×, and an
+     offset grey shadow;
+   - `browser: Title | url`: title, address bar, back/forward icons;
+   - `phone:`: rounded device frame, 375×667 by default, with a status bar;
+   - `buttons: Cancel | *OK`: a button group on the right of its parent's
+     width, for dialog footers.
+2. Text: inline `[link]` (blue, underlined) and `-disabled-` (grey) in
+   labels, `link:`, `paragraph: lorem (lines=4)` (wrapped placeholder text).
+3. Form controls: `radio: A | *B` (also `(o)`/`( )`), `toggle: [on] Wi-Fi`,
+   `slider: 40%`.
+4. Feedback and media: `alert: {info} Saved!`, `progress: 60%`,
+   `tooltip: Copied`, `image: 320x180`.
+5. Navigation: `breadcrumb: Home > *Anna`, `pagination: < 1 *2 3 >`,
+   `menu:` (nav-like, with shortcuts and `>` for submenus), `tree:`
+   (indented continuation lines, `+` collapsed, `-` expanded).
+6. Snippets for each new component plus "Dialog" and "Mobile screen", docs,
+   deploy.
+
+Decisions (2026-10-14): no `_italic_`, because Excalidraw text has no
+italic. Dialog footers use a `buttons:` keyword rather than a general
+alignment flag. `window` and `dialog` are separate keywords. Alert variants
+like `(error)` wait until asked for.
+
+**Done when** the owner can draw a desktop dialog and a mobile screen from a
+spec.
 
 ## M4 – Markdown notes
 
