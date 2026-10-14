@@ -145,7 +145,7 @@ describe("errors", () => {
     expect(errors).toEqual([
       {
         line: 2,
-        message: `"button" can't contain other components (only tabs, box, row can)`,
+        message: `"button" can't contain other components (only tabs, box, row and columns can)`,
       },
     ]);
     expect(types(tree.children)).toEqual(["button"]);

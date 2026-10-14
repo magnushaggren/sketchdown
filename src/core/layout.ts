@@ -1,6 +1,26 @@
 import { COMPONENTS } from "./components";
 import { DEFAULT_THEME } from "./theme";
-import type { DrawContext, DrawOp, MeasureText, Size, SpecNode, TextStyle, Theme } from "./types";
+import type {
+  DrawContext,
+  DrawOp,
+  MeasureText,
+  NodeType,
+  Size,
+  SpecNode,
+  TextStyle,
+  Theme,
+} from "./types";
+
+/** Components that paint their own light background. */
+const LIGHT_SURFACES = new Set<NodeType>([
+  "button",
+  "dropdown",
+  "input",
+  "search",
+  "password",
+  "textarea",
+  "grid",
+]);
 
 export interface LayoutEnv {
   measure: MeasureText;
@@ -79,7 +99,11 @@ export function layout(
     },
     draw(node, x, y, slot) {
       const ink = ctx.ink;
-      if (node.opts.disabled) ctx.ink = ctx.theme.colors.disabled;
+      const { colors } = ctx.theme;
+      if (node.opts.disabled) ctx.ink = colors.disabled;
+      else if (node.opts.dark) ctx.ink = colors.onDark;
+      // light-coloured controls on a dark panel keep the normal ink
+      else if (ink === colors.onDark && LIGHT_SURFACES.has(node.type)) ctx.ink = null;
       const r = COMPONENTS[node.type](ctx, node, x, y, slot);
       ctx.ink = ink;
       return r;

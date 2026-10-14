@@ -2,6 +2,7 @@ import type { Component, NodeType } from "../types";
 import { box } from "./box";
 import { button } from "./button";
 import { checkbox } from "./checkbox";
+import { columns } from "./columns";
 import { dropdown } from "./dropdown";
 import { grid } from "./grid";
 import { heading } from "./heading";
@@ -30,4 +31,5 @@ export const COMPONENTS: Record<NodeType, Component> = {
   textarea,
   h1: heading,
   h2: heading,
+  columns,
 };

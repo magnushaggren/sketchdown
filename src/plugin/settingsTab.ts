@@ -14,6 +14,8 @@ const COLORS: [keyof Settings["colors"], string, string][] = [
   ["paper", "Inputs", "The inside of dropdowns and checkboxes."],
   ["disabled", "Disabled", "Lines and text of components marked (disabled)."],
   ["muted", "Secondary text", "Placeholders and the values in detail lists."],
+  ["dark", "Dark panels", "Background of boxes and navigation marked (dark)."],
+  ["onDark", "Text on dark panels", "Text and lines on (dark) panels."],
 ];
 
 const GAPS: [keyof Settings["gap"], string, string][] = [

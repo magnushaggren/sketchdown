@@ -14,7 +14,8 @@ export type ComponentType =
   | "password"
   | "textarea"
   | "h1"
-  | "h2";
+  | "h2"
+  | "columns";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {
@@ -119,6 +120,10 @@ export interface Theme {
     disabled: string;
     /** Secondary text: detail values, placeholders. */
     muted: string;
+    /** Background of (dark) panels. */
+    dark: string;
+    /** Text and lines on (dark) panels. */
+    onDark: string;
   };
   gap: { root: number; stack: number; row: number; pad: number };
 }

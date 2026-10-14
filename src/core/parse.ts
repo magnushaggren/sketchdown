@@ -33,9 +33,11 @@ const KEYWORDS = new Map<string, NodeType>([
   ["h1", "h1"],
   ["h2", "h2"],
   ["subheading", "h2"],
+  ["columns", "columns"],
+  ["cols", "columns"],
 ]);
-const CONTAINERS = new Set<NodeType>(["root", "tabs", "box", "row"]);
-const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row"]); // may appear without a colon
+const CONTAINERS = new Set<NodeType>(["root", "tabs", "box", "row", "columns"]);
+const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row", "columns"]); // may appear without a colon
 
 /** Words that may stand alone in the options brackets; each sets its option to 1. */
 export const FLAGS = new Set([
@@ -106,7 +108,7 @@ export function parse(source: string): ParseResult {
         if (!CONTAINERS.has(parent.type)) {
           errors.push({
             line: i + 1,
-            message: `"${parent.type}" can't contain other components (only tabs, box, row can)`,
+            message: `"${parent.type}" can't contain other components (only tabs, box, row and columns can)`,
           });
           last = null;
           return;

@@ -10,6 +10,8 @@ export const DEFAULT_THEME: Theme = {
     paper: "#ffffff", // inside of inputs and checkboxes
     disabled: "#adb5bd", // stroke and text of (disabled) components
     muted: "#868e96", // secondary text
+    dark: "#343a40", // background of (dark) panels
+    onDark: "#f8f9fa", // text and lines on (dark) panels
   },
   gap: { root: 24, stack: 14, row: 12, pad: 16 },
 };

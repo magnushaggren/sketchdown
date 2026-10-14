@@ -40,10 +40,15 @@ export function checkMark(ctx: DrawContext, x: number, y: number, checked: boole
 }
 
 /** Size of a stack of children, without drawing it. */
-export function stackSize(ctx: DrawContext, children: SpecNode[], gap: number): Size {
+export function stackSize(
+  ctx: DrawContext,
+  children: SpecNode[],
+  gap: number,
+  width?: number,
+): Size {
   const saved = ctx.dry;
   ctx.dry = true;
-  const r = ctx.stack(children, 0, 0, gap);
+  const r = ctx.stack(children, 0, 0, gap, width);
   ctx.dry = saved;
   return r;
 }

@@ -53,9 +53,13 @@ describe("constants match the prototype", () => {
 });
 
 describe.each(Object.entries(ALL_SPECS))("parity: %s", (_name, source) => {
-  it("parses to the same tree and errors", () => {
+  it("parses to the same tree and errors on the same lines", () => {
     const { tree, errors } = parse(source);
-    expect({ tree, errors: errors.map(formatError) }).toEqual(prototype.parse(source));
+    const expected = prototype.parse(source);
+    expect(tree).toEqual(expected.tree);
+    // messages may be reworded (the container list grew in M3a); the lines must match
+    const lineOf = (e: string) => e.match(/^line (\d+):/)?.[1];
+    expect(errors.map(formatError).map(lineOf)).toEqual(expected.errors.map(lineOf));
   });
 
   it("draws the same elements", () => {

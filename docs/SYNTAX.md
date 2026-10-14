@@ -68,6 +68,7 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `textarea` [M3a] | `textarea: Notes` | multi-line field, at least 240×80; continuation lines are more text |
 | `h1` (heading) [M3a] | `h1: Users` | text 1.75 times the font size; there is no bold |
 | `h2` (subheading) [M3a] | `h2: Details` | text 1.375 times the font size |
+| `columns` (cols) [M3a] | `columns: (w=1200, h=700)` | container; panels side by side, touching, all full height; `(gap=12)` adds space |
 
 ### Grid [v2]
 
@@ -104,10 +105,12 @@ Anna, Developer, 52 000 kr, [x]
 - `(fill)` stretches a component to the room its parent has:
   - in a stack (top level, `box`, `tabs`): as wide as the inside of the box
     or tab panel, or as the widest sibling at the top level;
-  - in a `row` with a known width (`(w=...)`, or the row itself is
+  - in a `row` or `columns` with a known width (`(w=...)`, or it is itself
     `(fill)`): fill children share the width the others leave over. Without
     a known width they keep their natural size.
-  - `button`, `dropdown`, `text`, `grid`, `box`, `tabs` and `row` stretch.
+  - `button`, `dropdown`, `input`, `search`, `password`, `textarea`, `text`,
+    `h1`, `h2`, `grid`, `box`, `tabs`, `row` and `columns` stretch. Inside
+    `columns`, every panel also gets the full height.
     Stretched text stays left-aligned and pushes what follows to the right,
     which is how a header puts a close button at the far end:
 
@@ -119,6 +122,19 @@ Anna, Developer, 52 000 kr, [x]
     ```
 - `(disabled)` draws the component's lines and text grey, including
   everything inside a container. Fills keep their colour.
+- `(dark)` on a `box` fills it with the dark colour and draws its text and
+  icons light. Buttons, fields, dropdowns and grids inside keep their normal
+  look. Example app shell:
+
+  ```
+  columns: (w=1200, h=700)
+    box (dark, w=220)
+      text: {home} Home
+      button: {plus} New (fill)
+    box (fill)
+      h1: Users
+    box: Details (w=320)
+  ```
 
 ## Planned additions [planned]
 
