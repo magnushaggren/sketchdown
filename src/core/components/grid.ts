@@ -11,7 +11,7 @@ interface Cell {
   m: Size;
 }
 
-export const grid: Component = (ctx, node, x, y) => {
+export const grid: Component = (ctx, node, x, y, slot) => {
   let rows = contentLines(node);
   if (!rows.length) rows = ["Column A, Column B", "Value, Value"];
   rows = rows.filter((r) => !/^\|?\s*:?-{2,}/.test(r)); // drop markdown |---| lines
@@ -51,6 +51,10 @@ export const grid: Component = (ctx, node, x, y) => {
     }),
   );
   const rowH = Math.max(textH, BOX) + 2 * padY;
+  // stretched: the extra width is shared evenly by the columns
+  const natural = colW.reduce((a, b) => a + b, 0);
+  const extra = Math.max(0, node.opts.w || 0, slot?.w || 0) - natural;
+  if (extra > 0) colW.forEach((_, i) => (colW[i] += extra / ncols));
   const W = colW.reduce((a, b) => a + b, 0);
   const H = rowH * parsed.length;
   if (ctx.dry) return { w: W, h: H };

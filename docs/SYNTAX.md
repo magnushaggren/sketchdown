@@ -76,6 +76,27 @@ Anna, Developer, 52 000 kr, [x]
 - Numeric-looking cells are right-aligned, except in the header.
 - A leading `*` selects a row (light blue fill).
 
+## Modifiers [M3a]
+
+- `(fill)` stretches a component to the room its parent has:
+  - in a stack (top level, `box`, `tabs`): as wide as the inside of the box
+    or tab panel, or as the widest sibling at the top level;
+  - in a `row` with a known width (`(w=...)`, or the row itself is
+    `(fill)`): fill children share the width the others leave over. Without
+    a known width they keep their natural size.
+  - `button`, `dropdown`, `text`, `grid`, `box`, `tabs` and `row` stretch.
+    Stretched text stays left-aligned and pushes what follows to the right,
+    which is how a header puts a close button at the far end:
+
+    ```
+    box: (w=420)
+      row: (fill)
+        text: Users (fill)
+        button: Close
+    ```
+- `(disabled)` draws the component's lines and text grey, including
+  everything inside a container. Fills keep their colour.
+
 ## Planned additions [planned]
 
 Agree on these with the owner before building. They're listed roughly by value.
@@ -89,8 +110,6 @@ Agree on these with the owner before building. They're listed roughly by value.
   (indentation-based), `pagination:`.
 - Feedback: `alert: Saved!`, `progress: 60%`, `tooltip:`.
 - Media: `image: 320x180` (crossed placeholder), `avatar: MH`, `icon: name`.
-- Modifiers, applying to any component: `(disabled)`, `(fill)` (take the
-  remaining width of the parent), and alignment in rows. These need flag
-  options in addition to numeric `k=v`.
+- Alignment in rows.
 - Inline formatting in labels, as in Balsamiq: `*bold*`, `_italic_`, `[link]`,
   `-disabled-`.

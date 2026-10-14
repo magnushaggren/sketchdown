@@ -1,4 +1,4 @@
-import type { DrawContext, SpecNode } from "../types";
+import type { DrawContext, Size, Slot, SpecNode } from "../types";
 
 /** The component's own line plus its continuation lines, without empty ones. */
 export function contentLines(node: SpecNode): string[] {
@@ -37,4 +37,18 @@ export function checkMark(ctx: DrawContext, x: number, y: number, checked: boole
       2,
     );
   }
+}
+
+/** Size of a stack of children, without drawing it. */
+export function stackSize(ctx: DrawContext, children: SpecNode[], gap: number): Size {
+  const saved = ctx.dry;
+  ctx.dry = true;
+  const r = ctx.stack(children, 0, 0, gap);
+  ctx.dry = saved;
+  return r;
+}
+
+/** Whether a container must know its width before drawing its children. */
+export function needsWidthFirst(node: SpecNode, slot?: Slot): boolean {
+  return !!slot?.w || node.children.some((c) => c.opts.fill);
 }

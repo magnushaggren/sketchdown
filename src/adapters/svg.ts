@@ -98,7 +98,7 @@ export function renderSvg(ops: DrawOp[], style: Style, options: SvgOptions = {})
       case "ellipse": {
         const o = {
           ...base,
-          stroke: op.stroke ? style.stroke : "none",
+          stroke: op.stroke ? (op.color ?? style.stroke) : "none",
           fill: op.fill ?? undefined,
           fillStyle: "solid",
         };
@@ -115,16 +115,19 @@ export function renderSvg(ops: DrawOp[], style: Style, options: SvgOptions = {})
         emit(
           gen.linearPath(
             op.points.map((p) => [p[0], p[1]]),
-            { ...base, stroke: style.stroke },
+            { ...base, stroke: op.color ?? style.stroke },
           ),
         );
         break;
       case "text": {
         const lines = op.text.split("\n");
         const lineH = op.h / lines.length;
+        const paint =
+          (op.color ? ` fill="${escapeXml(op.color)}"` : "") +
+          (op.fontSize ? ` font-size="${op.fontSize}"` : "");
         lines.forEach((line, i) => {
           out.push(
-            `<text x="${num(op.x)}" y="${num(op.y + (i + 0.5) * lineH)}" ` +
+            `<text x="${num(op.x)}" y="${num(op.y + (i + 0.5) * lineH)}"${paint} ` +
               `dominant-baseline="central" xml:space="preserve">${escapeXml(line)}</text>`,
           );
         });

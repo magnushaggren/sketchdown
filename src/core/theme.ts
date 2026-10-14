@@ -8,6 +8,7 @@ export const DEFAULT_THEME: Theme = {
     primary: "#a5d8ff", // primary button
     selected: "#d0ebff", // selected grid row
     paper: "#ffffff", // inside of inputs and checkboxes
+    disabled: "#adb5bd", // stroke and text of (disabled) components
   },
   gap: { root: 24, stack: 14, row: 12, pad: 16 },
 };

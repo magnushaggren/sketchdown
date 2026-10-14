@@ -1,14 +1,14 @@
 import type { Component } from "../types";
 import { contentLines, splitItems, starred } from "./shared";
 
-export const dropdown: Component = (ctx, node, x, y) => {
+export const dropdown: Component = (ctx, node, x, y, slot) => {
   const raw = splitItems(contentLines(node).join("|"));
   const { sel, labels } = starred(raw.length ? raw : ["Select…"]);
   const arrowW = 28,
     padX = 10;
   const textW = Math.max(...labels.map((l) => ctx.measure(l).w));
   const m = ctx.measure(labels[sel]);
-  const w = Math.max(node.opts.w || 0, 120, textW + 2 * padX + arrowW);
+  const w = Math.max(node.opts.w || 0, slot?.w || 0, 120, textW + 2 * padX + arrowW);
   const h = m.h + 16;
   ctx.rect(x, y, w, h, { fill: ctx.theme.colors.paper });
   ctx.line(

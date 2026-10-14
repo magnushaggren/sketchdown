@@ -12,6 +12,7 @@ const COLORS: [keyof Settings["colors"], string, string][] = [
   ["primary", "Primary button", "Buttons marked with *."],
   ["selected", "Selected row", "Grid rows marked with *."],
   ["paper", "Inputs", "The inside of dropdowns and checkboxes."],
+  ["disabled", "Disabled", "Lines and text of components marked (disabled)."],
 ];
 
 const GAPS: [keyof Settings["gap"], string, string][] = [

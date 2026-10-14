@@ -36,7 +36,9 @@ export type Point = readonly [number, number];
 
 // ---------- draw ops ----------
 // Ops carry geometry and per-element paint only. Stroke colour, font and
-// roughness come from one Style and are applied by the adapter.
+// roughness come from one Style and are applied by the adapter. An op's
+// optional color (and a text op's fontSize) overrides the Style for that
+// element; the keys are left out, not undefined, when not set.
 export interface RectOp {
   kind: "rect";
   x: number;
@@ -48,12 +50,15 @@ export interface RectOp {
   stroke: boolean;
   strokeWidth: 1 | 2;
   rounded: boolean;
+  /** Stroke colour. */
+  color?: string;
 }
 export interface LineOp {
   kind: "line";
   /** Absolute coordinates, consecutive duplicates removed. */
   points: Point[];
   strokeWidth: 1 | 2;
+  color?: string;
 }
 export interface TextOp {
   kind: "text";
@@ -62,6 +67,8 @@ export interface TextOp {
   w: number;
   h: number;
   text: string;
+  color?: string;
+  fontSize?: number;
 }
 export interface EllipseOp {
   kind: "ellipse";
@@ -72,6 +79,7 @@ export interface EllipseOp {
   fill: string | null;
   stroke: boolean;
   strokeWidth: 1 | 2;
+  color?: string;
 }
 export type DrawOp = RectOp | LineOp | TextOp | EllipseOp;
 
@@ -88,7 +96,14 @@ export interface Style extends TextStyle {
 export type MeasureText = (text: string, style: TextStyle) => Size;
 
 export interface Theme {
-  colors: { fill: string; primary: string; selected: string; paper: string };
+  colors: {
+    fill: string;
+    primary: string;
+    selected: string;
+    paper: string;
+    /** Stroke and text of (disabled) components. */
+    disabled: string;
+  };
   gap: { root: number; stack: number; row: number; pad: number };
 }
 
@@ -98,6 +113,23 @@ export interface RectOptions {
   noStroke?: boolean;
   width?: 1 | 2;
   rounded?: boolean;
+  /** Stroke colour; defaults to the context's ink. */
+  color?: string;
+}
+
+export interface TextOptions {
+  /** Defaults to the context's ink. */
+  color?: string;
+  fontSize?: number;
+}
+
+/**
+ * Room a parent gives a (fill) child. A component makes itself at least
+ * this big where it can; missing sides mean "natural size".
+ */
+export interface Slot {
+  w?: number;
+  h?: number;
 }
 
 /**
@@ -107,14 +139,26 @@ export interface RectOptions {
 export interface DrawContext {
   readonly theme: Theme;
   dry: boolean;
-  measure(text: string): Size;
+  /** Colour for strokes and text that don't name one; null means the Style's. */
+  ink: string | null;
+  measure(text: string, fontSize?: number): Size;
   rect(x: number, y: number, w: number, h: number, o?: RectOptions): void;
-  line(points: Point[], strokeWidth?: 1 | 2): void;
+  line(points: Point[], strokeWidth?: 1 | 2, color?: string): void;
   /** size is the measured size of str, which the caller already has. */
-  text(x: number, y: number, str: string, size: Size): void;
-  draw(node: SpecNode, x: number, y: number): Size;
-  size(node: SpecNode): Size;
-  stack(children: SpecNode[], x: number, y: number, gap: number): Size;
+  text(x: number, y: number, str: string, size: Size, o?: TextOptions): void;
+  draw(node: SpecNode, x: number, y: number, slot?: Slot): Size;
+  size(node: SpecNode, slot?: Slot): Size;
+  /**
+   * Draws children top to bottom. (fill) children are as wide as width,
+   * or as the widest child when width is not given.
+   */
+  stack(children: SpecNode[], x: number, y: number, gap: number, width?: number): Size;
 }
 
-export type Component = (ctx: DrawContext, node: SpecNode, x: number, y: number) => Size;
+export type Component = (
+  ctx: DrawContext,
+  node: SpecNode,
+  x: number,
+  y: number,
+  slot?: Slot,
+) => Size;

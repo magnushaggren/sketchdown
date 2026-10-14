@@ -38,7 +38,7 @@ export function renderOps(ea: ExcalidrawAutomate, ops: DrawOp[], style: Style): 
       case "rect":
       case "ellipse":
         setStyle(ea, style, {
-          strokeColor: op.stroke ? style.stroke : "transparent",
+          strokeColor: op.stroke ? (op.color ?? style.stroke) : "transparent",
           backgroundColor: op.fill ?? "transparent",
           strokeWidth: op.strokeWidth,
           roundness: op.kind === "rect" && op.rounded ? { type: 3 } : null,
@@ -50,11 +50,17 @@ export function renderOps(ea: ExcalidrawAutomate, ops: DrawOp[], style: Style): 
         );
         break;
       case "line":
-        setStyle(ea, style, { strokeWidth: op.strokeWidth });
+        setStyle(ea, style, {
+          strokeWidth: op.strokeWidth,
+          ...(op.color ? { strokeColor: op.color } : {}),
+        });
         ids.push(ea.addLine(op.points.map((p) => [p[0], p[1]])));
         break;
       case "text":
-        setStyle(ea, style, {});
+        setStyle(ea, style, {
+          ...(op.color ? { strokeColor: op.color } : {}),
+          ...(op.fontSize ? { fontSize: op.fontSize } : {}),
+        });
         ids.push(ea.addText(op.x, op.y, op.text));
         break;
     }
