@@ -14,7 +14,7 @@ Update the Status column as work lands.
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
-| M5 | Polish and release | in progress |
+| M5 | Polish and release | in progress: steps 1, 2, 6 and 7 built; 3–5 await owner checks, 8 awaits the GitHub CLI |
 
 ## M0 – Scaffold and port
 
