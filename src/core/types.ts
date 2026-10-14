@@ -25,7 +25,10 @@ export type ComponentType =
   | "phone"
   | "buttons"
   | "link"
-  | "paragraph";
+  | "paragraph"
+  | "radio"
+  | "toggle"
+  | "slider";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {

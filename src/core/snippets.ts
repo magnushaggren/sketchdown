@@ -175,6 +175,17 @@ export const SNIPPETS: Snippet[] = [
     ),
   },
   {
+    name: "Radio buttons",
+    description: "Pick one; * marks the chosen one",
+    text: "radio: Small | *Medium | Large",
+  },
+  {
+    name: "Toggles",
+    description: "Switches; [on] or * is on",
+    text: "toggle: [on] Wi-Fi | [off] Bluetooth",
+  },
+  { name: "Slider", description: "A value from 0 to 100%", text: "slider: 40%" },
+  {
     name: "Link",
     description: "Blue, underlined text; [text] does the same inside any label",
     text: "link: Forgot password?",

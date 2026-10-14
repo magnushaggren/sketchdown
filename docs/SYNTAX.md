@@ -80,6 +80,9 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `buttons` [M3b] | `buttons: Cancel \| *OK` | buttons side by side on the right of the parent's width; always `(fill)` |
 | `link` [M3b] | `link: Forgot password?` | blue, underlined text; icons allowed |
 | `paragraph` (p, lorem) [M3b] | `paragraph: lorem (lines=4)` | text wrapped to 320 wide, or `(w=...)` or `(fill)`; `lorem` or no text gives placeholder text, 4 lines unless `(lines=...)`; continuation lines join the text |
+| `radio` (radios, option) [M3b] | `radio: Small \| *Medium \| Large` | stacked like checkboxes; `*` marks the chosen one, or write `(o)` and `( )`; items split on `\|` and continuation lines |
+| `toggle` (switch) [M3b] | `toggle: [on] Wi-Fi \| [off] Bluetooth` | stacked switches; `[on]` or `*` is on, anything else off |
+| `slider` (range) [M3b] | `slider: 40%` | track with a knob at the value (50% when missing), 200 wide, or `(w=...)` or `(fill)` |
 
 ### Grid [v2]
 
@@ -204,7 +207,6 @@ cells and the like):
 
 Agree on these with the owner before building. They're listed roughly by value.
 
-- Inputs: `radio: (o) A | ( ) B`, `toggle: [on] Wi-Fi`, `slider: 40%`.
 - Navigation: `menu:`, `breadcrumb: Home > Users > Anna`, `list:`, `tree:`
   (indentation-based), `pagination:`.
 - Feedback: `alert: Saved!`, `progress: 60%`, `tooltip:`.

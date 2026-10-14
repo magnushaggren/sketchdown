@@ -4,6 +4,7 @@ import { box } from "./box";
 import { button } from "./button";
 import { checkbox } from "./checkbox";
 import { columns } from "./columns";
+import { radio, slider, toggle } from "./controls";
 import { details } from "./details";
 import { dropdown } from "./dropdown";
 import { browser, buttons, dialog, phone, windowFrame } from "./frames";
@@ -48,4 +49,7 @@ export const COMPONENTS: Record<NodeType, Component> = {
   buttons,
   link,
   paragraph,
+  radio,
+  toggle,
+  slider,
 };
