@@ -61,6 +61,7 @@ export function normalizeSettings(data: unknown): Settings {
       selected: color(colors.selected, def.colors.selected),
       paper: color(colors.paper, def.colors.paper),
       disabled: color(colors.disabled, def.colors.disabled),
+      muted: color(colors.muted, def.colors.muted),
     },
     gap: {
       root: number(gap.root, def.gap.root, LIMITS.gap),

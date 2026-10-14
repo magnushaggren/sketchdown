@@ -4,7 +4,9 @@ import { button } from "./button";
 import { checkbox } from "./checkbox";
 import { dropdown } from "./dropdown";
 import { grid } from "./grid";
+import { heading } from "./heading";
 import { icon } from "./icon";
+import { input, textarea } from "./input";
 import { row } from "./row";
 import { tabs } from "./tabs";
 import { text } from "./text";
@@ -22,4 +24,10 @@ export const COMPONENTS: Record<NodeType, Component> = {
   checkbox,
   grid,
   icon,
+  input,
+  search: input,
+  password: input,
+  textarea,
+  h1: heading,
+  h2: heading,
 };

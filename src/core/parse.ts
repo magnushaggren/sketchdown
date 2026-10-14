@@ -23,6 +23,16 @@ const KEYWORDS = new Map<string, NodeType>([
   ["group", "box"],
   ["row", "row"],
   ["icon", "icon"],
+  ["input", "input"],
+  ["field", "input"],
+  ["textbox", "input"],
+  ["search", "search"],
+  ["password", "password"],
+  ["textarea", "textarea"],
+  ["heading", "h1"],
+  ["h1", "h1"],
+  ["h2", "h2"],
+  ["subheading", "h2"],
 ]);
 const CONTAINERS = new Set<NodeType>(["root", "tabs", "box", "row"]);
 const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row"]); // may appear without a colon
@@ -85,9 +95,9 @@ export function parse(source: string): ParseResult {
       const indent = (raw.match(/^[ \t]*/) ?? [""])[0].replace(/\t/g, "    ").length;
       const s = raw.trim();
       // "keyword: content", or a bare keyword optionally followed by options
-      const m = s.match(/^([a-zA-Z]+)\s*(?::\s*(.*)|(\([^()]*\)))?$/);
+      const m = s.match(/^([a-zA-Z][a-zA-Z0-9]*)\s*(?::\s*(.*)|(\([^()]*\)))?$/);
       const type = m ? KEYWORDS.get(m[1].toLowerCase()) : undefined;
-      const hasColon = /^[a-zA-Z]+\s*:/.test(s);
+      const hasColon = /^[a-zA-Z][a-zA-Z0-9]*\s*:/.test(s);
       const bareOpts = m?.[3] ? parseOptions(m[3]) : null;
       const bareOk = !bareOpts || bareOpts.rest === "";
       if (m && type && (hasColon || (BARE_OK.has(type) && bareOk))) {

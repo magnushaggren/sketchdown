@@ -22,6 +22,7 @@ export function layout(
   const ctx: DrawContext = {
     theme: env.theme ?? DEFAULT_THEME,
     dry: false,
+    fontSize: env.style.fontSize,
     ink: null,
     measure(str, fontSize) {
       const style = fontSize ? { ...textStyle, fontSize } : textStyle;

@@ -1,6 +1,20 @@
 // ---------- AST ----------
 export type ComponentType =
-  "button" | "dropdown" | "checkbox" | "text" | "grid" | "tabs" | "box" | "row" | "icon";
+  | "button"
+  | "dropdown"
+  | "checkbox"
+  | "text"
+  | "grid"
+  | "tabs"
+  | "box"
+  | "row"
+  | "icon"
+  | "input"
+  | "search"
+  | "password"
+  | "textarea"
+  | "h1"
+  | "h2";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {
@@ -103,6 +117,8 @@ export interface Theme {
     paper: string;
     /** Stroke and text of (disabled) components. */
     disabled: string;
+    /** Secondary text: detail values, placeholders. */
+    muted: string;
   };
   gap: { root: number; stack: number; row: number; pad: number };
 }
@@ -139,6 +155,8 @@ export interface Slot {
 export interface DrawContext {
   readonly theme: Theme;
   dry: boolean;
+  /** The base font size; headings scale from it. */
+  readonly fontSize: number;
   /** Colour for strokes and text that don't name one; null means the Style's. */
   ink: string | null;
   measure(text: string, fontSize?: number): Size;

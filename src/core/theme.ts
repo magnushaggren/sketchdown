@@ -9,6 +9,7 @@ export const DEFAULT_THEME: Theme = {
     selected: "#d0ebff", // selected grid row
     paper: "#ffffff", // inside of inputs and checkboxes
     disabled: "#adb5bd", // stroke and text of (disabled) components
+    muted: "#868e96", // secondary text
   },
   gap: { root: 24, stack: 14, row: 12, pad: 16 },
 };

@@ -62,6 +62,12 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `box` (panel, group) [v2] | `box: New user` | container with an optional title bar |
 | `row` [v2] | `row:` | container, children side by side, centred vertically |
 | `icon` [M3a] | `icon: search` | one icon; `(w=32)` sets its size; unknown names are an error |
+| `input` (field, textbox) [M3a] | `input: Anna` | one-line field, at least 200 wide; `{icon}` allowed |
+| `search` [M3a] | `search: Find users` | input with a search icon; says "Search" when empty |
+| `password` [M3a] | `password: secret` | input showing one dot per character (8 when empty) |
+| `textarea` [M3a] | `textarea: Notes` | multi-line field, at least 240×80; continuation lines are more text |
+| `h1` (heading) [M3a] | `h1: Users` | text 1.75 times the font size; there is no bold |
+| `h2` (subheading) [M3a] | `h2: Details` | text 1.375 times the font size |
 
 ### Grid [v2]
 
@@ -80,9 +86,9 @@ Anna, Developer, 52 000 kr, [x]
 ## Icons [M3a]
 
 - `{name}` inside a label draws an icon there: `button: {plus} Add`,
-  `text: {user} Signed in as Anna`. Works in `text` (on every line) and
-  `button`; more components follow as they are built. Unknown names stay as
-  literal text, so `{anything}` is safe to write.
+  `text: {user} Signed in as Anna`. Works in `text` (on every line), `button`,
+  `input`, `search`, `h1` and `h2`; more components follow as they are built.
+  Unknown names stay as literal text, so `{anything}` is safe to write.
 - A button with only icons is square: `button: {filter}`. With `(round)`
   it is a circle: `button: {more} (round)`.
 - `icon: name` on its own line draws one icon (see the table above).
@@ -118,15 +124,13 @@ Anna, Developer, 52 000 kr, [x]
 
 Agree on these with the owner before building. They're listed roughly by value.
 
-- Inputs: `input: Placeholder`, `password:`, `textarea:`, `search:`,
-  `radio: (o) A | ( ) B`, `toggle: [on] Wi-Fi`, `slider: 40%`.
-- Text: `heading: Title` or `h1:`/`h2:`, `link: [Forgot password?]`,
-  `paragraph: lorem` (placeholder text).
+- Inputs: `radio: (o) A | ( ) B`, `toggle: [on] Wi-Fi`, `slider: 40%`.
+- Text: `link: [Forgot password?]`, `paragraph: lorem` (placeholder text).
 - Frames: `browser: Title | url`, `phone:`, `modal: Title`, `window:`.
 - Navigation: `menu:`, `breadcrumb: Home > Users > Anna`, `list:`, `tree:`
   (indentation-based), `pagination:`.
 - Feedback: `alert: Saved!`, `progress: 60%`, `tooltip:`.
 - Media: `image: 320x180` (crossed placeholder), `avatar: MH`.
 - Alignment in rows.
-- Inline formatting in labels, as in Balsamiq: `*bold*`, `_italic_`, `[link]`,
-  `-disabled-`.
+- Inline formatting in labels, as in Balsamiq: `_italic_`, `[link]`, `-disabled-`. No `*bold*`: Excalidraw text
+  has no font weight (agreed 2026-10-14).
