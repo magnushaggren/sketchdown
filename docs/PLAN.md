@@ -15,6 +15,7 @@ Update the Status column as work lands.
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
 | M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
+| M6 | Screenshot to wireframe (a skill for LLM agents) | in progress: step 1 (placeholder) done; CLI next |
 
 ## M0 – Scaffold and port
 
@@ -198,6 +199,39 @@ Agreed 2026-10-14.
 
 **Done when** the plugin is listed or the submission is open, and a new user
 can install it and draw a first wireframe from the README alone.
+
+## M6 – Screenshot to wireframe
+
+Agreed 2026-10-14, during the week the 0.9.1 beta runs. Goal: give an LLM
+agent a screenshot of a UI and get a Sketchdown spec back that mimics it,
+with sized placeholders for what the syntax can't draw yet and a list of
+components worth adding. The plugin stays offline: the LLM runs outside it,
+as an agent skill.
+
+1. `placeholder` component: `placeholder: 240x40 Date picker` draws a dashed
+   box of that size with the name in the middle, so gaps stand out and can
+   be found by searching for `placeholder:`.
+2. A command-line tool, `npm run sketch -- spec.txt out.svg`: reports parse
+   errors with line numbers and renders the spec to SVG (and PNG through
+   headless Chrome), so the agent can compare its output with the
+   screenshot and fix it.
+3. The skill, `skills/screenshot-to-sketchdown/`: a method (frame, then
+   regions, then components, sizes scaled from the body text), when to use
+   a placeholder, optional structured metadata (for example the Cendot
+   `runtime.json` files: exact captions, editor types, grid columns), a
+   syntax reference generated from SYNTAX.md, and a gap report as output.
+   Anything specific to one application stays out of this repo.
+4. Trial on the owner's screenshots: three web portal screens and three or
+   four Cendot WPF screens (grid, detail, account detail). Gap reports are
+   collected in `docs/component-ideas.md`.
+5. Pick the gaps to build in M7. Candidates seen so far: form field with an
+   aligned label column, collapsible section header with a count, toolbar,
+   card, floating-label field, vertical split, icon rail, grid extras
+   (filter row, group-by bar, status bar), more icons (refresh, print,
+   database, clock, code, key, error, ban).
+
+**Done when** the owner can hand a screenshot to the agent and paste the
+result into a drawing with only small fixes, and the gap list is ranked.
 
 ## Decided questions
 
