@@ -13,6 +13,8 @@ export interface Settings {
   fixed: { stroke: string; fontFamily: number; roughness: number };
   /** Draw pasted text that parses without errors. Fenced blocks are drawn regardless. */
   pastePlainSpecs: boolean;
+  /** Draw ```sketchdown code blocks in notes as wireframes. */
+  renderBlocks: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -22,6 +24,7 @@ export const DEFAULT_SETTINGS: Settings = {
   useCanvasStyle: true,
   fixed: { stroke: "#1e1e1e", fontFamily: 5, roughness: 1 },
   pastePlainSpecs: true,
+  renderBlocks: true,
 };
 
 export const LIMITS = {
@@ -85,6 +88,7 @@ export function normalizeSettings(data: unknown): Settings {
     },
     pastePlainSpecs:
       typeof d.pastePlainSpecs === "boolean" ? d.pastePlainSpecs : def.pastePlainSpecs,
+    renderBlocks: typeof d.renderBlocks === "boolean" ? d.renderBlocks : def.renderBlocks,
   };
 }
 

@@ -31,6 +31,24 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 - Lists split on `|`, and on `,` if no `|` is present. Exception: checkbox
   items split on `|` only.
 
+## Wireframes in notes [M4]
+
+- A fenced block with the info string `sketchdown` in a note is drawn as a
+  wireframe in reading view and live preview. Errors are listed under it,
+  with line numbers, and the rest is still drawn.
+- Notes have no canvas, so blocks use the fixed style from the settings
+  (stroke colour, font, sloppiness), along with the settings' colours, font
+  size and gaps. A wide wireframe shrinks to fit the note. In a dark theme
+  the colours are inverted, as Excalidraw does.
+- The font is Excalidraw's when the Excalidraw plugin has loaded it, and a
+  handwriting fallback otherwise.
+- "Copy for Excalidraw" under a block copies it as a fenced block; paste it
+  into a drawing to draw it there.
+- The command "Send wireframe to Excalidraw", with the cursor in a block,
+  draws it in the middle of the drawing used most recently, ready to edit
+  like any other wireframe.
+- A setting turns the drawing of blocks off; they then show as text.
+
 ## Pasting onto the canvas
 
 - A fenced block with the info string `sketchdown` is always drawn when

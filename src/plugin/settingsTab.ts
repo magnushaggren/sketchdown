@@ -116,46 +116,60 @@ export class SketchdownSettingTab extends PluginSettingTab {
         }),
       );
 
+    new Setting(containerEl).setName("Notes").setHeading();
+    new Setting(containerEl)
+      .setName("Draw code blocks")
+      .setDesc(
+        "Show ```sketchdown code blocks in notes as wireframes, in the fixed style below. Turn off to show the text instead.",
+      )
+      .addToggle((toggle) =>
+        toggle.setValue(settings.renderBlocks).onChange((value) => {
+          settings.renderBlocks = value;
+          save();
+        }),
+      );
+
     new Setting(containerEl).setName("Stroke and font").setHeading();
     new Setting(containerEl)
       .setName("Use the canvas style")
       .setDesc(
-        "Draw with the stroke colour, font and sloppiness currently chosen in the drawing. Turn off to always use the values below.",
+        "Draw with the stroke colour, font and sloppiness currently chosen in the drawing. Turn off to use the fixed style below there too.",
       )
       .addToggle((toggle) =>
         toggle.setValue(settings.useCanvasStyle).onChange((value) => {
           settings.useCanvasStyle = value;
           save();
-          this.display();
         }),
       );
-    if (!settings.useCanvasStyle) {
-      new Setting(containerEl).setName("Stroke colour").addColorPicker((picker) =>
-        picker.setValue(settings.fixed.stroke).onChange((value) => {
-          if (!isColor(value)) return;
-          settings.fixed.stroke = value;
+    // notes always use the fixed style, so it is always shown
+    new Setting(containerEl)
+      .setName("Fixed style")
+      .setDesc("Used for code blocks in notes, and in drawings when the canvas style is off.");
+    new Setting(containerEl).setName("Stroke colour").addColorPicker((picker) =>
+      picker.setValue(settings.fixed.stroke).onChange((value) => {
+        if (!isColor(value)) return;
+        settings.fixed.stroke = value;
+        save();
+      }),
+    );
+    new Setting(containerEl).setName("Font").addDropdown((dropdown) =>
+      dropdown
+        .addOptions(FONTS)
+        .setValue(String(settings.fixed.fontFamily))
+        .onChange((value) => {
+          settings.fixed.fontFamily = Number(value);
           save();
         }),
-      );
-      new Setting(containerEl).setName("Font").addDropdown((dropdown) =>
-        dropdown
-          .addOptions(FONTS)
-          .setValue(String(settings.fixed.fontFamily))
-          .onChange((value) => {
-            settings.fixed.fontFamily = Number(value);
-            save();
-          }),
-      );
-      new Setting(containerEl).setName("Sloppiness").addDropdown((dropdown) =>
-        dropdown
-          .addOptions(ROUGHNESS)
-          .setValue(String(settings.fixed.roughness))
-          .onChange((value) => {
-            settings.fixed.roughness = Number(value);
-            save();
-          }),
-      );
-    }
+    );
+    new Setting(containerEl).setName("Sloppiness").addDropdown((dropdown) =>
+      dropdown
+        .addOptions(ROUGHNESS)
+        .setValue(String(settings.fixed.roughness))
+        .onChange((value) => {
+          settings.fixed.roughness = Number(value);
+          save();
+        }),
+    );
   }
 
   private numberSetting(

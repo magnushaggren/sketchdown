@@ -13,7 +13,7 @@ Update the Status column as work lands.
 | M2 | Fast editing: paste-to-create, click-to-edit | done (checked in owner's vault 2026-10-14) |
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
-| M4 | Wireframes in markdown notes (SVG renderer) | in progress |
+| M4 | Wireframes in markdown notes (SVG renderer) | built, awaiting vault check |
 | M5 | Polish and release | todo |
 
 ## M0 – Scaffold and port

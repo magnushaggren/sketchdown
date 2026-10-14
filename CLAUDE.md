@@ -44,6 +44,9 @@ src/
     textedit.ts  indent, newline and snippet insertion as pure functions
     settings.ts  settings shape, defaults, validation (no Obsidian imports)
     settingsTab.ts  settings UI
+    block.ts     renders a ```sketchdown note block to SVG (no Obsidian imports)
+    blockView.ts puts a rendered block on the page
+    measure.ts   text measuring outside a drawing (canvas, Excalidraw line heights)
 tests/           vitest; parser, layout and snapshot tests of DrawOps
 prototype/       Phase 1 script, kept as reference (do not edit)
 ```
@@ -90,6 +93,8 @@ Rules:
   fields in Obsidian modals (suspected, not confirmed); the paste hook
   ignores pastes into text fields outside the drawing.
 - Not used yet: `onSceneChangeHook`, `onLinkClickHook`, `onDropHook`.
+- `getAPI()` without a view works for `measureText`, which notes use;
+  destroy the instance afterwards.
 - Line points passed to `addLine` are absolute canvas coordinates.
 - Style must be set on `ea.style` before every add call. Set it fully each
   time (stroke, background, fillStyle "solid", strokeWidth, roughness,

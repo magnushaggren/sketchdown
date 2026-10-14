@@ -31,6 +31,10 @@ Requires the [Obsidian Excalidraw plugin](https://github.com/zsviczian/obsidian-
 - with a single text element selected, to convert it into a component;
 - with nothing selected, to write a spec in a popup.
 
+In a note, a ```` ```sketchdown ```` code block is drawn as a wireframe.
+**Copy for Excalidraw** under it, or the command **Send wireframe to
+Excalidraw**, moves it into a drawing.
+
 ## Develop
 
 - `npm run dev`: watch build to `main.js`

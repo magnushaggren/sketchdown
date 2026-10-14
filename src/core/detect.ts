@@ -18,29 +18,56 @@ function dedent(lines: string[]): string {
   return body.map((l) => l.slice(Math.min(common.length, l.length))).join("\n");
 }
 
-function fenced(lines: string[]): string | null {
-  const open = new RegExp(`^[ \\t]*(\`{3,}|~{3,})[ \\t]*${FENCE_KEYWORD}[ \\t]*$`, "i");
-  const at = lines.findIndex((l) => open.test(l));
-  if (at < 0) return null;
-  const fence = open.exec(lines[at])![1];
+const OPEN = new RegExp(`^[ \\t]*(\`{3,}|~{3,})[ \\t]*${FENCE_KEYWORD}[ \\t]*$`, "i");
+
+/**
+ * The first sketchdown block whose opening fence is at or after line from:
+ * where its fences are, and its spec. An unclosed block runs to the end.
+ */
+function nextBlock(
+  lines: string[],
+  from: number,
+): { open: number; close: number; spec: string | null } | null {
+  const open = lines.findIndex((l, i) => i >= from && OPEN.test(l));
+  if (open < 0) return null;
+  const fence = OPEN.exec(lines[open])![1];
   // closed by the same character, at least as many times, and nothing else
-  const close = new RegExp(`^[ \\t]*${fence[0] === "`" ? "`" : "~"}{${fence.length},}[ \\t]*$`);
-  let end = lines.findIndex((l, i) => i > at && close.test(l));
-  if (end < 0) end = lines.length;
-  const spec = dedent(lines.slice(at + 1, end));
-  return spec.trim() ? spec : null;
+  const closeRe = new RegExp(`^[ \\t]*${fence[0] === "`" ? "`" : "~"}{${fence.length},}[ \\t]*$`);
+  let close = lines.findIndex((l, i) => i > open && closeRe.test(l));
+  if (close < 0) close = lines.length;
+  const spec = dedent(lines.slice(open + 1, close));
+  return { open, close, spec: spec.trim() ? spec : null };
 }
+
+const splitLines = (text: string) => text.replace(/\r\n?/g, "\n").split("\n");
 
 /**
  * Finds a spec in pasted text: the first ```sketchdown block, or, if plain
  * is true, the whole text when it parses without errors.
  */
 export function extractSpec(text: string, options: { plain: boolean }): string | null {
-  const lines = text.replace(/\r\n?/g, "\n").split("\n");
-  const block = fenced(lines);
+  const lines = splitLines(text);
+  const block = nextBlock(lines, 0)?.spec ?? null;
   if (block !== null || !options.plain) return block;
   const spec = dedent(lines);
   if (!spec.trim()) return null;
   const { tree, errors } = parse(spec);
   return errors.length || !tree.children.length ? null : spec;
+}
+
+/** The spec of the sketchdown block that contains a line (0-based), fences included. */
+export function specAtLine(text: string, line: number): string | null {
+  const lines = splitLines(text);
+  for (let block = nextBlock(lines, 0); block; block = nextBlock(lines, block.close + 1)) {
+    if (line < block.open) return null;
+    if (line <= block.close) return block.spec;
+  }
+  return null;
+}
+
+/** Wraps a spec in a sketchdown fence, longer than any backtick run inside it. */
+export function fenceSpec(spec: string): string {
+  const longest = Math.max(0, ...(spec.match(/`+/g) ?? []).map((run) => run.length));
+  const fence = "`".repeat(Math.max(3, longest + 1));
+  return `${fence}${FENCE_KEYWORD}\n${spec.replace(/\s+$/, "")}\n${fence}`;
 }

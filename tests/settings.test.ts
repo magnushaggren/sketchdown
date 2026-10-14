@@ -29,6 +29,12 @@ describe("normalizeSettings", () => {
     expect(s.gap).toEqual({ ...DEFAULT_SETTINGS.gap, row: 20 });
     expect(s.fontSize).toBe(20);
     expect(s.useCanvasStyle).toBe(true);
+    expect(s.renderBlocks).toBe(true);
+  });
+
+  it("reads the code block switch", () => {
+    expect(normalizeSettings({ renderBlocks: false }).renderBlocks).toBe(false);
+    expect(normalizeSettings({ renderBlocks: "no" }).renderBlocks).toBe(true);
   });
 
   it("replaces invalid values with defaults and clamps numbers", () => {

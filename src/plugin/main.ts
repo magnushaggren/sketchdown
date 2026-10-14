@@ -1,5 +1,7 @@
-import { ItemView, Notice, Plugin } from "obsidian";
+import { ItemView, MarkdownView, Notice, Plugin, debounce } from "obsidian";
+import type { WorkspaceLeaf } from "obsidian";
 import "../adapters/ea-types";
+import { eaMeasure } from "../adapters/excalidraw";
 import type { ExcalidrawAutomate, PasteHookData } from "../adapters/ea-types";
 import { renderSvg } from "../adapters/svg";
 import {
@@ -8,9 +10,13 @@ import {
   MIN_EXCALIDRAW_VERSION,
   PLUGIN_NAME,
 } from "../constants";
-import { layout, parse } from "../core";
+import { FENCE_KEYWORD, fenceSpec, layout, parse, specAtLine } from "../core";
+import type { MeasureText } from "../core";
+import { blockStyle, renderBlock } from "./block";
+import { showBlock, showBlockFailure } from "./blockView";
 import { createOrEdit, drawEnv, drawSpec } from "./edit";
 import { editActions, installPasteHook, specFromPaste } from "./hooks";
+import { domTextWidth, fontReady, textMeasurer } from "./measure";
 import { promptForSpec } from "./modal";
 import type { Preview } from "./modal";
 import { normalizeSettings } from "./settings";
@@ -37,6 +43,8 @@ export default class SketchdownPlugin extends Plugin {
   private toolbars: ToolbarRegistration[] = [];
   /** True while an editor is open or a wireframe is being drawn. */
   private busy = false;
+  /** The drawing used most recently, where "Send to Excalidraw" draws. */
+  private lastDrawing: WorkspaceLeaf | null = null;
 
   async onload(): Promise<void> {
     this.settings = normalizeSettings(await this.loadData());
@@ -61,6 +69,40 @@ export default class SketchdownPlugin extends Plugin {
         return true;
       },
     });
+
+    this.registerMarkdownCodeBlockProcessor(FENCE_KEYWORD, async (source, el) => {
+      if (!this.settings.renderBlocks) {
+        el.createEl("pre").createEl("code", { text: source });
+        return;
+      }
+      try {
+        await fontReady(blockStyle(this.settings));
+        showBlock(
+          el,
+          this.withMeasure((measure) => renderBlock(source, this.settings, measure)),
+          () => void this.copyBlock(source),
+        );
+      } catch (e) {
+        console.error(`${PLUGIN_NAME}:`, e);
+        showBlockFailure(el, source, e);
+      }
+    });
+
+    this.addCommand({
+      id: "send-to-excalidraw",
+      name: "Send wireframe to Excalidraw",
+      editorCheckCallback: (checking, editor) => {
+        const spec = specAtLine(editor.getValue(), editor.getCursor().line);
+        if (!spec) return false;
+        if (!checking) void this.send(spec);
+        return true;
+      },
+    });
+    this.registerEvent(
+      this.app.workspace.on("active-leaf-change", (leaf) => {
+        if (leaf?.view.getViewType() === EXCALIDRAW_VIEW_TYPE) this.lastDrawing = leaf;
+      }),
+    );
 
     this.app.workspace.onLayoutReady(() => {
       if (!this.excalidrawLoaded()) return;
@@ -89,7 +131,19 @@ export default class SketchdownPlugin extends Plugin {
 
   async saveSettings(): Promise<void> {
     await this.saveData(this.settings);
+    this.rerenderNotes();
   }
+
+  /** Redraws code blocks in open notes; live preview catches up on the next edit. */
+  private rerenderNotes = debounce(
+    () => {
+      for (const leaf of this.app.workspace.getLeavesOfType("markdown")) {
+        if (leaf.view instanceof MarkdownView) leaf.view.previewMode.rerender(true);
+      }
+    },
+    400,
+    true,
+  );
 
   private activeExcalidrawView(): ItemView | null {
     const view = this.app.workspace.getActiveViewOfType(ItemView);
@@ -122,6 +176,47 @@ export default class SketchdownPlugin extends Plugin {
       ea.destroy(); // the provider doesn't need the EA after registering
       if (unregister) this.toolbars.push({ view, menu, unregister });
     }
+  }
+
+  /**
+   * Text measuring for notes: Excalidraw's own when it is there, so a block
+   * lays out as the same spec would on a canvas; otherwise a canvas measurer.
+   */
+  private withMeasure<T>(fn: (measure: MeasureText) => T): T {
+    if (!this.excalidrawLoaded()) return fn(textMeasurer(domTextWidth));
+    const ea = window.ExcalidrawAutomate!.getAPI();
+    try {
+      return fn(eaMeasure(ea));
+    } finally {
+      ea.destroy();
+    }
+  }
+
+  private async copyBlock(source: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(fenceSpec(source));
+      new Notice(`${PLUGIN_NAME}: copied. Paste it into a drawing to draw it there.`);
+    } catch (e) {
+      new Notice(`${PLUGIN_NAME}: could not copy: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  /** Draws a spec in the drawing used most recently, in the middle of its view. */
+  private async send(spec: string): Promise<void> {
+    const drawings = this.app.workspace.getLeavesOfType(EXCALIDRAW_VIEW_TYPE);
+    const leaf =
+      this.lastDrawing && drawings.includes(this.lastDrawing) ? this.lastDrawing : drawings[0];
+    if (!leaf) {
+      new Notice(`${PLUGIN_NAME}: open a drawing first, then send the wireframe again.`);
+      return;
+    }
+    // a drawing in a background tab may not be loaded until it is shown
+    await this.app.workspace.revealLeaf(leaf);
+    if (!(leaf.view instanceof ItemView) || leaf.view.getViewType() !== EXCALIDRAW_VIEW_TYPE) {
+      new Notice(`${PLUGIN_NAME}: the drawing isn't ready yet; try again.`);
+      return;
+    }
+    await this.paste(leaf.view, spec, null);
   }
 
   private notify(message: string): void {
