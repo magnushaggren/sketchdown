@@ -14,7 +14,7 @@ Update the Status column as work lands.
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
-| M5 | Polish and release | in progress: steps 1, 2, 6 and 7 built; 3–5 await owner checks, 8 awaits the GitHub CLI |
+| M5 | Polish and release | in progress: steps 1–7 done (beta desktop-only, GIFs to come); step 8 under way |
 
 ## M0 – Scaffold and port
 
@@ -179,6 +179,7 @@ Agreed 2026-10-14.
    wording, no default hotkeys, no unsafe HTML, cleanup on unload, the
    2-second toolbar polling, the right `minAppVersion`, bundle size.
 3. Mobile: one pass on a phone or tablet (paste, modal, note blocks, copy).
+   No mobile app to test with yet, so the beta is desktop-only (2026-10-14).
    If something is broken and not cheap to fix, release desktop-only.
 4. Performance: time 100- and 500-row grids, on the canvas and as a note
    block; fix what is slow (likely by caching measurements).

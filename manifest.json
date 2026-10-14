@@ -5,5 +5,5 @@
   "minAppVersion": "1.5.0",
   "description": "Draw Balsamiq-style wireframes in Excalidraw from a short text spec, as native, editable Excalidraw elements.",
   "author": "Magnus Haggren",
-  "isDesktopOnly": false
+  "isDesktopOnly": true
 }
