@@ -12,7 +12,8 @@
     "test": "vitest run",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "cheatsheet": "node scripts/cheatsheet.mjs"
+    "cheatsheet": "node scripts/cheatsheet.mjs",
+    "version": "node scripts/version-bump.mjs && git add manifest.json versions.json"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
