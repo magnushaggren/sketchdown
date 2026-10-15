@@ -70,7 +70,12 @@ describe("keywords without a colon", () => {
   it.each(["button", "dropdown", "checkbox", "text"])("does not allow a bare %s", (keyword) => {
     const { tree, errors } = parse(keyword);
     expect(tree.children).toEqual([]);
-    expect(errors).toEqual([{ line: 1, message: `don't understand "${keyword}"` }]);
+    expect(errors).toEqual([
+      {
+        line: 1,
+        message: `don't understand "${keyword}": "${keyword}" needs a colon, as in "${keyword}:"`,
+      },
+    ]);
   });
 
   it("treats a bare non-container keyword as a continuation line when one is open", () => {
@@ -275,5 +280,33 @@ describe("changes from v2", () => {
     const { tree, errors } = parse("box (w=50)");
     expect(errors).toEqual([]);
     expect(tree.children[0]).toMatchObject({ type: "box", text: "", opts: { w: 50 } });
+  });
+});
+
+describe("lines a container can't take [M6]", () => {
+  it.each(["box", "row", "columns", "window", "dialog", "browser", "phone"])(
+    "reports a line without a keyword right after %s",
+    (keyword) => {
+      const { tree, errors } = parse(`${keyword}\n  hello there\n  text: A`);
+      expect(errors).toEqual([{ line: 2, message: `don't understand "hello there"` }]);
+      expect(tree.children[0].body).toEqual([]);
+      expect(types(tree.children[0].children)).toEqual(["text"]);
+    },
+  );
+
+  it("says when a keyword needs a colon", () => {
+    const { errors } = parse("columns:\n  nav (dark)\n    {home} | {users}\n  box");
+    expect(errors.map(formatError)).toEqual([
+      `line 2: don't understand "nav (dark)": "nav" needs a colon, as in "nav: (dark)"`,
+      `line 3: don't understand "{home} | {users}"`,
+    ]);
+  });
+
+  it("still gives tabs their extra tab names", () => {
+    expect(kids("tabs: A\nB | C")[0].body).toEqual(["B | C"]);
+  });
+
+  it("still gives continuation lines to the last component inside a container", () => {
+    expect(kids("box\n  text: A\n  more")[0].children[0].body).toEqual(["more"]);
   });
 });

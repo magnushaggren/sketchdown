@@ -81,6 +81,16 @@ const FRAMES: NodeType[] = ["window", "dialog", "browser", "phone"];
 const CONTAINERS = new Set<NodeType>(["root", "box", "tabs", "row", "columns", ...FRAMES]);
 const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row", "columns", ...FRAMES]); // may appear without a colon
 const CONTAINER_NAMES = [...CONTAINERS].filter((t) => t !== "root");
+// containers that take no continuation lines (tabs takes extra tab names)
+const NO_BODY = new Set<NodeType>([...CONTAINERS].filter((t) => t !== "tabs"));
+
+/** The error for a line that is neither a component nor a continuation line. */
+function notUnderstood(line: string, keyword: string | undefined, type: NodeType | undefined) {
+  const message = `don't understand "${line}"`;
+  if (!keyword || !type || BARE_OK.has(type)) return message;
+  const rest = line.slice(keyword.length).trim();
+  return `${message}: "${keyword}" needs a colon, as in "${keyword}:${rest ? " " + rest : ""}"`;
+}
 /** Options a component has without writing them. */
 const DEFAULT_OPTS: Partial<Record<NodeType, Record<string, number>>> = { buttons: { fill: 1 } };
 
@@ -176,11 +186,11 @@ export function parse(source: string): ParseResult {
         }
         stack.push({ node, indent });
         last = node;
-      } else if (last) {
+      } else if (last && !NO_BODY.has(last.type)) {
         // a tree's lines keep their indentation, which gives their level
         last.body.push(last.type === "tree" ? raw.replace(/\t/g, "    ").trimEnd() : s);
       } else {
-        errors.push({ line: i + 1, message: `don't understand "${s}"` });
+        errors.push({ line: i + 1, message: notUnderstood(s, m?.[1], type) });
       }
     });
   return { tree: root, errors };

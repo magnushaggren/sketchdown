@@ -12,6 +12,10 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 - Lines that don't start with a keyword are **continuation lines** of the
   most recent component, for example grid rows, extra tab names or more
   checkbox items. A blank line ends the continuation.
+- **[M6]** `box`, `row`, `columns` and the frames take no continuation
+  lines, so such a line right after one of them is an error, as is a
+  keyword without its colon (`nav (dark)` needs to be `nav: (dark)`).
+  `tabs` takes them as extra tab names.
 - Indenting a component under a non-container is an error. Errors list the
   line number and the rest of the spec is still drawn.
 - Top-level components stack vertically with a gap of 24.
