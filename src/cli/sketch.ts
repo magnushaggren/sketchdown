@@ -101,7 +101,8 @@ export function parseArgs(argv: string[]): Args {
     else if (/\.png$/i.test(out)) png.push(out);
     else throw new Error(`${out}: outputs must end in .svg or .png\n${USAGE}`);
   }
-  if (!outputs.length) svg.push(input.replace(/(\.[^./\\]*)?$/, ".svg"));
+  // a file gets an SVG next to it by default; standard input is only checked
+  if (!outputs.length && input !== "-") svg.push(input.replace(/(\.[^./\\]*)?$/, ".svg"));
   return { input, svg, png };
 }
 

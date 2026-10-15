@@ -70,6 +70,10 @@ describe("parseArgs", () => {
     expect(parseArgs(["-", "out.png"])).toEqual({ input: "-", svg: [], png: ["out.png"] });
   });
 
+  it("only checks standard input when no output is given", () => {
+    expect(parseArgs(["-"])).toEqual({ input: "-", svg: [], png: [] });
+  });
+
   it("rejects a missing input and unknown output types", () => {
     expect(() => parseArgs([])).toThrow(/usage/i);
     expect(() => parseArgs(["spec.txt", "out.jpg"])).toThrow(/\.svg or \.png/);

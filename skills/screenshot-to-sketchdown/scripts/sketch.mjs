@@ -3847,7 +3847,7 @@ function parseArgs(argv) {
     else throw new Error(`${out}: outputs must end in .svg or .png
 ${USAGE}`);
   }
-  if (!outputs.length) svg.push(input2.replace(/(\.[^./\\]*)?$/, ".svg"));
+  if (!outputs.length && input2 !== "-") svg.push(input2.replace(/(\.[^./\\]*)?$/, ".svg"));
   return { input: input2, svg, png };
 }
 function report(result, written) {

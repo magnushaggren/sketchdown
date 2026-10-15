@@ -123,7 +123,7 @@ node <skill folder>/scripts/sketch.mjs spec.txt out.svg out.png
 ```
 
 It accepts a file with the spec or a ```` ```sketchdown ```` block, or `-`
-for standard input. It prints the drawing's size, parse errors, unknown
+for standard input (which is only checked unless you name outputs). It prints the drawing's size, parse errors, unknown
 icons and the placeholders with their sizes, and exits with 1 on errors.
 PNG output needs Chrome or Edge (set `SKETCHDOWN_CHROME` to its path if it
 isn't found); without one, write only the SVG.
