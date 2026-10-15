@@ -15,7 +15,8 @@ Update the Status column as work lands.
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
 | M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
-| M6 | Screenshot to wireframe (a skill for LLM agents) | in progress: steps 1–3 done; step 4 trials on two desktop forms and a web list with a drawer, gaps in docs/component-ideas.md; rows now honour their width, so an empty `row: (fill)` is a spacer (2026-10-15) |
+| M6 | Screenshot to wireframe (a skill for LLM agents) | done: placeholder, `npm run sketch`, the skill, three trial screens, ranked ideas (2026-10-15) |
+| M7 | Forms and detail panels | proposed (2026-10-15) |
 
 ## M0 – Scaffold and port
 
@@ -224,7 +225,7 @@ as an agent skill.
 4. Trial on the owner's screenshots: three web portal screens and three or
    four Cendot WPF screens (grid, detail, account detail). Gap reports are
    collected in `docs/component-ideas.md`.
-5. Pick the gaps to build in M7. Candidates seen so far: form field with an
+5. Pick the gaps to build in M7 (done: see M7). Candidates seen in step 4: form field with an
    aligned label column, collapsible section header with a count, toolbar,
    card, floating-label field, vertical split, icon rail (an icon-only
    `nav` is still about 120 wide and ignores `w=`),
@@ -234,6 +235,77 @@ as an agent skill.
 
 **Done when** the owner can hand a screenshot to the agent and paste the
 result into a drawing with only small fixes, and the gap list is ranked.
+
+## M7 – Forms and detail panels (proposed)
+
+Proposed 2026-10-15 from the M6 trials (docs/component-ideas.md). Theme:
+the patterns that made every converted form look ragged or lose meaning.
+Everything is new syntax on top of what exists, so old specs draw as before.
+
+1. **Forms with aligned labels** (ideas #1, #9). A `form` container lines
+   up its fields' labels in one column; `field: Label | component line`
+   puts a label before any one-line component. Both trial agents guessed
+   this syntax on their own.
+
+   ```
+   form: (label=140)
+     field: Customer | search: Search...
+     field: AD Domain | dropdown: *Sweden | Norway
+     row:
+       field: Version | input: 4.2
+       field: Updated | input: {calendar} 2026-10-14
+   ```
+
+   - Without `(label=...)` the column is as wide as the longest label.
+     Fields side by side in a `row` get a label column each.
+   - A `field` also works outside a `form`, unaligned.
+   - `(floating)` on a field draws the label small inside the top border,
+     as in Material design: `field: Type | dropdown: Virtual Server (floating)`.
+2. **Required and invalid** (#2). `(required)` on a field's component adds
+   a red `*` after the label; `(invalid)` draws the field's outline red with
+   an error icon inside on the right. New theme colour `error` (#e03131),
+   a setting like the others.
+3. **Groups that fold** (#3, #17, #4).
+   - `box: Domain (collapsible)` adds a chevron to the title bar;
+     `(collapsed)` draws only the title bar, with the chevron pointing down.
+   - `section: {users} Ownership (count=3)`: a header line with an optional
+     icon, the title, a grey count and a chevron, then its children
+     indented under it (a container without a border). `(collapsed)` hides
+     them.
+   - `box (plain)`: a container with no border or padding, for stacking
+     groups in a column.
+   - `row (top)`: children aligned at the top instead of centred.
+4. **Field details** (#5, #12, #16).
+   - `(empty)` on `dropdown`, `password` and `input` draws a blank field
+     (today a dropdown says "Select…" and a password shows 8 dots).
+   - An `{icon}` at the very end of an `input`, `search` or `dropdown`
+     text is drawn at the right edge as a trailing button: `search:
+     Search... {edit}`.
+   - `spin: 12` (alias `number`, `stepper`): a narrow field with up and
+     down arrows.
+   - `details (stacked)`: the label above its value, for detail drawers.
+5. **Icons** (#15): key, warning, refresh, print, database, clock, code,
+   ban, cloud, map, hash, network, grid. Each drawn with lines and
+   ellipses like the existing set.
+6. **Wrap-up**: gallery, snippets ("Form", "Detail drawer"), SYNTAX.md,
+   regenerate the skill and update its mapping table, then rerun the three
+   trial screens and compare with the M6 results.
+
+Deferred to later, still ranked in docs/component-ideas.md: toolbar,
+card, icon rail, vertical split (`rows`), drawer frame, rich-text editor,
+grid extras, accent colour, clearable fields, `spacer:` alias.
+
+Open questions:
+
+1. `field: Label | component` or another separator, given `|` also
+   separates items inside components? Proposal: only the first `|` before
+   a known keyword followed by a colon splits the field.
+2. Required marker: red `*` after the label (web convention), or a red
+   icon inside the field (what the desktop app shows)? Proposal: `*`, and
+   `(invalid)` covers the icon.
+3. Release: ship M7 as a 0.10 beta before 1.0, or submit 1.0 first and
+   add M7 in 1.1? Proposal: 1.0 first, as planned, since the review queue
+   is long and M7 only adds syntax.
 
 ## Decided questions
 
