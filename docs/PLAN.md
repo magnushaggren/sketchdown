@@ -16,7 +16,7 @@ Update the Status column as work lands.
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
 | M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
 | M6 | Screenshot to wireframe (a skill for LLM agents) | done: placeholder, `npm run sketch`, the skill, three trial screens, ranked ideas (2026-10-15) |
-| M7 | Forms and detail panels | proposed (2026-10-15) |
+| M7 | Forms and detail panels | in progress: step 1 (form, field, floating) done (2026-10-15) |
 
 ## M0 – Scaffold and port
 
@@ -236,9 +236,9 @@ as an agent skill.
 **Done when** the owner can hand a screenshot to the agent and paste the
 result into a drawing with only small fixes, and the gap list is ranked.
 
-## M7 – Forms and detail panels (proposed)
+## M7 – Forms and detail panels
 
-Proposed 2026-10-15 from the M6 trials (docs/component-ideas.md). Theme:
+Agreed 2026-10-15 from the M6 trials (docs/component-ideas.md). Theme:
 the patterns that made every converted form look ragged or lose meaning.
 Everything is new syntax on top of what exists, so old specs draw as before.
 
@@ -295,17 +295,13 @@ Deferred to later, still ranked in docs/component-ideas.md: toolbar,
 card, icon rail, vertical split (`rows`), drawer frame, rich-text editor,
 grid extras, accent colour, clearable fields, `spacer:` alias.
 
-Open questions:
+Decided 2026-10-15:
 
-1. `field: Label | component` or another separator, given `|` also
-   separates items inside components? Proposal: only the first `|` before
-   a known keyword followed by a colon splits the field.
-2. Required marker: red `*` after the label (web convention), or a red
-   icon inside the field (what the desktop app shows)? Proposal: `*`, and
-   `(invalid)` covers the icon.
-3. Release: ship M7 as a 0.10 beta before 1.0, or submit 1.0 first and
-   add M7 in 1.1? Proposal: 1.0 first, as planned, since the review queue
-   is long and M7 only adds syntax.
+1. The label ends at the first `|` followed by a keyword and a colon.
+   `field` was already an alias of `input`, so without such a `|` it stays
+   one, and old specs draw as before.
+2. `(required)` is a red `*` after the label; `(invalid)` covers the icon.
+3. 1.0 is submitted first as planned; M7 ships in 1.1.
 
 ## Decided questions
 
