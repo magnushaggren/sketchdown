@@ -15,7 +15,7 @@ Update the Status column as work lands.
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
 | M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
-| M6 | Screenshot to wireframe (a skill for LLM agents) | in progress: steps 1–3 done; step 4 trial on two desktop forms, gaps in docs/component-ideas.md (2026-10-15) |
+| M6 | Screenshot to wireframe (a skill for LLM agents) | in progress: steps 1–3 done; step 4 trials on two desktop forms and a web list with a drawer, gaps in docs/component-ideas.md; rows now honour their width, so an empty `row: (fill)` is a spacer (2026-10-15) |
 
 ## M0 – Scaffold and port
 
@@ -227,8 +227,7 @@ as an agent skill.
 5. Pick the gaps to build in M7. Candidates seen so far: form field with an
    aligned label column, collapsible section header with a count, toolbar,
    card, floating-label field, vertical split, icon rail (an icon-only
-   `nav` is still about 120 wide and ignores `w=`), an empty spacer for a
-   `row` (`text: (fill)` works but draws the word "Text"),
+   `nav` is still about 120 wide and ignores `w=`),
    grid extras
    (filter row, group-by bar, status bar), more icons (refresh, print,
    database, clock, code, key, error, ban).

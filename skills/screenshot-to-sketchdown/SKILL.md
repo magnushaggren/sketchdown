@@ -78,7 +78,9 @@ under a form) may be shortened; say so in the assumptions.
 | Card | `box:` with the content inside |
 | Form row: label and field | `row: (fill)` with `text: Label` and the field `(fill)`; labels won't line up across rows (a gap) |
 | Columns of different heights | `row` centres its children vertically; to keep them at the top, wrap each column in `box (w=..., h=...)` with the same height |
-| Things side by side | `row:`; to push items to the right, give the row `(fill)` and the item before them `(fill)` |
+| Things side by side | `row:` |
+| Items at both ends of a bar | `row: (fill)` with an empty `row: (fill)` between the groups as a spacer; the outer row needs a known width, so it sits in a `box` or `columns` panel, or has `(w=...)` |
+| Section header with a count and a chevron | `row: (fill)` with `text: IDENTITY (fill)` and `text: -3- {chevron-down}` |
 | Toolbar | `row:` of buttons with icons, `{plus} Create` |
 | Message or banner | `alert: {info} Saved. [Undo]` |
 | Disabled control | the component with `(disabled)` |
