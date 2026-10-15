@@ -52,6 +52,7 @@ export function layout(
     dry: false,
     fontSize: env.style.fontSize,
     ink: null,
+    labelWidths: new WeakMap(),
     measure(str, fontSize) {
       const style = fontSize ? { ...textStyle, fontSize } : textStyle;
       return env.measure(str && str.length ? str : " ", style);

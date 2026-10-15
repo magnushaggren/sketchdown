@@ -1398,6 +1398,7 @@ var KEYWORDS = /* @__PURE__ */ new Map([
   ["img", "image"],
   ["picture", "image"],
   ["placeholder", "placeholder"],
+  ["form", "form"],
   ["breadcrumb", "breadcrumb"],
   ["breadcrumbs", "breadcrumb"],
   ["crumbs", "breadcrumb"],
@@ -1409,8 +1410,8 @@ var KEYWORDS = /* @__PURE__ */ new Map([
   ["tree", "tree"]
 ]);
 var FRAMES = ["window", "dialog", "browser", "phone"];
-var CONTAINERS = /* @__PURE__ */ new Set(["root", "box", "tabs", "row", "columns", ...FRAMES]);
-var BARE_OK = /* @__PURE__ */ new Set(["grid", "tabs", "box", "row", "columns", ...FRAMES]);
+var CONTAINERS = /* @__PURE__ */ new Set(["root", "box", "form", "tabs", "row", "columns", ...FRAMES]);
+var BARE_OK = /* @__PURE__ */ new Set(["grid", "tabs", "box", "form", "row", "columns", ...FRAMES]);
 var CONTAINER_NAMES = [...CONTAINERS].filter((t) => t !== "root");
 var NO_BODY = new Set([...CONTAINERS].filter((t) => t !== "tabs"));
 function notUnderstood(line, keyword, type) {
@@ -1428,7 +1429,8 @@ var FLAGS = /* @__PURE__ */ new Set([
   "segmented",
   "underline",
   "plain",
-  "striped"
+  "striped",
+  "floating"
 ]);
 function parseOptions(s) {
   const opts = {};
@@ -1447,6 +1449,15 @@ function parseOptions(s) {
     if (k && v && !isNaN(Number(v))) opts[k.toLowerCase()] = Number(v);
   });
   return { rest: s.slice(0, m.index).trim(), opts };
+}
+var FIELD_OPTS = ["fill", "disabled", "floating"];
+function splitField(content) {
+  for (let i = content.indexOf("|"); i >= 0; i = content.indexOf("|", i + 1)) {
+    const line = content.slice(i + 1).trim();
+    const m = line.match(/^([a-zA-Z][a-zA-Z0-9]*)s*:/);
+    if (m && KEYWORDS.has(m[1].toLowerCase())) return { label: content.slice(0, i).trim(), line };
+  }
+  return null;
 }
 function parse(source) {
   const root2 = { type: "root", text: "", body: [], children: [], opts: {} };
@@ -1476,24 +1487,50 @@ function parse(source) {
         last = null;
         return;
       }
-      const { rest, opts } = bareOpts ?? parseOptions(m[2] || "");
-      const node = {
-        type,
-        text: rest,
-        body: [],
-        children: [],
-        opts: { ...DEFAULT_OPTS[type], ...opts },
-        line: i + 1
+      const component = (type2, content) => {
+        const { rest, opts } = parseOptions(content);
+        if (type2 === "icon" && !isIcon(rest)) {
+          errors.push({
+            line: i + 1,
+            message: `unknown icon "${rest}"; known icons: ${ICON_NAMES.join(", ")}`
+          });
+        }
+        const node2 = { type: type2, text: rest, body: [], children: [], line: i + 1 };
+        return { ...node2, opts: { ...DEFAULT_OPTS[type2], ...opts } };
       };
-      parent.children.push(node);
-      if (type === "icon" && !isIcon(rest)) {
-        errors.push({
-          line: i + 1,
-          message: `unknown icon "${rest}"; known icons: ${ICON_NAMES.join(", ")}`
-        });
+      const labelled = m[1].toLowerCase() === "field" && hasColon ? splitField(m[2]) : null;
+      let node;
+      if (labelled) {
+        const im = labelled.line.match(/^([a-zA-Z][a-zA-Z0-9]*)s*:s*(.*)$/);
+        let innerType = KEYWORDS.get(im[1].toLowerCase());
+        let content = im[2];
+        if (CONTAINERS.has(innerType)) {
+          errors.push({
+            line: i + 1,
+            message: `a field holds one component like input or dropdown, not "${im[1]}"`
+          });
+          innerType = "input";
+          content = "";
+        }
+        const inner = component(innerType, content);
+        const opts = {};
+        for (const k of FIELD_OPTS) if (inner.opts[k]) opts[k] = inner.opts[k];
+        node = {
+          type: "field",
+          text: labelled.label,
+          body: [],
+          children: [inner],
+          opts,
+          line: i + 1
+        };
+      } else if (bareOpts) {
+        node = { ...component(type, ""), opts: { ...DEFAULT_OPTS[type], ...bareOpts.opts } };
+      } else {
+        node = component(type, m[2] || "");
       }
+      parent.children.push(node);
       stack.push({ node, indent });
-      last = node;
+      last = node.type === "field" ? node.children[0] : node;
     } else if (last && !NO_BODY.has(last.type)) {
       last.body.push(last.type === "tree" ? raw.replace(/\t/g, "    ").trimEnd() : s);
     } else {
@@ -1981,7 +2018,7 @@ var alert = (ctx, node, x, y, slot) => {
 };
 var PERCENT = /(-?\d+(?:\.\d+)?)\s*%/;
 var progress = (ctx, node, x, y, slot) => {
-  const BAR_H = 14, WIDTH2 = 200, LABEL_GAP = 6;
+  const BAR_H = 14, WIDTH2 = 200, LABEL_GAP2 = 6;
   const str = contentLines(node).join(" ");
   const m = str.match(PERCENT);
   const value = m ? Math.min(100, Math.max(0, Number(m[1]))) / 100 : 0;
@@ -1992,7 +2029,7 @@ var progress = (ctx, node, x, y, slot) => {
   if (title) {
     const label = measureLabel(ctx, title);
     drawLabel(ctx, x, y, label);
-    by += label.h + LABEL_GAP;
+    by += label.h + LABEL_GAP2;
   }
   ctx.rect(x, by, W, BAR_H, { fill: colors.fill, rounded: true });
   if (value > 0) ctx.rect(x, by, W * value, BAR_H, { fill: colors.primary, rounded: true });
@@ -2062,6 +2099,53 @@ var placeholder = (ctx, node, x, y, slot) => {
   }
   return { w: W, h: H };
 };
+
+// src/core/components/form.ts
+var LABEL_GAP = 12;
+var LABEL_TOP = 8;
+function alignLabels(ctx, node) {
+  const columns2 = [];
+  const add = (child, i) => {
+    if (child.type === "field" && !child.opts.floating) (columns2[i] ??= []).push(child);
+  };
+  for (const child of node.children) {
+    if (child.type === "row") child.children.forEach(add);
+    else add(child, 0);
+  }
+  for (const fields of columns2) {
+    if (!fields) continue;
+    const w = node.opts.label || Math.max(...fields.map((f) => measureLabel(ctx, f.text).w));
+    for (const f of fields) ctx.labelWidths.set(f, w);
+  }
+}
+var form = (ctx, node, x, y, slot) => {
+  alignLabels(ctx, node);
+  return box(ctx, node, x, y, slot);
+};
+var field = (ctx, node, x, y, slot) => {
+  const inner = node.children[0];
+  if (node.opts.floating) return floating(ctx, node, inner, x, y, slot);
+  const label = measureLabel(ctx, node.text);
+  const labelW = ctx.labelWidths.get(node) ?? label.w;
+  const offset = labelW + LABEL_GAP;
+  const innerSlot = slot?.w ? { w: slot.w - offset } : void 0;
+  const size = ctx.size(inner, innerSlot);
+  const H = Math.max(size.h, label.h);
+  drawLabel(ctx, x, y + Math.min((H - label.h) / 2, LABEL_TOP), label);
+  ctx.draw(inner, x + offset, y + (H - size.h) / 2, innerSlot);
+  return { w: offset + size.w, h: H };
+};
+function floating(ctx, node, inner, x, y, slot) {
+  const { colors } = ctx.theme;
+  const fontSize = Math.round(ctx.fontSize * 0.75);
+  const label = measureLabel(ctx, node.text, fontSize);
+  const top = label.h / 2;
+  const size = ctx.draw(inner, x, y + top, slot);
+  ctx.rect(x + 8, y, label.w + 8, label.h, { fill: colors.paper, noStroke: true });
+  const grey = ctx.ink === colors.disabled ? {} : { color: colors.muted };
+  drawLabel(ctx, x + 12, y, label, { fontSize, ...grey });
+  return { w: size.w, h: size.h + top };
+}
 
 // src/core/components/frames.ts
 var CONTROL_GAP = 8;
@@ -2848,7 +2932,9 @@ var COMPONENTS = {
   pagination,
   menu,
   tree,
-  placeholder
+  placeholder,
+  form,
+  field
 };
 
 // src/core/layout.ts
@@ -2878,6 +2964,7 @@ function layout(tree2, origin, env) {
     dry: false,
     fontSize: env.style.fontSize,
     ink: null,
+    labelWidths: /* @__PURE__ */ new WeakMap(),
     measure(str, fontSize) {
       const style = fontSize ? { ...textStyle, fontSize } : textStyle;
       return env.measure(str && str.length ? str : " ", style);
@@ -3165,6 +3252,21 @@ var SNIPPETS = [
     name: "Placeholder",
     description: "Dashed box for something not drawn yet: width x height and a name",
     text: "placeholder: 240x40 Date picker"
+  },
+  {
+    name: "Field",
+    description: "A label before one component; (floating) puts it on the border",
+    text: "field: Name | input: Anna Svensson"
+  },
+  {
+    name: "Form",
+    description: "Group of fields whose labels line up",
+    text: lines(
+      "form: New user (w=420)",
+      "  field: Name | input: Anna Svensson (fill)",
+      "  field: Role | dropdown: *Developer | Project manager (fill)",
+      "  field: E-mail | input: {mail} anna@example.com (fill)"
+    )
   },
   {
     name: "Breadcrumb",

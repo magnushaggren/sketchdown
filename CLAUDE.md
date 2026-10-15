@@ -133,6 +133,10 @@ top-left, delete them, draw the new version at that point.
   bounding box's top-left.
 - M6: `placeholder` is a dashed, rounded, unfilled box (`dashed` on a rect
   op, left out when solid) with its name grey in the middle.
+- M7: `field` draws its label 12 before its component, centred on a
+  one-line component and 8 from the top of a tall one; a `form` is a `box`
+  that gives its fields one label column (`ctx.labelWidths`). `field:`
+  without `| keyword:` stays an alias of input, so old specs don't change.
 - Layout contract: a parent may pass a `Slot` ({w, h}) to a child, which
   then makes itself at least that big. Parents only pass one to `(fill)`
   children (and heights to `columns` panels), so specs without the new

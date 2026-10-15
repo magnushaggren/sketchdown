@@ -5,14 +5,14 @@
 ## Structure
 
 - One component per line: `keyword: content (options)`.
-- `grid`, `tabs`, `box`, `row`, `columns` and the frames (`window`,
+- `grid`, `tabs`, `box`, `form`, `row`, `columns` and the frames (`window`,
   `dialog`, `browser`, `phone`) may also appear without a colon.
 - Indentation nests components. Anything indented deeper than a container
-  line (`tabs`, `box`, `row`, `columns` and the frames) goes inside it. Tabs count as 4 spaces.
+  line (`tabs`, `box`, `form`, `row`, `columns` and the frames) goes inside it. Tabs count as 4 spaces.
 - Lines that don't start with a keyword are **continuation lines** of the
   most recent component, for example grid rows, extra tab names or more
   checkbox items. A blank line ends the continuation.
-- `box`, `row`, `columns` and the frames take no continuation
+- `box`, `form`, `row`, `columns` and the frames take no continuation
   lines, so such a line right after one of them is an error, as is a
   keyword without its colon (`nav (dark)` needs to be `nav: (dark)`).
   `tabs` takes them as extra tab names.
@@ -46,9 +46,11 @@
 | `grid` (table, datagrid) | `grid`, then rows like `Anna, Developer` | first row is the header |
 | `tabs` (tab) | `tabs: A \| *B \| C` | container; empty panel 360×160 by default; `(segmented)` and `(underline)` styles below |
 | `box` (panel, group) | `box: New user` | container with an optional title bar |
+| `form` | `form: New user (label=140)` | container like `box` whose fields' labels line up; see Forms below |
+| `field` | `field: Customer \| search: Search...` | a label before one component; see Forms below |
 | `row` | `row:` | container, children side by side, centred vertically |
 | `icon` | `icon: search` | one icon; `(w=32)` sets its size; unknown names are an error |
-| `input` (field, textbox) | `input: Anna` | one-line field, at least 200 wide; `{icon}` allowed |
+| `input` (field, textbox) | `input: Anna` | one-line field, at least 200 wide; `{icon}` allowed; `field:` with a `\| keyword:` is a labelled field instead |
 | `search` | `search: Find users` | input with a search icon; says "Search" when empty |
 | `password` | `password: secret` | input showing one dot per character (8 when empty) |
 | `textarea` | `textarea: Notes` | multi-line field, at least 240×80; continuation lines are more text |
@@ -105,6 +107,39 @@ Anna, Developer, 52 000 kr, [x]
   one underlined thickly and the others grey.
 - Neither style has a panel frame. Children, if any, are stacked below.
 - Labels may hold icons: `tabs: {file} Files | *{users} People (underline)`.
+
+## Forms
+
+- `field: Label | component` puts a label before one component, for
+  example `field: Customer | search: Search...` or
+  `field: Role | dropdown: *Developer | Project manager`. The label ends at
+  the first `|` that is followed by a keyword and a colon; later `|` belong
+  to the component. Without such a `|`, `field:` is still an alias of
+  `input`, so `field: Anna` is an input. An empty field is
+  `field: Name | input:`.
+- Options at the end of the line belong to the component. `(fill)` and
+  `(disabled)` also apply to the label: a `(fill)` field stretches its
+  component, and a disabled one greys its label too.
+- Continuation lines go to the component (more lines of a `textarea`).
+- The label is centred on a one-line component and stays near the top of a
+  tall one. Labels may hold icons, links and grey text.
+- `(floating)` draws the label small and grey on the component's top
+  border, as in Material design: `field: Type | dropdown: Virtual Server (floating)`.
+- `form` is a `box` (title, frame, options) whose fields line up: their
+  labels share one column, as wide as the longest label or `(label=140)`.
+  Fields side by side in a `row` directly in the form get a column per
+  position. Fields deeper down (in a `box` inside the form) and floating
+  fields are left out. To line up the components in such rows too, give the
+  row and its fields `(fill)`.
+
+  ```
+  form: New user (w=420)
+    field: Name | input: Anna Svensson (fill)
+    field: Role | dropdown: *Developer | Project manager (fill)
+    row: (fill)
+      field: Start | input: {calendar} 2026-11-01 (fill)
+      field: Team | input: Platform (fill)
+  ```
 
 ## Frames
 

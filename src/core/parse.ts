@@ -67,6 +67,7 @@ const KEYWORDS = new Map<string, NodeType>([
   ["img", "image"],
   ["picture", "image"],
   ["placeholder", "placeholder"],
+  ["form", "form"],
   ["breadcrumb", "breadcrumb"],
   ["breadcrumbs", "breadcrumb"],
   ["crumbs", "breadcrumb"],
@@ -78,8 +79,8 @@ const KEYWORDS = new Map<string, NodeType>([
   ["tree", "tree"],
 ]);
 const FRAMES: NodeType[] = ["window", "dialog", "browser", "phone"];
-const CONTAINERS = new Set<NodeType>(["root", "box", "tabs", "row", "columns", ...FRAMES]);
-const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "row", "columns", ...FRAMES]); // may appear without a colon
+const CONTAINERS = new Set<NodeType>(["root", "box", "form", "tabs", "row", "columns", ...FRAMES]);
+const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "form", "row", "columns", ...FRAMES]); // may appear without a colon
 const CONTAINER_NAMES = [...CONTAINERS].filter((t) => t !== "root");
 // containers that take no continuation lines (tabs takes extra tab names)
 const NO_BODY = new Set<NodeType>([...CONTAINERS].filter((t) => t !== "tabs"));
@@ -104,6 +105,7 @@ export const FLAGS = new Set([
   "underline",
   "plain",
   "striped",
+  "floating",
 ]);
 
 /**
@@ -129,6 +131,22 @@ export function parseOptions(s: string): { rest: string; opts: Record<string, nu
     if (k && v && !isNaN(Number(v))) opts[k.toLowerCase()] = Number(v);
   });
   return { rest: s.slice(0, m.index).trim(), opts };
+}
+
+/** Options of a field's component that also apply to the field itself. */
+const FIELD_OPTS = ["fill", "disabled", "floating"];
+
+/**
+ * Splits "Label | keyword: content" at the first | that is followed by a
+ * keyword and a colon. Without one, "field:" stays an alias of input.
+ */
+function splitField(content: string): { label: string; line: string } | null {
+  for (let i = content.indexOf("|"); i >= 0; i = content.indexOf("|", i + 1)) {
+    const line = content.slice(i + 1).trim();
+    const m = line.match(/^([a-zA-Z][a-zA-Z0-9]*)s*:/);
+    if (m && KEYWORDS.has(m[1].toLowerCase())) return { label: content.slice(0, i).trim(), line };
+  }
+  return null;
 }
 
 /** The one-line form shown in notices: `line 3: don't understand "x"`. */
@@ -168,24 +186,52 @@ export function parse(source: string): ParseResult {
           last = null;
           return;
         }
-        const { rest, opts } = bareOpts ?? parseOptions(m[2] || "");
-        const node: SpecNode = {
-          type,
-          text: rest,
-          body: [],
-          children: [],
-          opts: { ...DEFAULT_OPTS[type], ...opts },
-          line: i + 1,
+        const component = (type: NodeType, content: string): SpecNode => {
+          const { rest, opts } = parseOptions(content);
+          if (type === "icon" && !isIcon(rest)) {
+            errors.push({
+              line: i + 1,
+              message: `unknown icon "${rest}"; known icons: ${ICON_NAMES.join(", ")}`,
+            });
+          }
+          const node = { type, text: rest, body: [], children: [], line: i + 1 };
+          return { ...node, opts: { ...DEFAULT_OPTS[type], ...opts } };
         };
-        parent.children.push(node);
-        if (type === "icon" && !isIcon(rest)) {
-          errors.push({
+        const labelled = m[1].toLowerCase() === "field" && hasColon ? splitField(m[2]) : null;
+        let node: SpecNode;
+        if (labelled) {
+          // "field: Label | input: Anna": a label before one component
+          const im = labelled.line.match(/^([a-zA-Z][a-zA-Z0-9]*)s*:s*(.*)$/)!;
+          let innerType = KEYWORDS.get(im[1].toLowerCase())!;
+          let content = im[2];
+          if (CONTAINERS.has(innerType)) {
+            errors.push({
+              line: i + 1,
+              message: `a field holds one component like input or dropdown, not "${im[1]}"`,
+            });
+            innerType = "input";
+            content = "";
+          }
+          const inner = component(innerType, content);
+          const opts: Record<string, number> = {};
+          for (const k of FIELD_OPTS) if (inner.opts[k]) opts[k] = inner.opts[k];
+          node = {
+            type: "field",
+            text: labelled.label,
+            body: [],
+            children: [inner],
+            opts,
             line: i + 1,
-            message: `unknown icon "${rest}"; known icons: ${ICON_NAMES.join(", ")}`,
-          });
+          };
+        } else if (bareOpts) {
+          node = { ...component(type, ""), opts: { ...DEFAULT_OPTS[type], ...bareOpts.opts } };
+        } else {
+          node = component(type, m[2] || "");
         }
+        parent.children.push(node);
         stack.push({ node, indent });
-        last = node;
+        // continuation lines belong to a field's component
+        last = node.type === "field" ? node.children[0] : node;
       } else if (last && !NO_BODY.has(last.type)) {
         // a tree's lines keep their indentation, which gives their level
         last.body.push(last.type === "tree" ? raw.replace(/\t/g, "    ").trimEnd() : s);

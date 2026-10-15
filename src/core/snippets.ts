@@ -207,6 +207,21 @@ export const SNIPPETS: Snippet[] = [
     text: "placeholder: 240x40 Date picker",
   },
   {
+    name: "Field",
+    description: "A label before one component; (floating) puts it on the border",
+    text: "field: Name | input: Anna Svensson",
+  },
+  {
+    name: "Form",
+    description: "Group of fields whose labels line up",
+    text: lines(
+      "form: New user (w=420)",
+      "  field: Name | input: Anna Svensson (fill)",
+      "  field: Role | dropdown: *Developer | Project manager (fill)",
+      "  field: E-mail | input: {mail} anna@example.com (fill)",
+    ),
+  },
+  {
     name: "Breadcrumb",
     description: "Links separated by >; the last (or starred) is current",
     text: "breadcrumb: Home > Users > Anna Svensson",

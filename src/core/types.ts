@@ -37,7 +37,9 @@ export type ComponentType =
   | "pagination"
   | "menu"
   | "tree"
-  | "placeholder";
+  | "placeholder"
+  | "form"
+  | "field";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {
@@ -207,6 +209,8 @@ export interface DrawContext {
    * or as the widest child when width is not given.
    */
   stack(children: SpecNode[], x: number, y: number, gap: number, width?: number): Size;
+  /** Label column widths that a form gives its fields. */
+  readonly labelWidths: WeakMap<SpecNode, number>;
 }
 
 export type Component = (

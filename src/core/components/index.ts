@@ -8,6 +8,7 @@ import { radio, slider, toggle } from "./controls";
 import { details } from "./details";
 import { dropdown } from "./dropdown";
 import { alert, image, placeholder, progress, tooltip } from "./feedback";
+import { field, form } from "./form";
 import { browser, buttons, dialog, phone, windowFrame } from "./frames";
 import { grid } from "./grid";
 import { heading } from "./heading";
@@ -63,4 +64,6 @@ export const COMPONENTS: Record<NodeType, Component> = {
   menu,
   tree,
   placeholder,
+  form,
+  field,
 };

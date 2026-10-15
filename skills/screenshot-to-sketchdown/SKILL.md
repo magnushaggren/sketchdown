@@ -68,7 +68,7 @@ under a form) may be shortened; say so in the assumptions.
 | Group of buttons at the bottom right | `buttons: Cancel \| *OK` |
 | Search field | `search: Find users` |
 | Select, combo box | `dropdown: *Current value \| Other` |
-| Text field with a value | `input: Anna`; empty and labelled: label in a `text:` before it |
+| Text field with a value | `input: Anna`; with a label: `field: Name \| input: Anna` |
 | Date field | `input: {calendar} 2026-10-14` |
 | Multi-line text | `textarea:` |
 | Table | `grid`, header row, then up to about 8 rows; `*` marks a selected row |
@@ -76,7 +76,9 @@ under a form) may be shortened; say so in the assumptions.
 | Read-only label/value pairs | `details: {mail} E-mail \| anna@example.com`, one pair per line |
 | Group box, panel with a title | `box: Title` |
 | Card | `box:` with the content inside |
-| Form row: label and field | `row: (fill)` with `text: Label` and the field `(fill)`; labels won't line up across rows (a gap) |
+| Label and field | `field: Customer \| search: Search...`; any one-line component after the `\|` |
+| Form or group box of labelled fields | `form: Title` with one `field:` per line, labels line up; `(label=140)` fixes the label column; two fields side by side: a `row: (fill)` with `(fill)` fields |
+| Label inside the field's top border (Material) | `field: Type \| dropdown: Virtual Server (floating)` |
 | Columns of different heights | `row` centres its children vertically; to keep them at the top, wrap each column in `box (w=..., h=...)` with the same height |
 | Things side by side | `row:` |
 | Items at both ends of a bar | `row: (fill)` with an empty `row: (fill)` between the groups as a spacer; the outer row needs a known width, so it sits in a `box` or `columns` panel, or has `(w=...)` |
@@ -93,14 +95,14 @@ the icon out rather than writing a made-up name.
 
 When no component fits well, use `placeholder: WxH Name` with the scaled
 size, for example `placeholder: 300x200 Line chart` or
-`placeholder: 180x48 Floating-label dropdown`. Typical cases: charts, maps,
+`placeholder: 220x40 Signature pad`. Typical cases: charts, maps,
 rich-text editors, date pickers, trees of custom widgets, video, signature
 pads, anything app-specific.
 
 - Prefer a placeholder over bending a component into something it isn't.
   Don't use `image` for things that aren't pictures or `grid` for a form.
 - A close-enough component with a gap note is fine when it keeps the
-  wireframe readable (a floating-label field as a plain `dropdown`).
+  wireframe readable (a lookup with a trailing button as a plain `search`).
 - The name says what the thing is ("Spin edit", "Rich-text editor"), not
   the value it shows.
 - Keep names short; a placeholder grows to fit its name.
@@ -152,7 +154,7 @@ of missing component (not per occurrence):
 
 | Component | Seen as | Drawn as | Size | Count | Suggested syntax |
 |---|---|---|---|---|---|
-| Floating-label dropdown | label inside the field's top border | `dropdown` | 180x48 | 2 | `dropdown: Virtual server (label=Type)` |
+| Spin edit | number with up and down arrows | `placeholder` | 70x32 | 2 | `spin: 12 (w=70)` |
 | Line chart | revenue over 12 months | `placeholder` | 300x200 | 1 | `chart: line (w=300, h=200)` |
 
 Then **Suggested components**: the two or three additions that would have
