@@ -50,6 +50,10 @@ the screenshot (a capital letter is about 0.7 times the font size), and use
 high-density displays often have text 24 to 32 px tall; dense desktop apps
 can be 11 to 12 px.
 
+Dense desktop screens get large at this scale, which is fine: keep the text
+readable. Large empty areas (an editor body, an empty grid, blank space
+under a form) may be shortened; say so in the assumptions.
+
 ### 3. Map each element to a component
 
 | In the screenshot | In Sketchdown |
@@ -72,6 +76,8 @@ can be 11 to 12 px.
 | Read-only label/value pairs | `details: {mail} E-mail \| anna@example.com`, one pair per line |
 | Group box, panel with a title | `box: Title` |
 | Card | `box:` with the content inside |
+| Form row: label and field | `row: (fill)` with `text: Label` and the field `(fill)`; labels won't line up across rows (a gap) |
+| Columns of different heights | `row` centres its children vertically; to keep them at the top, wrap each column in `box (w=..., h=...)` with the same height |
 | Things side by side | `row:`; to push items to the right, give the row `(fill)` and the item before them `(fill)` |
 | Toolbar | `row:` of buttons with icons, `{plus} Create` |
 | Message or banner | `alert: {info} Saved. [Undo]` |
@@ -93,6 +99,8 @@ pads, anything app-specific.
   Don't use `image` for things that aren't pictures or `grid` for a form.
 - A close-enough component with a gap note is fine when it keeps the
   wireframe readable (a floating-label field as a plain `dropdown`).
+- The name says what the thing is ("Spin edit", "Rich-text editor"), not
+  the value it shows.
 - Keep names short; a placeholder grows to fit its name.
 - Every placeholder, and every compromise like the one above, goes in the
   gap report.
@@ -112,6 +120,8 @@ PNG output needs Chrome or Edge (set `SKETCHDOWN_CHROME` to its path if it
 isn't found); without one, write only the SVG.
 
 - Fix every error and warning.
+- Write the whole spec file again for each round rather than patching it
+  with scripts; indentation is easy to break.
 - Look at the PNG next to the screenshot: regions in the right places,
   similar proportions, nothing missing or doubled. Fix and run again, up to
   three rounds.

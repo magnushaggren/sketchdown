@@ -15,7 +15,7 @@ Update the Status column as work lands.
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
 | M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
-| M6 | Screenshot to wireframe (a skill for LLM agents) | in progress: steps 1–3 done (placeholder, CLI, skill); trial on the owner's screenshots next |
+| M6 | Screenshot to wireframe (a skill for LLM agents) | in progress: steps 1–3 done; step 4 trial on two desktop forms, gaps in docs/component-ideas.md (2026-10-15) |
 
 ## M0 – Scaffold and port
 
