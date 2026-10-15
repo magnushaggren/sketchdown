@@ -1401,6 +1401,7 @@ var KEYWORDS = /* @__PURE__ */ new Map([
   ["picture", "image"],
   ["placeholder", "placeholder"],
   ["form", "form"],
+  ["section", "section"],
   ["breadcrumb", "breadcrumb"],
   ["breadcrumbs", "breadcrumb"],
   ["crumbs", "breadcrumb"],
@@ -1412,8 +1413,26 @@ var KEYWORDS = /* @__PURE__ */ new Map([
   ["tree", "tree"]
 ]);
 var FRAMES = ["window", "dialog", "browser", "phone"];
-var CONTAINERS = /* @__PURE__ */ new Set(["root", "box", "form", "tabs", "row", "columns", ...FRAMES]);
-var BARE_OK = /* @__PURE__ */ new Set(["grid", "tabs", "box", "form", "row", "columns", ...FRAMES]);
+var CONTAINERS = /* @__PURE__ */ new Set([
+  "root",
+  "box",
+  "form",
+  "section",
+  "tabs",
+  "row",
+  "columns",
+  ...FRAMES
+]);
+var BARE_OK = /* @__PURE__ */ new Set([
+  "grid",
+  "tabs",
+  "box",
+  "form",
+  "section",
+  "row",
+  "columns",
+  ...FRAMES
+]);
 var CONTAINER_NAMES = [...CONTAINERS].filter((t) => t !== "root");
 var NO_BODY = new Set([...CONTAINERS].filter((t) => t !== "tabs"));
 function notUnderstood(line, keyword, type) {
@@ -1434,7 +1453,10 @@ var FLAGS = /* @__PURE__ */ new Set([
   "striped",
   "floating",
   "required",
-  "invalid"
+  "invalid",
+  "collapsible",
+  "collapsed",
+  "top"
 ]);
 function parseOptions(s) {
   const opts = {};
@@ -1699,23 +1721,6 @@ function titleBar(ctx, x, y, W, title) {
   );
 }
 
-// src/core/components/box.ts
-var box = (ctx, node, x, y, slot) => {
-  const title = node.text;
-  const tm = title ? ctx.measure(title) : { w: 0, h: 0 };
-  const { colors } = ctx.theme;
-  const dark = !!node.opts.dark;
-  return framed(ctx, node, x, y, slot, {
-    top: title ? tm.h + 20 : 0,
-    minW: Math.max(tm.w + 2 * 12, 120),
-    emptyH: title ? tm.h + 20 + 80 : 100,
-    ...dark ? { fill: colors.dark, color: colors.dark } : {},
-    decorate: (W) => {
-      if (title) titleBar(ctx, x, y, W, title);
-    }
-  });
-};
-
 // src/core/components/label.ts
 var TOKEN = /\{([a-zA-Z-]+)\}|\[([^[\]]+)\]|(?<=^|\s)-([^\s-](?:[^-]*[^\s-])?)-(?=$|[\s.,;:!?)])/g;
 var NOT_LINKS = /* @__PURE__ */ new Set(["x", "on", "off"]);
@@ -1816,6 +1821,56 @@ function drawLabel(ctx, x, y, label, o = {}) {
       cx += label.iconSize;
     }
   });
+}
+
+// src/core/components/box.ts
+var box = (ctx, node, x, y, slot) => {
+  if (node.opts.plain) return plain(ctx, node, x, y, slot);
+  const title = node.text;
+  const tm = title ? ctx.measure(title) : { w: 0, h: 0 };
+  const { colors } = ctx.theme;
+  const dark = !!node.opts.dark;
+  const folds = !!(node.opts.collapsible || node.opts.collapsed);
+  const icon2 = folds ? iconSizeFor(ctx) : 0;
+  const barH = ctx.measure(title).h + 20;
+  const minW = Math.max(tm.w + 2 * 12 + (folds ? icon2 + 12 : 0), 120);
+  const chevron = (W, name) => drawIcon(ctx, name, x + W - 12 - icon2, y + (barH - icon2) / 2, icon2);
+  if (node.opts.collapsed) {
+    const W = Math.max(node.opts.w || 0, slot?.w || 0, minW);
+    ctx.rect(x, y, W, barH, {
+      width: 2,
+      ...dark ? { fill: colors.dark, color: colors.dark } : {}
+    });
+    if (title) ctx.text(x + 12, y + 10, title, tm);
+    chevron(W, "chevron-down");
+    return { w: W, h: barH };
+  }
+  return framed(ctx, node, x, y, slot, {
+    top: title || folds ? barH : 0,
+    minW,
+    emptyH: title || folds ? barH + 80 : 100,
+    ...dark ? { fill: colors.dark, color: colors.dark } : {},
+    decorate: (W) => {
+      if (title || folds) titleBar(ctx, x, y, W, title);
+      if (folds) chevron(W, "chevron-up");
+    }
+  });
+};
+function plain(ctx, node, x, y, slot) {
+  const { stack } = ctx.theme.gap;
+  const label = node.text ? measureLabel(ctx, node.text) : null;
+  const natural = stackSize(ctx, node.children, stack);
+  const W = Math.max(node.opts.w || 0, slot?.w || 0, natural.w, label?.w ?? 0);
+  let h = 0;
+  if (label) {
+    drawLabel(ctx, x, y, label);
+    h = label.h;
+  }
+  if (node.children.length) {
+    if (label) h += stack;
+    h += ctx.stack(node.children, x, y + h, stack, W).h;
+  }
+  return { w: W, h: Math.max(node.opts.h || 0, slot?.h || 0, h) };
 }
 
 // src/core/components/button.ts
@@ -2167,6 +2222,36 @@ function floating(ctx, node, inner, x, y, slot) {
   return { w: size.w, h: size.h + top };
 }
 
+// src/core/components/section.ts
+var section = (ctx, node, x, y, slot) => {
+  const GAP2 = 8, MIN_GAP = 24;
+  const { stack } = ctx.theme.gap;
+  const { colors } = ctx.theme;
+  const label = measureLabel(ctx, node.text || " ");
+  const icon2 = iconSizeFor(ctx);
+  const count = node.opts.count !== void 0 ? String(node.opts.count) : "";
+  const cm = count ? ctx.measure(count) : null;
+  const headerH = Math.max(label.h, icon2);
+  const open = !node.opts.collapsed && node.children.length > 0;
+  const natural = open ? stackSize(ctx, node.children, stack) : { w: 0, h: 0 };
+  const W = Math.max(
+    node.opts.w || 0,
+    slot?.w || 0,
+    natural.w,
+    label.w + MIN_GAP + (cm ? cm.w + GAP2 : 0) + icon2
+  );
+  drawLabel(ctx, x, y + (headerH - label.h) / 2, label);
+  if (cm) {
+    const grey = ctx.ink === colors.disabled ? {} : { color: colors.muted };
+    ctx.text(x + W - icon2 - GAP2 - cm.w, y + (headerH - cm.h) / 2, count, cm, grey);
+  }
+  const chevron = node.opts.collapsed ? "chevron-down" : "chevron-up";
+  drawIcon(ctx, chevron, x + W - icon2, y + (headerH - icon2) / 2, icon2);
+  if (!open) return { w: W, h: Math.max(node.opts.h || 0, headerH) };
+  const content = ctx.stack(node.children, x, y + headerH + stack, stack, W);
+  return { w: W, h: Math.max(node.opts.h || 0, slot?.h || 0, headerH + stack + content.h) };
+};
+
 // src/core/components/frames.ts
 var CONTROL_GAP = 8;
 var windowFrame = (ctx, node, x, y, slot) => {
@@ -2362,14 +2447,14 @@ var grid = (ctx, node, x, y, slot) => {
   const colX = [x];
   colW.forEach((w, i) => colX.push(colX[i] + w));
   const { colors } = ctx.theme;
-  const plain = !!node.opts.plain;
-  if (!plain) ctx.rect(x, y, W, rowH, { fill: colors.fill, noStroke: true });
+  const plain2 = !!node.opts.plain;
+  if (!plain2) ctx.rect(x, y, W, rowH, { fill: colors.fill, noStroke: true });
   parsed.forEach((r, ri) => {
     if (ri === 0) return;
     const fill = r.selected ? colors.selected : node.opts.striped && ri % 2 === 0 ? colors.stripe : null;
     if (fill) ctx.rect(x, y + ri * rowH, W, rowH, { fill, noStroke: true });
   });
-  if (!plain) ctx.rect(x, y, W, H, { width: 2 });
+  if (!plain2) ctx.rect(x, y, W, H, { width: 2 });
   for (let ri = 1; ri < parsed.length; ri++) {
     ctx.line(
       [
@@ -2379,7 +2464,7 @@ var grid = (ctx, node, x, y, slot) => {
       ri === 1 ? 2 : 1
     );
   }
-  for (let ci = 1; ci < ncols && !plain; ci++) {
+  for (let ci = 1; ci < ncols && !plain2; ci++) {
     ctx.line(
       [
         [colX[ci], y],
@@ -2758,7 +2843,7 @@ var row = (ctx, node, x, y, slot) => {
   const H = Math.max(0, ...sizes.map((s) => s.h));
   let cx = x;
   kids.forEach((c, i) => {
-    ctx.draw(c, cx, y + (H - sizes[i].h) / 2, slots[i]);
+    ctx.draw(c, cx, node.opts.top ? y : y + (H - sizes[i].h) / 2, slots[i]);
     cx += sizes[i].w + (i < kids.length - 1 ? gap : 0);
   });
   return { w: Math.max(cx - x, target), h: H };
@@ -2954,7 +3039,8 @@ var COMPONENTS = {
   tree,
   placeholder,
   form,
-  field
+  field,
+  section
 };
 
 // src/core/layout.ts
@@ -3307,6 +3393,15 @@ var SNIPPETS = [
     name: "Field",
     description: "A label before one component; (floating) puts it on the border",
     text: "field: Name | input: Anna Svensson"
+  },
+  {
+    name: "Section",
+    description: "Header with a count and a chevron over a group; (collapsed) folds it",
+    text: lines(
+      "section: {users} Ownership (count=2)",
+      "  details: Owner | Anna Svensson",
+      "  Team | Platform"
+    )
   },
   {
     name: "Form",

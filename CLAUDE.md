@@ -140,6 +140,9 @@ top-left, delete them, draw the new version at that point.
   Error colour `#e03131` (a setting): `(required)` is a red `*` after a
   field's label; `(invalid)` (any component, handled in `ctx.draw`) is a red
   outline plus a red circled x after the component, inside its slot.
+- M7 groups: chevrons point up when open and down when collapsed, at the
+  right end of a box's title bar or a section's header line; a collapsed
+  box is only its title bar. `box (plain)` and `section` have no frame.
 - Layout contract: a parent may pass a `Slot` ({w, h}) to a child, which
   then makes itself at least that big. Parents only pass one to `(fill)`
   children (and heights to `columns` panels), so specs without the new

@@ -74,15 +74,15 @@ under a form) may be shortened; say so in the assumptions.
 | Table | `grid`, header row, then up to about 8 rows; `*` marks a selected row |
 | Status dot in a cell | `{dot} Active` |
 | Read-only label/value pairs | `details: {mail} E-mail \| anna@example.com`, one pair per line |
-| Group box, panel with a title | `box: Title` |
+| Group box, panel with a title | `box: Title`; with a fold chevron `(collapsible)`, folded `(collapsed)` |
 | Card | `box:` with the content inside |
 | Label and field | `field: Customer \| search: Search...`; any one-line component after the `\|` |
 | Form or group box of labelled fields | `form: Title` with one `field:` per line, labels line up; `(label=140)` fixes the label column; two fields side by side: a `row: (fill)` with `(fill)` fields |
 | Label inside the field's top border (Material) | `field: Type \| dropdown: Virtual Server (floating)` |
-| Columns of different heights | `row` centres its children vertically; to keep them at the top, wrap each column in `box (w=..., h=...)` with the same height |
+| Columns of different heights | `row (top)`, one `box (plain, w=...)` per column holding its groups |
 | Things side by side | `row:` |
 | Items at both ends of a bar | `row: (fill)` with an empty `row: (fill)` between the groups as a spacer; the outer row needs a known width, so it sits in a `box` or `columns` panel, or has `(w=...)` |
-| Section header with a count and a chevron | `row: (fill)` with `text: IDENTITY (fill)` and `text: -3- {chevron-down}` |
+| Section header with a count and a chevron (accordion, drawer groups) | `section: {users} Ownership (count=3, fill)` with the group's content indented under it; folded `(collapsed)` |
 | Toolbar | `row:` of buttons with icons, `{plus} Create` |
 | Message or banner | `alert: {info} Saved. [Undo]` |
 | Disabled control | the component with `(disabled)` |

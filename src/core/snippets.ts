@@ -212,6 +212,15 @@ export const SNIPPETS: Snippet[] = [
     text: "field: Name | input: Anna Svensson",
   },
   {
+    name: "Section",
+    description: "Header with a count and a chevron over a group; (collapsed) folds it",
+    text: lines(
+      "section: {users} Ownership (count=2)",
+      "  details: Owner | Anna Svensson",
+      "  Team | Platform",
+    ),
+  },
+  {
     name: "Form",
     description: "Group of fields whose labels line up",
     text: lines(

@@ -39,7 +39,8 @@ export type ComponentType =
   | "tree"
   | "placeholder"
   | "form"
-  | "field";
+  | "field"
+  | "section";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {

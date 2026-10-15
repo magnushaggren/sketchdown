@@ -81,6 +81,7 @@ icon, `[text]` a link and `-text-` grey text. The full reference is
 | `grid` (table, datagrid) | `grid`, then rows like `Anna, Developer` |
 | `tabs` (tab) | `tabs: A \| *B \| C` |
 | `box` (panel, group) | `box: New user` |
+| `section` | `section: {users} Ownership (count=3)` |
 | `form` | `form: New user (label=140)` |
 | `field` | `field: Customer \| search: Search...` |
 | `row` | `row:` |

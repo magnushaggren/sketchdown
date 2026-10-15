@@ -5,14 +5,14 @@
 ## Structure
 
 - One component per line: `keyword: content (options)`.
-- `grid`, `tabs`, `box`, `form`, `row`, `columns` and the frames (`window`,
+- `grid`, `tabs`, `box`, `form`, `section`, `row`, `columns` and the frames (`window`,
   `dialog`, `browser`, `phone`) may also appear without a colon.
 - Indentation nests components. Anything indented deeper than a container
-  line (`tabs`, `box`, `form`, `row`, `columns` and the frames) goes inside it. Tabs count as 4 spaces.
+  line (`tabs`, `box`, `form`, `section`, `row`, `columns` and the frames) goes inside it. Tabs count as 4 spaces.
 - Lines that don't start with a keyword are **continuation lines** of the
   most recent component, for example grid rows, extra tab names or more
   checkbox items. A blank line ends the continuation.
-- `box`, `form`, `row`, `columns` and the frames take no continuation
+- `box`, `form`, `section`, `row`, `columns` and the frames take no continuation
   lines, so such a line right after one of them is an error, as is a
   keyword without its colon (`nav (dark)` needs to be `nav: (dark)`).
   `tabs` takes them as extra tab names.
@@ -45,7 +45,8 @@
 | `text` (label) | `text: Role` | continuation lines become more lines of text |
 | `grid` (table, datagrid) | `grid`, then rows like `Anna, Developer` | first row is the header |
 | `tabs` (tab) | `tabs: A \| *B \| C` | container; empty panel 360×160 by default; `(segmented)` and `(underline)` styles below |
-| `box` (panel, group) | `box: New user` | container with an optional title bar |
+| `box` (panel, group) | `box: New user` | container with an optional title bar; `(collapsible)`, `(collapsed)` and `(plain)` in Groups below |
+| `section` | `section: {users} Ownership (count=3)` | container: a header line with a count and a chevron, children below; see Groups below |
 | `form` | `form: New user (label=140)` | container like `box` whose fields' labels line up; see Forms below |
 | `field` | `field: Customer \| search: Search...` | a label before one component; see Forms below |
 | `row` | `row:` | container, children side by side, centred vertically |
@@ -146,6 +147,32 @@ Anna, Developer, 52 000 kr, [x]
     row: (fill)
       field: Start | input: {calendar} 2026-11-01 (fill)
       field: Team | input: Platform (fill)
+  ```
+
+## Groups
+
+- `box: Domain (collapsible)` puts a chevron pointing up at the right end
+  of the title bar. `(collapsed)` draws only the title bar, with the
+  chevron pointing down, and leaves the children out. Both work on `form`.
+- `section: {users} Ownership (count=3)` is a header line over a group,
+  with no frame: the title (icons and formatting allowed) at the left, the
+  count in grey and a chevron at the right. Its children are stacked under
+  it; `(collapsed)` hides them. `(fill)` stretches it, with the count and
+  chevron at the far right.
+- `box (plain)` stacks its children with no frame, padding or title bar;
+  a title is a line of text above them. Use it to stack groups in a column.
+- `row (top)` aligns its children at the top instead of the middle.
+
+  ```
+  row (top)
+    box (plain, w=320)
+      form: Domain (collapsible, fill)
+        field: Customer | search: Search... (fill)
+      box: Journal (collapsed, fill)
+    box (plain, w=320)
+      section: Identity (count=2, fill)
+        details: ID | S55830
+        Site | Stockholm
   ```
 
 ## Frames

@@ -68,6 +68,7 @@ const KEYWORDS = new Map<string, NodeType>([
   ["picture", "image"],
   ["placeholder", "placeholder"],
   ["form", "form"],
+  ["section", "section"],
   ["breadcrumb", "breadcrumb"],
   ["breadcrumbs", "breadcrumb"],
   ["crumbs", "breadcrumb"],
@@ -79,8 +80,26 @@ const KEYWORDS = new Map<string, NodeType>([
   ["tree", "tree"],
 ]);
 const FRAMES: NodeType[] = ["window", "dialog", "browser", "phone"];
-const CONTAINERS = new Set<NodeType>(["root", "box", "form", "tabs", "row", "columns", ...FRAMES]);
-const BARE_OK = new Set<NodeType>(["grid", "tabs", "box", "form", "row", "columns", ...FRAMES]); // may appear without a colon
+const CONTAINERS = new Set<NodeType>([
+  "root",
+  "box",
+  "form",
+  "section",
+  "tabs",
+  "row",
+  "columns",
+  ...FRAMES,
+]);
+const BARE_OK = new Set<NodeType>([
+  "grid",
+  "tabs",
+  "box",
+  "form",
+  "section",
+  "row",
+  "columns",
+  ...FRAMES,
+]); // may appear without a colon
 const CONTAINER_NAMES = [...CONTAINERS].filter((t) => t !== "root");
 // containers that take no continuation lines (tabs takes extra tab names)
 const NO_BODY = new Set<NodeType>([...CONTAINERS].filter((t) => t !== "tabs"));
@@ -108,6 +127,9 @@ export const FLAGS = new Set([
   "floating",
   "required",
   "invalid",
+  "collapsible",
+  "collapsed",
+  "top",
 ]);
 
 /**
