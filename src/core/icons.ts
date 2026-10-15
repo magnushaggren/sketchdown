@@ -10,6 +10,38 @@ type Draw = (pen: Pen) => void;
 interface Pen {
   line(...points: [number, number][]): void;
   circle(cx: number, cy: number, r: number, filled?: boolean): void;
+  oval(cx: number, cy: number, rx: number, ry: number): void;
+}
+
+/** Points on an elliptic arc, angles in degrees, clockwise from the right (y points down). */
+function arc(
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  from: number,
+  to: number,
+  steps = 10,
+): [number, number][] {
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const a = ((from + ((to - from) * i) / steps) * Math.PI) / 180;
+    pts.push([cx + rx * Math.cos(a), cy + ry * Math.sin(a)]);
+  }
+  return pts;
+}
+
+/** An arrowhead at the end of a clockwise arc of radius r around (cx, cy), at angle a. */
+function arcArrow(p: Pen, cx: number, cy: number, r: number, a: number): void {
+  const rad = (a * Math.PI) / 180;
+  const tip: [number, number] = [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+  const d = [-Math.sin(rad), Math.cos(rad)]; // direction of travel
+  const n = [d[1], -d[0]];
+  const back = [tip[0] - 0.2 * d[0], tip[1] - 0.2 * d[1]];
+  p.line([back[0] + 0.14 * n[0], back[1] + 0.14 * n[1]], tip, [
+    back[0] - 0.14 * n[0],
+    back[1] - 0.14 * n[1],
+  ]);
 }
 
 function star(): [number, number][] {
@@ -158,6 +190,88 @@ const DRAW: Record<string, Draw> = {
     p.line([0.32, 0.45], [0.32, 0.28], [0.42, 0.14], [0.58, 0.14], [0.68, 0.28], [0.68, 0.45]);
   },
   dot: (p) => p.circle(0.5, 0.5, 0.25, true),
+  key: (p) => {
+    p.circle(0.27, 0.5, 0.17);
+    p.line([0.44, 0.5], [0.92, 0.5]);
+    p.line([0.72, 0.5], [0.72, 0.66]);
+    p.line([0.86, 0.5], [0.86, 0.62]);
+  },
+  warning: (p) => {
+    p.line([0.5, 0.1], [0.92, 0.86], [0.08, 0.86], [0.5, 0.1]);
+    p.line([0.5, 0.38], [0.5, 0.6]);
+    p.circle(0.5, 0.73, 0.04, true);
+  },
+  refresh: (p) => {
+    p.line(...arc(0.5, 0.52, 0.34, 0.34, -30, 250, 14));
+    arcArrow(p, 0.5, 0.52, 0.34, 250);
+  },
+  print: (p) => {
+    p.line([0.08, 0.38], [0.92, 0.38], [0.92, 0.74], [0.08, 0.74], [0.08, 0.38]);
+    p.line([0.26, 0.38], [0.26, 0.1], [0.74, 0.1], [0.74, 0.38]);
+    p.line([0.26, 0.6], [0.26, 0.9], [0.74, 0.9], [0.74, 0.6], [0.26, 0.6]);
+  },
+  database: (p) => {
+    p.oval(0.5, 0.2, 0.36, 0.11);
+    p.line([0.14, 0.2], [0.14, 0.8]);
+    p.line([0.86, 0.2], [0.86, 0.8]);
+    p.line(...arc(0.5, 0.5, 0.36, 0.11, 0, 180));
+    p.line(...arc(0.5, 0.8, 0.36, 0.11, 0, 180));
+  },
+  clock: (p) => {
+    p.circle(0.5, 0.5, 0.42);
+    p.line([0.5, 0.24], [0.5, 0.5], [0.7, 0.62]);
+  },
+  code: (p) => {
+    p.line([0.3, 0.26], [0.08, 0.5], [0.3, 0.74]);
+    p.line([0.7, 0.26], [0.92, 0.5], [0.7, 0.74]);
+    p.line([0.58, 0.16], [0.42, 0.84]);
+  },
+  ban: (p) => {
+    p.circle(0.5, 0.5, 0.42);
+    p.line([0.2, 0.2], [0.8, 0.8]);
+  },
+  cloud: (p) =>
+    p.line(
+      ...arc(0.27, 0.6, 0.15, 0.15, 90, 250, 6),
+      ...arc(0.5, 0.46, 0.22, 0.22, 200, 340, 8),
+      ...arc(0.74, 0.6, 0.15, 0.15, 270, 450, 6),
+      [0.27, 0.75],
+    ),
+  map: (p) => {
+    p.line(
+      [0.08, 0.2],
+      [0.36, 0.1],
+      [0.64, 0.2],
+      [0.92, 0.1],
+      [0.92, 0.8],
+      [0.64, 0.9],
+      [0.36, 0.8],
+      [0.08, 0.9],
+      [0.08, 0.2],
+    );
+    p.line([0.36, 0.1], [0.36, 0.8]);
+    p.line([0.64, 0.2], [0.64, 0.9]);
+  },
+  hash: (p) => {
+    p.line([0.4, 0.1], [0.32, 0.9]);
+    p.line([0.72, 0.1], [0.64, 0.9]);
+    p.line([0.14, 0.36], [0.9, 0.36]);
+    p.line([0.1, 0.64], [0.86, 0.64]);
+  },
+  network: (p) => {
+    p.circle(0.5, 0.2, 0.12);
+    p.circle(0.2, 0.8, 0.12);
+    p.circle(0.8, 0.8, 0.12);
+    p.line([0.5, 0.32], [0.5, 0.52]);
+    p.line([0.2, 0.68], [0.2, 0.52], [0.8, 0.52], [0.8, 0.68]);
+  },
+  grid: (p) => {
+    p.line([0.12, 0.12], [0.88, 0.12], [0.88, 0.88], [0.12, 0.88], [0.12, 0.12]);
+    p.line([0.37, 0.12], [0.37, 0.88]);
+    p.line([0.63, 0.12], [0.63, 0.88]);
+    p.line([0.12, 0.37], [0.88, 0.37]);
+    p.line([0.12, 0.63], [0.88, 0.63]);
+  },
 };
 
 export const ICON_NAMES: readonly string[] = Object.keys(DRAW);
@@ -175,5 +289,7 @@ export function drawIcon(ctx: DrawContext, name: string, x: number, y: number, s
       ctx.ellipse(x + (cx - r) * s, y + (cy - r) * s, 2 * r * s, 2 * r * s, {
         ...(filled ? { fill: INK } : {}),
       }),
+    oval: (cx, cy, rx, ry) =>
+      ctx.ellipse(x + (cx - rx) * s, y + (cy - ry) * s, 2 * rx * s, 2 * ry * s),
   });
 }

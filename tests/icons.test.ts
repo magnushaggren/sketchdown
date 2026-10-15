@@ -45,6 +45,11 @@ describe("icon:", () => {
     expect(b.y1).toBeLessThanOrEqual(S + 0.001);
   });
 
+  it("has the M7 icons", () => {
+    const m7 = "key warning refresh print database clock code ban cloud map hash network grid";
+    expect(ICON_NAMES).toEqual(expect.arrayContaining(m7.split(" ")));
+  });
+
   it("ignores case", () => {
     expect(parse("icon: Search").errors).toEqual([]);
   });

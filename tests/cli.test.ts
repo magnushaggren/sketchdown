@@ -92,9 +92,9 @@ describe("report", () => {
 
 describe("unknown icons", () => {
   it("are listed as warnings with their lines", () => {
-    const result = sketch("button: {refresh} Reload\ntext: {home} ok\ngrid\n  a, {nope}");
+    const result = sketch("button: {rocket} Launch\ntext: {home} ok\ngrid\n  a, {nope}");
     expect(result.warnings).toEqual([
-      { line: 1, message: "{refresh} is not an icon, so it is drawn as text" },
+      { line: 1, message: "{rocket} is not an icon, so it is drawn as text" },
       { line: 4, message: "{nope} is not an icon, so it is drawn as text" },
     ]);
   });

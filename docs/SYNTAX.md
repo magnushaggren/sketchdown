@@ -325,7 +325,8 @@ tree: {folder} Project
 - Names (case doesn't matter): search, filter, more, close, back, menu,
   home, user, users, settings, plus, edit, trash, bell, calendar, file,
   folder, star, info, check, chevron-down, chevron-right, chevron-left, chevron-up, mail, phone,
-  lock, dot.
+  lock, dot; **[M7]** key, warning, refresh, print, database, clock, code,
+  ban, cloud, map, hash, network, grid.
 
 ## Modifiers [M3a]
 

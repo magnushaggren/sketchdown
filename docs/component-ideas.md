@@ -34,7 +34,7 @@ Sources so far (2026-10-15):
 | 12 | Field with a trailing button | lookup with a pencil or "…" inside the right edge; spin edit; date edit | separate button, or placeholder | 8 | trailing `{icon}` in `input`/`search`; `spin: 12` |
 | 13 | Vertical split | master grid above, detail tabs below, fixed heights | stacked boxes | every grid screen | `rows:` like `columns` |
 | 14 | Grid extras | filter row, group-by bar, sort arrows, status bar ("Items: 0") | not drawn | every grid screen | grid options `(filter, status)` |
-| 15 | More icons | key, warning, refresh, print, database, clock, code, ban, cloud, map, hash, id card, network | left out, a near miss, or `↻` as text | ~20 | add to the icon set |
+| 15 | More icons | key, warning, refresh, print, database, clock, code, ban, cloud, map, hash, id card, network | left out, a near miss, or `↻` as text | ~20 | add to the icon set (done in M7, except id card) |
 | 16 | Stacked details | label above its value, an icon per row (detail drawer) | `details`, label and value side by side | 20 | `details: (stacked)` |
 | 17 | Section header | icon, CAPS title, item count and chevron over a group of details | `row:` of `text (fill)` and `text: -3- {chevron-down}` | 6 | `section: Identity (count=3)`; pairs with #3 |
 | 18 | Drawer | panel over the right edge with a close button | a third `columns` panel | 1 | `drawer: (w=600)` frame |

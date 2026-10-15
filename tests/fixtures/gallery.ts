@@ -32,6 +32,7 @@ export const GALLERY = lines(
   "text: Icons",
   "text: {search} {filter} {more} {close} {back} {menu} {home} {user} {users} {settings} {plus} {edit} {trash}",
   "{bell} {calendar} {file} {folder} {star} {info} {check} {chevron-down} {chevron-right} {chevron-left} {chevron-up} {mail} {phone} {lock} {dot}",
+  "{key} {warning} {refresh} {print} {database} {clock} {code} {ban} {cloud} {map} {hash} {network} {grid}",
   "row:",
   "  button: {plus} Add",
   "  button: {filter}",
