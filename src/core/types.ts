@@ -40,7 +40,8 @@ export type ComponentType =
   | "placeholder"
   | "form"
   | "field"
-  | "section";
+  | "section"
+  | "spin";
 export type NodeType = "root" | ComponentType;
 
 export interface SpecNode {

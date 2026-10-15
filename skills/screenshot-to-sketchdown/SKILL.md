@@ -69,11 +69,14 @@ under a form) may be shortened; say so in the assumptions.
 | Search field | `search: Find users` |
 | Select, combo box | `dropdown: *Current value \| Other` |
 | Text field with a value | `input: Anna`; with a label: `field: Name \| input: Anna` |
-| Date field | `input: {calendar} 2026-10-14` |
+| Date field | with a calendar button: `input: 2026-10-14 {calendar}`; with an icon inside on the left: `input: {calendar} 2026-10-14` |
+| Field with a button at its right end (lookup, edit, clear) | an icon at the end of the text: `search: Anna Svensson {edit}`, `dropdown: Sweden {search}` |
+| Empty field, select with no value | `(empty)`: `dropdown: (empty)`, `password: (empty)` |
+| Number with up and down arrows | `spin: 12` |
 | Multi-line text | `textarea:` |
 | Table | `grid`, header row, then up to about 8 rows; `*` marks a selected row |
 | Status dot in a cell | `{dot} Active` |
-| Read-only label/value pairs | `details: {mail} E-mail \| anna@example.com`, one pair per line |
+| Read-only label/value pairs | `details: {mail} E-mail \| anna@example.com`, one pair per line; small label above the value (drawers): `(stacked)` |
 | Group box, panel with a title | `box: Title`; with a fold chevron `(collapsible)`, folded `(collapsed)` |
 | Card | `box:` with the content inside |
 | Label and field | `field: Customer \| search: Search...`; any one-line component after the `\|` |
@@ -104,8 +107,8 @@ pads, anything app-specific.
 - Prefer a placeholder over bending a component into something it isn't.
   Don't use `image` for things that aren't pictures or `grid` for a form.
 - A close-enough component with a gap note is fine when it keeps the
-  wireframe readable (a lookup with a trailing button as a plain `search`).
-- The name says what the thing is ("Spin edit", "Rich-text editor"), not
+  wireframe readable (a tag picker as a plain `dropdown`).
+- The name says what the thing is ("Signature pad", "Rich-text editor"), not
   the value it shows.
 - Keep names short; a placeholder grows to fit its name.
 - Every placeholder, and every compromise like the one above, goes in the
@@ -156,7 +159,7 @@ of missing component (not per occurrence):
 
 | Component | Seen as | Drawn as | Size | Count | Suggested syntax |
 |---|---|---|---|---|---|
-| Spin edit | number with up and down arrows | `placeholder` | 70x32 | 2 | `spin: 12 (w=70)` |
+| Signature pad | box to sign in with a pen | `placeholder` | 220x80 | 1 | `signature: (w=220)` |
 | Line chart | revenue over 12 months | `placeholder` | 300x200 | 1 | `chart: line (w=300, h=200)` |
 
 Then **Suggested components**: the two or three additions that would have

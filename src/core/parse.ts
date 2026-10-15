@@ -78,6 +78,9 @@ const KEYWORDS = new Map<string, NodeType>([
   ["menu", "menu"],
   ["contextmenu", "menu"],
   ["tree", "tree"],
+  ["spin", "spin"],
+  ["number", "spin"],
+  ["stepper", "spin"],
 ]);
 const FRAMES: NodeType[] = ["window", "dialog", "browser", "phone"];
 const CONTAINERS = new Set<NodeType>([
@@ -130,6 +133,8 @@ export const FLAGS = new Set([
   "collapsible",
   "collapsed",
   "top",
+  "empty",
+  "stacked",
 ]);
 
 /**
@@ -167,7 +172,7 @@ const FIELD_OPTS = ["fill", "disabled", "floating", "required"];
 function splitField(content: string): { label: string; line: string } | null {
   for (let i = content.indexOf("|"); i >= 0; i = content.indexOf("|", i + 1)) {
     const line = content.slice(i + 1).trim();
-    const m = line.match(/^([a-zA-Z][a-zA-Z0-9]*)s*:/);
+    const m = line.match(/^([a-zA-Z][a-zA-Z0-9]*)\s*:/);
     if (m && KEYWORDS.has(m[1].toLowerCase())) return { label: content.slice(0, i).trim(), line };
   }
   return null;
@@ -225,7 +230,7 @@ export function parse(source: string): ParseResult {
         let node: SpecNode;
         if (labelled) {
           // "field: Label | input: Anna": a label before one component
-          const im = labelled.line.match(/^([a-zA-Z][a-zA-Z0-9]*)s*:s*(.*)$/)!;
+          const im = labelled.line.match(/^([a-zA-Z][a-zA-Z0-9]*)\s*:\s*(.*)$/)!;
           let innerType = KEYWORDS.get(im[1].toLowerCase())!;
           let content = im[2];
           if (CONTAINERS.has(innerType)) {

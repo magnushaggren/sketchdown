@@ -1410,7 +1410,10 @@ var KEYWORDS = /* @__PURE__ */ new Map([
   ["pages", "pagination"],
   ["menu", "menu"],
   ["contextmenu", "menu"],
-  ["tree", "tree"]
+  ["tree", "tree"],
+  ["spin", "spin"],
+  ["number", "spin"],
+  ["stepper", "spin"]
 ]);
 var FRAMES = ["window", "dialog", "browser", "phone"];
 var CONTAINERS = /* @__PURE__ */ new Set([
@@ -1456,7 +1459,9 @@ var FLAGS = /* @__PURE__ */ new Set([
   "invalid",
   "collapsible",
   "collapsed",
-  "top"
+  "top",
+  "empty",
+  "stacked"
 ]);
 function parseOptions(s) {
   const opts = {};
@@ -1480,7 +1485,7 @@ var FIELD_OPTS = ["fill", "disabled", "floating", "required"];
 function splitField(content) {
   for (let i = content.indexOf("|"); i >= 0; i = content.indexOf("|", i + 1)) {
     const line = content.slice(i + 1).trim();
-    const m = line.match(/^([a-zA-Z][a-zA-Z0-9]*)s*:/);
+    const m = line.match(/^([a-zA-Z][a-zA-Z0-9]*)\s*:/);
     if (m && KEYWORDS.has(m[1].toLowerCase())) return { label: content.slice(0, i).trim(), line };
   }
   return null;
@@ -1527,7 +1532,7 @@ function parse(source) {
       const labelled = m[1].toLowerCase() === "field" && hasColon ? splitField(m[2]) : null;
       let node;
       if (labelled) {
-        const im = labelled.line.match(/^([a-zA-Z][a-zA-Z0-9]*)s*:s*(.*)$/);
+        const im = labelled.line.match(/^([a-zA-Z][a-zA-Z0-9]*)\s*:\s*(.*)$/);
         let innerType = KEYWORDS.get(im[1].toLowerCase());
         let content = im[2];
         if (CONTAINERS.has(innerType)) {
@@ -1600,125 +1605,6 @@ function extractSpec(text2, options) {
   if (!spec.trim()) return null;
   const { tree: tree2, errors } = parse(spec);
   return errors.length || !tree2.children.length ? null : spec;
-}
-
-// src/core/components/shared.ts
-function contentLines(node) {
-  return [node.text, ...node.body].filter(Boolean);
-}
-function splitItems(s, allowComma = true) {
-  return (s.includes("|") || !allowComma ? s.split("|") : s.split(",")).map((t) => t.trim()).filter((t) => t.length);
-}
-function parseCheck(t) {
-  const cb = t.match(/^\[( |x|X)?\]\s*(.*)$/);
-  if (cb) return { checked: !!cb[1] && cb[1] !== " ", label: cb[2] };
-  return null;
-}
-function starred(items2) {
-  const sel = items2.findIndex((t) => t.startsWith("*") || t.endsWith("*"));
-  const labels = items2.map((t) => t.replace(/^\*\s*/, "").replace(/\s*\*$/, ""));
-  return { sel: sel < 0 ? 0 : sel, labels };
-}
-var BOX = 14;
-function checkMark(ctx, x, y, checked) {
-  ctx.rect(x, y, BOX, BOX, { fill: ctx.theme.colors.paper });
-  if (checked) {
-    ctx.line(
-      [
-        [x + 3, y + 7],
-        [x + 6, y + 11],
-        [x + 12, y + 2]
-      ],
-      2
-    );
-  }
-}
-function stackSize(ctx, children, gap, width) {
-  const saved = ctx.dry;
-  ctx.dry = true;
-  const r = ctx.stack(children, 0, 0, gap, width);
-  ctx.dry = saved;
-  return r;
-}
-function needsWidthFirst(node, slot) {
-  return !!slot?.w || node.children.some((c) => c.opts.fill);
-}
-
-// src/core/components/avatar.ts
-var avatar = (ctx, node, x, y) => {
-  const initials = contentLines(node).join(" ").trim();
-  const s = node.opts.w || 2 * ctx.measure(" ").h;
-  ctx.ellipse(x, y, s, s, { fill: ctx.theme.colors.fill });
-  if (initials) {
-    const m = ctx.measure(initials);
-    ctx.text(x + (s - m.w) / 2, y + (s - m.h) / 2, initials, m);
-  } else {
-    const i = s * 0.6;
-    drawIcon(ctx, "user", x + (s - i) / 2, y + (s - i) / 2, i);
-  }
-  return { w: s, h: s };
-};
-
-// src/core/components/frame.ts
-function framed(ctx, node, x, y, slot, chrome) {
-  const { pad, stack } = ctx.theme.gap;
-  const shadow = chrome.shadow ?? 0;
-  const contentTop = chrome.top ? y + chrome.top + pad * 0.75 : y + pad;
-  const minW = Math.max(node.opts.w || 0, (slot?.w || 0) - shadow, chrome.minW);
-  const height = (contentH) => Math.max(
-    node.opts.h || 0,
-    (slot?.h || 0) - shadow,
-    chrome.minH ?? 0,
-    node.children.length ? contentTop - y + contentH + (chrome.bottom ?? 0) : chrome.emptyH
-  );
-  const frame = (W2, H2) => {
-    if (shadow) {
-      ctx.rect(x + shadow, y + shadow, W2, H2, {
-        fill: ctx.theme.colors.disabled,
-        noStroke: true,
-        rounded: chrome.rounded
-      });
-    }
-    ctx.rect(x, y, W2, H2, {
-      width: 2,
-      ...chrome.fill ? { fill: chrome.fill } : {},
-      ...chrome.color ? { color: chrome.color } : {},
-      ...chrome.rounded ? { rounded: true } : {}
-    });
-  };
-  let W, H;
-  if (chrome.fill) {
-    const natural = stackSize(ctx, node.children, stack);
-    W = Math.max(minW, natural.w + 2 * pad);
-    const content = stackSize(ctx, node.children, stack, W - 2 * pad);
-    H = height(content.h + pad);
-    frame(W, H);
-    ctx.stack(node.children, x + pad, contentTop, stack, W - 2 * pad);
-  } else {
-    let content;
-    if (needsWidthFirst(node, slot)) {
-      W = Math.max(minW, stackSize(ctx, node.children, stack).w + 2 * pad);
-      content = ctx.stack(node.children, x + pad, contentTop, stack, W - 2 * pad);
-    } else {
-      content = ctx.stack(node.children, x + pad, contentTop, stack);
-      W = Math.max(minW, content.w + 2 * pad);
-    }
-    H = height(content.h + pad);
-    frame(W, H);
-  }
-  chrome.decorate?.(W, H);
-  return { w: W + shadow, h: H + shadow };
-}
-function titleBar(ctx, x, y, W, title) {
-  if (title) ctx.text(x + 12, y + 10, title, ctx.measure(title));
-  const h = ctx.measure(title).h + 20;
-  ctx.line(
-    [
-      [x, y + h],
-      [x + W, y + h]
-    ],
-    1
-  );
 }
 
 // src/core/components/label.ts
@@ -1821,6 +1707,143 @@ function drawLabel(ctx, x, y, label, o = {}) {
       cx += label.iconSize;
     }
   });
+}
+
+// src/core/components/shared.ts
+function contentLines(node) {
+  return [node.text, ...node.body].filter(Boolean);
+}
+function splitItems(s, allowComma = true) {
+  return (s.includes("|") || !allowComma ? s.split("|") : s.split(",")).map((t) => t.trim()).filter((t) => t.length);
+}
+function parseCheck(t) {
+  const cb = t.match(/^\[( |x|X)?\]\s*(.*)$/);
+  if (cb) return { checked: !!cb[1] && cb[1] !== " ", label: cb[2] };
+  return null;
+}
+function starred(items2) {
+  const sel = items2.findIndex((t) => t.startsWith("*") || t.endsWith("*"));
+  const labels = items2.map((t) => t.replace(/^\*\s*/, "").replace(/\s*\*$/, ""));
+  return { sel: sel < 0 ? 0 : sel, labels };
+}
+var BOX = 14;
+function checkMark(ctx, x, y, checked) {
+  ctx.rect(x, y, BOX, BOX, { fill: ctx.theme.colors.paper });
+  if (checked) {
+    ctx.line(
+      [
+        [x + 3, y + 7],
+        [x + 6, y + 11],
+        [x + 12, y + 2]
+      ],
+      2
+    );
+  }
+}
+function stackSize(ctx, children, gap, width) {
+  const saved = ctx.dry;
+  ctx.dry = true;
+  const r = ctx.stack(children, 0, 0, gap, width);
+  ctx.dry = saved;
+  return r;
+}
+function needsWidthFirst(node, slot) {
+  return !!slot?.w || node.children.some((c) => c.opts.fill);
+}
+function trailingIcon(text2, alone = false) {
+  const m = text2.match(/(^|\s)\{([a-zA-Z-]+)\}\s*$/);
+  if (!m || m.index === void 0 || !isIcon(m[2])) return { text: text2, icon: null };
+  const rest = text2.slice(0, m.index).trim();
+  if (!rest && !alone) return { text: text2, icon: null };
+  return { text: rest, icon: m[2] };
+}
+function trailingButton(ctx, right, y, h, icon2) {
+  ctx.line(
+    [
+      [right - h, y],
+      [right - h, y + h]
+    ],
+    1
+  );
+  const s = iconSizeFor(ctx);
+  drawIcon(ctx, icon2, right - h + (h - s) / 2, y + (h - s) / 2, s);
+}
+
+// src/core/components/avatar.ts
+var avatar = (ctx, node, x, y) => {
+  const initials = contentLines(node).join(" ").trim();
+  const s = node.opts.w || 2 * ctx.measure(" ").h;
+  ctx.ellipse(x, y, s, s, { fill: ctx.theme.colors.fill });
+  if (initials) {
+    const m = ctx.measure(initials);
+    ctx.text(x + (s - m.w) / 2, y + (s - m.h) / 2, initials, m);
+  } else {
+    const i = s * 0.6;
+    drawIcon(ctx, "user", x + (s - i) / 2, y + (s - i) / 2, i);
+  }
+  return { w: s, h: s };
+};
+
+// src/core/components/frame.ts
+function framed(ctx, node, x, y, slot, chrome) {
+  const { pad, stack } = ctx.theme.gap;
+  const shadow = chrome.shadow ?? 0;
+  const contentTop = chrome.top ? y + chrome.top + pad * 0.75 : y + pad;
+  const minW = Math.max(node.opts.w || 0, (slot?.w || 0) - shadow, chrome.minW);
+  const height = (contentH) => Math.max(
+    node.opts.h || 0,
+    (slot?.h || 0) - shadow,
+    chrome.minH ?? 0,
+    node.children.length ? contentTop - y + contentH + (chrome.bottom ?? 0) : chrome.emptyH
+  );
+  const frame = (W2, H2) => {
+    if (shadow) {
+      ctx.rect(x + shadow, y + shadow, W2, H2, {
+        fill: ctx.theme.colors.disabled,
+        noStroke: true,
+        rounded: chrome.rounded
+      });
+    }
+    ctx.rect(x, y, W2, H2, {
+      width: 2,
+      ...chrome.fill ? { fill: chrome.fill } : {},
+      ...chrome.color ? { color: chrome.color } : {},
+      ...chrome.rounded ? { rounded: true } : {}
+    });
+  };
+  let W, H;
+  if (chrome.fill) {
+    const natural = stackSize(ctx, node.children, stack);
+    W = Math.max(minW, natural.w + 2 * pad);
+    const content = stackSize(ctx, node.children, stack, W - 2 * pad);
+    H = height(content.h + pad);
+    frame(W, H);
+    ctx.stack(node.children, x + pad, contentTop, stack, W - 2 * pad);
+  } else {
+    let content;
+    if (needsWidthFirst(node, slot)) {
+      W = Math.max(minW, stackSize(ctx, node.children, stack).w + 2 * pad);
+      content = ctx.stack(node.children, x + pad, contentTop, stack, W - 2 * pad);
+    } else {
+      content = ctx.stack(node.children, x + pad, contentTop, stack);
+      W = Math.max(minW, content.w + 2 * pad);
+    }
+    H = height(content.h + pad);
+    frame(W, H);
+  }
+  chrome.decorate?.(W, H);
+  return { w: W + shadow, h: H + shadow };
+}
+function titleBar(ctx, x, y, W, title) {
+  if (title) ctx.text(x + 12, y + 10, title, ctx.measure(title));
+  const h = ctx.measure(title).h + 20;
+  ctx.line(
+    [
+      [x, y + h],
+      [x + W, y + h]
+    ],
+    1
+  );
 }
 
 // src/core/components/box.ts
@@ -2001,13 +2024,19 @@ var slider = (ctx, node, x, y, slot) => {
 // src/core/components/details.ts
 var ROW_PAD = 6;
 var COL_GAP = 16;
-var details = (ctx, node, x, y, slot) => {
-  const rows = contentLines(node).map((line) => {
+function pairs(node) {
+  return contentLines(node).map((line) => {
     const at = line.indexOf("|");
-    const key = at < 0 ? line : line.slice(0, at);
-    const value = at < 0 ? "" : line.slice(at + 1);
-    return { key: measureLabel(ctx, key.trim()), value: measureLabel(ctx, value.trim()) };
+    if (at < 0) return [line.trim(), ""];
+    return [line.slice(0, at).trim(), line.slice(at + 1).trim()];
   });
+}
+var details = (ctx, node, x, y, slot) => {
+  if (node.opts.stacked) return stacked(ctx, node, x, y, slot);
+  const rows = pairs(node).map(([key, value]) => ({
+    key: measureLabel(ctx, key),
+    value: measureLabel(ctx, value)
+  }));
   const keyW = Math.max(0, ...rows.map((r) => r.key.w));
   const valueW = Math.max(0, ...rows.map((r) => r.value.w));
   const valueX = x + keyW + COL_GAP;
@@ -2026,16 +2055,37 @@ var details = (ctx, node, x, y, slot) => {
   const w = valueW ? keyW + COL_GAP + valueW : keyW;
   return { w: Math.max(w, slot?.w || 0), h: cy - y };
 };
+var stacked = (ctx, node, x, y, slot) => {
+  const fontSize = Math.round(ctx.fontSize * 0.75);
+  const grey = ctx.ink === null ? { color: ctx.theme.colors.muted } : {};
+  let cy = y, w = 0;
+  for (const [key, value] of pairs(node)) {
+    const k = measureLabel(ctx, key, fontSize);
+    const v = measureLabel(ctx, value);
+    cy += ROW_PAD;
+    drawLabel(ctx, x, cy, k, { fontSize, ...grey });
+    cy += k.h;
+    if (v.w) {
+      drawLabel(ctx, x, cy, v);
+      cy += v.h;
+    }
+    cy += ROW_PAD;
+    w = Math.max(w, k.w, v.w);
+  }
+  return { w: Math.max(w, node.opts.w || 0, slot?.w || 0), h: cy - y };
+};
 
 // src/core/components/dropdown.ts
 var dropdown = (ctx, node, x, y, slot) => {
-  const raw = splitItems(contentLines(node).join("|"));
+  const own = trailingIcon(contentLines(node).join("|"));
+  const raw = splitItems(own.text);
   const { sel, labels } = starred(raw.length ? raw : ["Select\u2026"]);
   const arrowW = 28, padX = 10;
   const textW = Math.max(...labels.map((l) => ctx.measure(l).w));
   const m = ctx.measure(labels[sel]);
-  const w = Math.max(node.opts.w || 0, slot?.w || 0, 120, textW + 2 * padX + arrowW);
   const h = m.h + 16;
+  const btn = own.icon ? h : 0;
+  const w = Math.max(node.opts.w || 0, slot?.w || 0, 120 + btn, textW + 2 * padX + arrowW + btn);
   ctx.rect(x, y, w, h, { fill: ctx.theme.colors.paper });
   ctx.line(
     [
@@ -2053,7 +2103,8 @@ var dropdown = (ctx, node, x, y, slot) => {
     ],
     2
   );
-  ctx.text(x + padX, y + (h - m.h) / 2, labels[sel], m);
+  if (own.icon) trailingButton(ctx, x + w - arrowW, y, h, own.icon);
+  if (!node.opts.empty) ctx.text(x + padX, y + (h - m.h) / 2, labels[sel], m);
   return { w, h };
 };
 
@@ -2518,19 +2569,52 @@ var icon = (ctx, node, x, y) => {
 
 // src/core/components/input.ts
 var PAD_X = 10;
-function fieldText(node) {
-  const text2 = contentLines(node).join(" ");
-  if (node.type === "password") return "\u2022".repeat(Math.min(text2.length || 8, 24));
-  if (node.type === "search") return `{search} ${text2 || "Search"}`;
-  return text2;
+function fieldText(node, text2) {
+  const empty = !!node.opts.empty;
+  if (node.type === "password") return empty ? "" : "\u2022".repeat(Math.min(text2.length || 8, 24));
+  if (node.type === "search") return empty ? "{search}" : `{search} ${text2 || "Search"}`;
+  return empty ? "" : text2;
 }
 var input = (ctx, node, x, y, slot) => {
-  const label = measureLabel(ctx, fieldText(node));
+  const own = trailingIcon(contentLines(node).join(" "), node.type === "search");
+  const label = measureLabel(ctx, fieldText(node, own.text));
   const lineH = ctx.measure(" ").h;
   const h = Math.max(node.opts.h || 0, lineH + 16);
-  const w = Math.max(node.opts.w || 0, slot?.w || 0, 200, label.w + 2 * PAD_X);
+  const btn = own.icon ? h : 0;
+  const w = Math.max(node.opts.w || 0, slot?.w || 0, 200 + btn, label.w + 2 * PAD_X + btn);
   ctx.rect(x, y, w, h, { fill: ctx.theme.colors.paper });
   if (label.w) drawLabel(ctx, x + PAD_X, y + (h - label.h) / 2, label);
+  if (own.icon) trailingButton(ctx, x + w, y, h, own.icon);
+  return { w, h };
+};
+var spin = (ctx, node, x, y, slot) => {
+  const ARROWS = 24;
+  const str = node.opts.empty ? "" : contentLines(node).join(" ");
+  const label = measureLabel(ctx, str);
+  const h = Math.max(node.opts.h || 0, ctx.measure(" ").h + 16);
+  const w = Math.max(node.opts.w || 0, slot?.w || 0, 80, label.w + 2 * PAD_X + ARROWS);
+  ctx.rect(x, y, w, h, { fill: ctx.theme.colors.paper });
+  if (label.w) drawLabel(ctx, x + PAD_X, y + (h - label.h) / 2, label);
+  const ax = x + w - ARROWS, mid = y + h / 2, cx = ax + ARROWS / 2;
+  ctx.line([
+    [ax, y],
+    [ax, y + h]
+  ]);
+  ctx.line([
+    [ax, mid],
+    [x + w, mid]
+  ]);
+  const up = y + h / 4, down = y + 3 * h / 4;
+  ctx.line([
+    [cx - 4, up + 2],
+    [cx, up - 2],
+    [cx + 4, up + 2]
+  ]);
+  ctx.line([
+    [cx - 4, down - 2],
+    [cx, down + 2],
+    [cx + 4, down - 2]
+  ]);
   return { w, h };
 };
 var textarea = (ctx, node, x, y, slot) => {
@@ -3040,7 +3124,8 @@ var COMPONENTS = {
   placeholder,
   form,
   field,
-  section
+  section,
+  spin
 };
 
 // src/core/layout.ts
@@ -3295,6 +3380,12 @@ var SNIPPETS = [
   },
   { name: "Search field", description: "Field with a search icon", text: "search: Search users" },
   { name: "Password", description: "Field with masked text", text: "password: secret" },
+  {
+    name: "Field with a button",
+    description: "An {icon} at the end is a button at the right edge; (empty) draws no text",
+    text: "input: 2026-10-14 {calendar}"
+  },
+  { name: "Number field", description: "Value with up and down arrows", text: "spin: 12" },
   {
     name: "Text area",
     description: "Multi-line field; more lines below it are more text",

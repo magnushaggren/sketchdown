@@ -113,6 +113,12 @@ export const SNIPPETS: Snippet[] = [
   { name: "Search field", description: "Field with a search icon", text: "search: Search users" },
   { name: "Password", description: "Field with masked text", text: "password: secret" },
   {
+    name: "Field with a button",
+    description: "An {icon} at the end is a button at the right edge; (empty) draws no text",
+    text: "input: 2026-10-14 {calendar}",
+  },
+  { name: "Number field", description: "Value with up and down arrows", text: "spin: 12" },
+  {
     name: "Text area",
     description: "Multi-line field; more lines below it are more text",
     text: lines("textarea: Notes", "Second line"),

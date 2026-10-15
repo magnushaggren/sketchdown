@@ -89,6 +89,7 @@ icon, `[text]` a link and `-text-` grey text. The full reference is
 | `input` (field, textbox) | `input: Anna` |
 | `search` | `search: Find users` |
 | `password` | `password: secret` |
+| `spin` (number, stepper) | `spin: 12` |
 | `textarea` | `textarea: Notes` |
 | `h1` (heading) | `h1: Users` |
 | `h2` (subheading) | `h2: Details` |

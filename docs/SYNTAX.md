@@ -91,13 +91,14 @@ Status markers: **[v2]** implemented in the prototype, **[M3a]** added in milest
 | `input` (field, textbox) [M3a] | `input: Anna` | one-line field, at least 200 wide; `{icon}` allowed; `field:` with a `\| keyword:` is a labelled field instead |
 | `search` [M3a] | `search: Find users` | input with a search icon; says "Search" when empty |
 | `password` [M3a] | `password: secret` | input showing one dot per character (8 when empty) |
+| `spin` (number, stepper) [M7] | `spin: 12` | number field with up and down arrows, at least 80 wide |
 | `textarea` [M3a] | `textarea: Notes` | multi-line field, at least 240×80; continuation lines are more text |
 | `h1` (heading) [M3a] | `h1: Users` | text 1.75 times the font size; there is no bold |
 | `h2` (subheading) [M3a] | `h2: Details` | text 1.375 times the font size |
 | `columns` (cols) [M3a] | `columns: (w=1200, h=700)` | container; panels side by side, touching, all full height; `(gap=12)` adds space |
 | `nav` (navigation) [M3a] | `nav: {home} Home \| *{users} Users \| - \| Log out` | vertical list; `*` marks the active item, `-` a divider; items split on `\|` only; `(dark)` adds its own dark background |
 | `avatar` [M3a] | `avatar: AS` | circle with initials (a user icon when empty), twice the line height; `(w=48)` sets its size |
-| `details` (properties) [M3a] | `details: {phone} Phone \| 070-123` | one row per line, `label \| value`; values line up in a second column and are grey |
+| `details` (properties) [M3a] | `details: {phone} Phone \| 070-123` | one row per line, `label \| value`; values line up in a second column and are grey; **[M7]** `(stacked)` puts each label, small and grey, above its value |
 | `window` [M3b] | `window: Settings` | container; see Frames below |
 | `dialog` (modal) [M3b] | `dialog: Delete user?` | container; see Frames below |
 | `browser` [M3b] | `browser: My app \| example.com` | container; see Frames below |
@@ -184,6 +185,21 @@ Anna, Developer, 52 000 kr, [x]
     row: (fill)
       field: Start | input: {calendar} 2026-11-01 (fill)
       field: Team | input: Platform (fill)
+  ```
+
+- An `{icon}` at the very end of an `input`, `search` or `dropdown`
+  is a button at the field's right edge (before a dropdown's arrow), as in
+  a date field or a lookup: `input: 2026-10-14 {calendar}`,
+  `search: Anna Svensson {edit}`. An icon at the start, or alone in an
+  `input`, stays a leading icon. Unknown names stay text.
+- `(empty)` on `input`, `search`, `password`, `dropdown` or `spin`
+  draws the field without text: no "Select…", no dots, no "Search".
+- `details (stacked)` puts each label small and grey above its value,
+  as in detail drawers:
+
+  ```
+  details: Hostname | web-01.example.com (stacked)
+  Status | {dot} Active
   ```
 
 ## Groups [M7]
@@ -322,7 +338,7 @@ tree: {folder} Project
   - **[M6]** A `row` is always at least as wide as its `(w=...)` or the
     room it is given, so an empty `row: (fill)` inside another row is a
     spacer that pushes what follows to the right end.
-  - `button`, `dropdown`, `input`, `search`, `password`, `textarea`, `text`,
+  - `button`, `dropdown`, `input`, `search`, `password`, `spin`, `textarea`, `text`,
     `h1`, `h2`, `grid`, `box`, `tabs`, `row` and `columns` stretch. Inside
     `columns`, every panel also gets the full height.
     Stretched text stays left-aligned and pushes what follows to the right,

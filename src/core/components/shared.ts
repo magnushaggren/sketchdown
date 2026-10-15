@@ -1,4 +1,6 @@
+import { drawIcon, isIcon } from "../icons";
 import type { DrawContext, Size, Slot, SpecNode } from "../types";
+import { iconSizeFor } from "./label";
 
 /** The component's own line plus its continuation lines, without empty ones. */
 export function contentLines(node: SpecNode): string[] {
@@ -56,4 +58,36 @@ export function stackSize(
 /** Whether a container must know its width before drawing its children. */
 export function needsWidthFirst(node: SpecNode, slot?: Slot): boolean {
   return !!slot?.w || node.children.some((c) => c.opts.fill);
+}
+
+/**
+ * Splits a known {icon} off the very end of a field's text, to be drawn as
+ * a button at the right edge. A lone icon stays a leading icon unless
+ * `alone` is set (search, which has its own leading icon).
+ */
+export function trailingIcon(text: string, alone = false): { text: string; icon: string | null } {
+  const m = text.match(/(^|\s)\{([a-zA-Z-]+)\}\s*$/);
+  if (!m || m.index === undefined || !isIcon(m[2])) return { text, icon: null };
+  const rest = text.slice(0, m.index).trim();
+  if (!rest && !alone) return { text, icon: null };
+  return { text: rest, icon: m[2] };
+}
+
+/** A square button with an icon at the right end of a field, `right` being its right edge. */
+export function trailingButton(
+  ctx: DrawContext,
+  right: number,
+  y: number,
+  h: number,
+  icon: string,
+): void {
+  ctx.line(
+    [
+      [right - h, y],
+      [right - h, y + h],
+    ],
+    1,
+  );
+  const s = iconSizeFor(ctx);
+  drawIcon(ctx, icon, right - h + (h - s) / 2, y + (h - s) / 2, s);
 }

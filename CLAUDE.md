@@ -143,6 +143,10 @@ top-left, delete them, draw the new version at that point.
 - M7 groups: chevrons point up when open and down when collapsed, at the
   right end of a box's title bar or a section's header line; a collapsed
   box is only its title bar. `box (plain)` and `section` have no frame.
+- M7 fields: a trailing `{icon}` on input, search or dropdown is a square
+  button (side = field height) at the right edge, behind a divider line;
+  `spin` has a 24-wide arrow column. `details (stacked)` labels are 0.75
+  size and grey.
 - Layout contract: a parent may pass a `Slot` ({w, h}) to a child, which
   then makes itself at least that big. Parents only pass one to `(fill)`
   children (and heights to `columns` panels), so specs without the new

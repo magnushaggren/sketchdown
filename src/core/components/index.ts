@@ -14,7 +14,7 @@ import { browser, buttons, dialog, phone, windowFrame } from "./frames";
 import { grid } from "./grid";
 import { heading } from "./heading";
 import { icon } from "./icon";
-import { input, textarea } from "./input";
+import { input, spin, textarea } from "./input";
 import { link } from "./link";
 import { nav } from "./nav";
 import { breadcrumb, menu, pagination, tree } from "./navigation";
@@ -68,4 +68,5 @@ export const COMPONENTS: Record<NodeType, Component> = {
   form,
   field,
   section,
+  spin,
 };
