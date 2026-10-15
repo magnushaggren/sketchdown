@@ -115,6 +115,21 @@ icon, `[text]` a link and `-text-` grey text. The full reference is
 
 <!-- cheatsheet:end -->
 
+## Screenshot to wireframe
+
+The [screenshot-to-sketchdown](skills/screenshot-to-sketchdown/SKILL.md)
+skill teaches an AI agent such as Claude to turn a screenshot of a UI into a
+Sketchdown spec. Parts it can't draw become sized `placeholder` boxes, and it
+reports which components are missing. It checks its own work with a bundled
+script that renders the spec (Node, plus Chrome or Edge for images).
+
+- Claude Code: copy the `skills/screenshot-to-sketchdown` folder to
+  `~/.claude/skills/`.
+- Claude apps: zip the folder and upload it under Settings → Capabilities.
+
+Then share a screenshot and ask for a Sketchdown wireframe. Paste the result
+into a drawing.
+
 ## Settings
 
 - **Colours** of fills, primary buttons, selections, links, dark panels and
@@ -132,6 +147,7 @@ icon, `[text]` a link and `-text-` grey text. The full reference is
 - `npm test`: run the tests
 - `npm run sketch -- spec.txt out.svg out.png`: check a spec and render it
   outside Obsidian
+- `npm run skill`: regenerate the skill's syntax reference and checker
 - `npm run cheatsheet`: regenerate the cheat sheet above from
   `docs/SYNTAX.md`
 

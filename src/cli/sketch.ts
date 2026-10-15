@@ -89,7 +89,7 @@ export interface Args {
   png: string[];
 }
 
-const USAGE = "usage: npm run sketch -- <spec file or -> [out.svg] [out.png] ...";
+const USAGE = "usage: sketch <spec file or -> [out.svg] [out.png] ...";
 
 export function parseArgs(argv: string[]): Args {
   const [input, ...outputs] = argv;

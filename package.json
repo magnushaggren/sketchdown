@@ -14,6 +14,7 @@
     "format": "prettier --write .",
     "cheatsheet": "node scripts/cheatsheet.mjs",
     "sketch": "node scripts/sketch.mjs",
+    "skill": "node scripts/skill.mjs",
     "version": "node scripts/version-bump.mjs && git add manifest.json versions.json"
   },
   "devDependencies": {
