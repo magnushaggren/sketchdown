@@ -2657,7 +2657,7 @@ var row = (ctx, node, x, y, slot) => {
     ctx.draw(c, cx, y + (H - sizes[i].h) / 2, slots[i]);
     cx += sizes[i].w + (i < kids.length - 1 ? gap : 0);
   });
-  return { w: cx - x, h: H };
+  return { w: Math.max(cx - x, target), h: H };
 };
 
 // src/core/components/tabstrip.ts

@@ -213,6 +213,9 @@ tree: {folder} Project
   - in a `row` or `columns` with a known width (`(w=...)`, or it is itself
     `(fill)`): fill children share the width the others leave over. Without
     a known width they keep their natural size.
+  - A `row` is always at least as wide as its `(w=...)` or the
+    room it is given, so an empty `row: (fill)` inside another row is a
+    spacer that pushes what follows to the right end.
   - `button`, `dropdown`, `input`, `search`, `password`, `textarea`, `text`,
     `h1`, `h2`, `grid`, `box`, `tabs`, `row` and `columns` stretch. Inside
     `columns`, every panel also gets the full height.

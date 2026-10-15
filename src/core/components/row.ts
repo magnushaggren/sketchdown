@@ -20,5 +20,6 @@ export const row: Component = (ctx, node, x, y, slot) => {
     ctx.draw(c, cx, y + (H - sizes[i].h) / 2, slots[i]);
     cx += sizes[i].w + (i < kids.length - 1 ? gap : 0);
   });
-  return { w: cx - x, h: H };
+  // at least as wide as asked, so an empty (fill) row works as a spacer
+  return { w: Math.max(cx - x, target), h: H };
 };

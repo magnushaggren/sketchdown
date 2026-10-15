@@ -78,6 +78,26 @@ describe("(fill) in a row", () => {
     const { ops } = draw("row:\n  button: A (fill)\n  button: B");
     expect(rects(ops).map((r) => r.w)).toEqual([80, 80]);
   });
+
+  it("is as wide as its (w=...) without fill children [M6]", () => {
+    expect(draw("row: (w=700)\n  button: A").size.w).toBe(700);
+  });
+
+  it("takes its share as a fill child of another row [M6]", () => {
+    const { ops } = draw("row: (w=500)\n  button: A\n  row: (fill)\n    text: B\n  button: C");
+    const c = rects(ops)[1];
+    expect(c.x + c.w).toBe(500);
+  });
+
+  it("works as a spacer when empty and (fill) [M6]", () => {
+    const { ops } = draw(
+      "box (w=400)\n  row: (fill)\n    button: Left\n    row: (fill)\n    button: Right",
+    );
+    const [left, right] = rects(ops).filter((r) => r.rounded);
+    expect(left.x).toBe(pad);
+    expect(right.x + right.w).toBe(400 - pad);
+    expect(texts(ops).map((t) => t.text)).toEqual(["Left", "Right"]);
+  });
 });
 
 describe("(disabled)", () => {
