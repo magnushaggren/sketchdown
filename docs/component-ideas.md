@@ -47,6 +47,24 @@ an avatar and a pinned search button at the bottom: wants a spacer in a
 `box` column, like #11 for rows). Seen once there: an avatar with an
 overlapping badge, and a grid column clipped at the right edge.
 
+## After M7 (2026-10-15)
+
+Done in M7: #1, #2, #3, #4, #5, #9, #12, #15 (except id card), #16 and #17.
+The three converted trial screens were redone with M7 and compared with
+their M6 versions. The forms now line up, mark required fields, show empty
+dropdowns and draw spin edits and lookup buttons instead of placeholders;
+the drawer uses sections and stacked details. New gaps:
+
+| # | Component | Seen as | Drawn today as | Count | Possible syntax |
+|---|---|---|---|---|---|
+| 21 | Empty field with a trailing button | blank field with "…" at the right edge | separate `button: {more}`; `input: {more}` stays a leading icon | 1 | `input: (empty)` followed by a trailing icon, e.g. `input: - {more}` |
+| 22 | Icon column in stacked details | one icon to the left of both the label and the value | the icon inside the small label | 18 | `details (stacked)` with a leading `{icon}` drawn as a column |
+| 23 | Chevron direction | some apps point the chevron down while a group is open | up when open, down when folded | 1 app | an option, if it matters |
+
+Still open from the list above: #6 toolbar, #7 rich-text editor, #8 card,
+#10 icon rail, #13 vertical split, #14 grid extras, #18 drawer, #19 accent
+colour, #20 clearable field.
+
 ## Seen once
 
 - Ribbon-style header: a coloured group label above a page tab.

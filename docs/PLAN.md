@@ -16,7 +16,7 @@ Update the Status column as work lands.
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
 | M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
 | M6 | Screenshot to wireframe (a skill for LLM agents) | done: placeholder, `npm run sketch`, the skill, three trial screens, ranked ideas (2026-10-15) |
-| M7 | Forms and detail panels | in progress: steps 1 (form, field, floating) 2 (required, invalid), 3 (collapsible, section, plain, row top) 4 (empty, trailing buttons, spin, stacked details) and 5 (13 icons) done (2026-10-15) |
+| M7 | Forms and detail panels | done (2026-10-15); ships in 1.1, after 1.0 |
 
 ## M0 – Scaffold and port
 

@@ -3597,12 +3597,29 @@ var SNIPPETS = [
   },
   {
     name: "Form",
-    description: "Group of fields whose labels line up",
+    description: "Group of fields whose labels line up; (required) and (invalid) mark fields",
     text: lines(
-      "form: New user (w=420)",
-      "  field: Name | input: Anna Svensson (fill)",
+      "form: New user (w=460)",
+      "  field: Name | input: Anna Svensson (fill, required)",
       "  field: Role | dropdown: *Developer | Project manager (fill)",
-      "  field: E-mail | input: {mail} anna@example.com (fill)"
+      "  field: E-mail | input: anna@ (fill, invalid)",
+      "  field: Start | input: 2026-11-01 {calendar} (fill)",
+      "  field: Hours | spin: 40"
+    )
+  },
+  {
+    name: "Detail drawer",
+    description: "Side panel of folding sections with labels above their values",
+    text: lines(
+      "box: web-01 (w=320)",
+      "  section: {info} Identity (count=2, fill)",
+      "    details: Hostname | web-01.example.com (stacked)",
+      "    Status | {dot} Active",
+      "  section: {users} Ownership (count=2, fill)",
+      "    details: Owner | Anna Svensson (stacked)",
+      "    Team | Platform",
+      "  section: {clock} Lifecycle (count=3, collapsed, fill)",
+      "    text: Hidden"
     )
   },
   {
