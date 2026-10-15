@@ -137,6 +137,9 @@ top-left, delete them, draw the new version at that point.
   one-line component and 8 from the top of a tall one; a `form` is a `box`
   that gives its fields one label column (`ctx.labelWidths`). `field:`
   without `| keyword:` stays an alias of input, so old specs don't change.
+  Error colour `#e03131` (a setting): `(required)` is a red `*` after a
+  field's label; `(invalid)` (any component, handled in `ctx.draw`) is a red
+  outline plus a red circled x after the component, inside its slot.
 - Layout contract: a parent may pass a `Slot` ({w, h}) to a child, which
   then makes itself at least that big. Parents only pass one to `(fill)`
   children (and heights to `columns` panels), so specs without the new

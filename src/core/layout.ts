@@ -37,6 +37,39 @@ export interface LayoutEnv {
 }
 
 /** Turns a parsed tree into draw ops, in drawing (z) order, with its top-left at origin. */
+const MARK_GAP = 6;
+/** Side of the (invalid) mark, the size of an icon. */
+const markSize = (ctx: DrawContext) => Math.round(ctx.measure(" ").h * 0.8);
+
+/** (invalid): a red outline over the component and a red ⊗ after it. */
+function markInvalid(ctx: DrawContext, x: number, y: number, size: Size): Size {
+  const GAP = MARK_GAP;
+  const red = ctx.theme.colors.error;
+  const s = markSize(ctx);
+  const mx = x + size.w + GAP,
+    my = y + (size.h - s) / 2;
+  ctx.rect(x, y, size.w, size.h, { width: 2, color: red });
+  ctx.ellipse(mx, my, s, s, { color: red });
+  const i = s * 0.3;
+  ctx.line(
+    [
+      [mx + i, my + i],
+      [mx + s - i, my + s - i],
+    ],
+    1,
+    red,
+  );
+  ctx.line(
+    [
+      [mx + s - i, my + i],
+      [mx + i, my + s - i],
+    ],
+    1,
+    red,
+  );
+  return { w: size.w + GAP + s, h: size.h };
+}
+
 export function layout(
   tree: SpecNode,
   origin: { x: number; y: number },
@@ -114,7 +147,11 @@ export function layout(
       else if (node.opts.dark) ctx.ink = colors.onDark;
       // light-coloured controls on a dark panel keep the normal ink
       else if (ink === colors.onDark && LIGHT_SURFACES.has(node.type)) ctx.ink = null;
-      const r = COMPONENTS[node.type](ctx, node, x, y, slot);
+      // an (invalid) component leaves room in its slot for the mark after it
+      const own =
+        node.opts.invalid && slot?.w ? { ...slot, w: slot.w - MARK_GAP - markSize(ctx) } : slot;
+      let r = COMPONENTS[node.type](ctx, node, x, y, own);
+      if (node.opts.invalid) r = markInvalid(ctx, x, y, r);
       ctx.ink = ink;
       return r;
     },

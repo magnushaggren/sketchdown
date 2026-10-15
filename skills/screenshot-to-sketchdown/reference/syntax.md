@@ -125,6 +125,13 @@ Anna, Developer, 52 000 kr, [x]
   tall one. Labels may hold icons, links and grey text.
 - `(floating)` draws the label small and grey on the component's top
   border, as in Material design: `field: Type | dropdown: Virtual Server (floating)`.
+- `(required)` on a field's component puts a red `*` after the label:
+  `field: Name | input: (required)`. The form's label column makes room
+  for it.
+- `(invalid)` on any component draws a red outline over it and a red ⊗
+  just after it: `field: E-mail | input: anna@ (invalid)`. A `(fill)`
+  component leaves room for the mark. The red is the `error` colour
+  setting.
 - `form` is a `box` (title, frame, options) whose fields line up: their
   labels share one column, as wide as the longest label or `(label=140)`.
   Fields side by side in a `row` directly in the form get a column per
@@ -263,6 +270,8 @@ tree: {folder} Project
         text: Users (fill)
         button: Close
     ```
+- `(invalid)` marks any component as wrong, with a red outline
+  and a red ⊗ after it (see Forms); `(required)` stars a field's label.
 - `(disabled)` draws the component's lines and text grey, including
   everything inside a container. Fills keep their colour.
 - `(dark)` on a `box` or `nav` fills it with the dark colour and draws its text and

@@ -86,6 +86,8 @@ under a form) may be shortened; say so in the assumptions.
 | Toolbar | `row:` of buttons with icons, `{plus} Create` |
 | Message or banner | `alert: {info} Saved. [Undo]` |
 | Disabled control | the component with `(disabled)` |
+| Required field (asterisk or a marker on empty mandatory fields) | `(required)` on the field's component: `field: Name \| input: (required)` |
+| Field in an error state (red border, error icon, validation message) | `(invalid)` on the component; a message below it as `text: -Enter a valid address-` |
 | Links in text | `[Forgot password?]`; grey text `-like this-` |
 
 Icons: only the names listed in the reference exist. If none fits, leave

@@ -18,6 +18,7 @@ const COLORS: [keyof Settings["colors"], string, string][] = [
   ["onDark", "Text on dark panels", "Text and lines on (dark) panels."],
   ["stripe", "Striped rows", "Every other row of a grid marked (striped)."],
   ["link", "Links", "Text written as [link], and link: components."],
+  ["error", "Errors", "The (required) star and the (invalid) outline and mark."],
 ];
 
 const GAPS: [keyof Settings["gap"], string, string][] = [

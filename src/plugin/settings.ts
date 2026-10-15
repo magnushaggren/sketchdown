@@ -69,6 +69,7 @@ export function normalizeSettings(data: unknown): Settings {
       onDark: color(colors.onDark, def.colors.onDark),
       stripe: color(colors.stripe, def.colors.stripe),
       link: color(colors.link, def.colors.link),
+      error: color(colors.error, def.colors.error),
     },
     gap: {
       root: number(gap.root, def.gap.root, LIMITS.gap),

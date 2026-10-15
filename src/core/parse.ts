@@ -106,6 +106,8 @@ export const FLAGS = new Set([
   "plain",
   "striped",
   "floating",
+  "required",
+  "invalid",
 ]);
 
 /**
@@ -134,7 +136,7 @@ export function parseOptions(s: string): { rest: string; opts: Record<string, nu
 }
 
 /** Options of a field's component that also apply to the field itself. */
-const FIELD_OPTS = ["fill", "disabled", "floating"];
+const FIELD_OPTS = ["fill", "disabled", "floating", "required"];
 
 /**
  * Splits "Label | keyword: content" at the first | that is followed by a

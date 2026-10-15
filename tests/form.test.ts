@@ -168,3 +168,60 @@ describe("form: layout", () => {
     expect(inputs[0].x).toBe(pad + 2 * CHAR_W + GAP);
   });
 });
+
+describe("(required) and (invalid)", () => {
+  const ellipses = (ops: DrawOp[]) => ops.filter((o) => o.kind === "ellipse");
+
+  it("are flags on the component; (required) also on the field", () => {
+    const [field] = kids("field: Name | input: (required, invalid)");
+    expect(field.children[0].opts).toEqual({ required: 1, invalid: 1 });
+    expect(field.opts).toEqual({ required: 1 });
+  });
+
+  it("(required) puts a red * after the label", () => {
+    const { ops } = draw("field: Name | input: (required)");
+    const star = text(ops, "*");
+    expect(star.color).toBe(colors.error);
+    const label = text(ops, "Name");
+    expect(star.x).toBeGreaterThan(label.x + label.w);
+    expect(star.x + star.w).toBeLessThanOrEqual(fields(ops)[0].x - 8);
+  });
+
+  it("(required) counts in the form's label column", () => {
+    const { ops } = draw("form\n  field: Name | input: (required)\n  field: Role | input:");
+    const [a, b] = fields(ops);
+    expect(a.x).toBe(b.x);
+    expect(a.x).toBeGreaterThan(pad + 4 * CHAR_W + GAP);
+  });
+
+  it("(required) works with a floating label", () => {
+    const { ops } = draw("field: Type | dropdown: A (required, floating)");
+    expect(text(ops, "*")).toMatchObject({
+      color: colors.error,
+      fontSize: text(ops, "Type").fontSize,
+    });
+  });
+
+  it("(invalid) outlines the component in red and puts an error mark after it", () => {
+    const { ops, size } = draw("input: Anna (invalid)");
+    const [box, outline] = rects(ops);
+    expect(outline).toMatchObject({ x: box.x, y: box.y, w: box.w, h: box.h, fill: null });
+    expect(outline.color).toBe(colors.error);
+    const mark = ellipses(ops)[0];
+    expect(mark.color).toBe(colors.error);
+    expect(mark.x).toBeGreaterThan(box.x + box.w);
+    expect(size.w).toBe(mark.x + mark.w);
+  });
+
+  it("(invalid) works on a field's component", () => {
+    const { ops } = draw("field: Name | dropdown: A (invalid)");
+    expect(rects(ops).some((r) => r.color === colors.error)).toBe(true);
+  });
+
+  it("(invalid) leaves room for its mark when the component fills its parent", () => {
+    const { ops, size } = draw("box (w=400)\n  input: Anna (fill, invalid)");
+    const mark = ops.filter((o) => o.kind === "ellipse")[0];
+    expect(mark.x + mark.w).toBe(400 - pad);
+    expect(size.w).toBe(400);
+  });
+});

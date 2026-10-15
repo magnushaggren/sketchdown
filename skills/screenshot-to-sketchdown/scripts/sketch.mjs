@@ -1064,8 +1064,10 @@ var DEFAULT_THEME = {
     // text and lines on (dark) panels
     stripe: "#f1f3f5",
     // every other row of a (striped) grid
-    link: "#1971c2"
+    link: "#1971c2",
     // [links] in labels and link:
+    error: "#e03131"
+    // (required) and (invalid) marks
   },
   gap: { root: 24, stack: 14, row: 12, pad: 16 }
 };
@@ -1430,7 +1432,9 @@ var FLAGS = /* @__PURE__ */ new Set([
   "underline",
   "plain",
   "striped",
-  "floating"
+  "floating",
+  "required",
+  "invalid"
 ]);
 function parseOptions(s) {
   const opts = {};
@@ -1450,7 +1454,7 @@ function parseOptions(s) {
   });
   return { rest: s.slice(0, m.index).trim(), opts };
 }
-var FIELD_OPTS = ["fill", "disabled", "floating"];
+var FIELD_OPTS = ["fill", "disabled", "floating", "required"];
 function splitField(content) {
   for (let i = content.indexOf("|"); i >= 0; i = content.indexOf("|", i + 1)) {
     const line = content.slice(i + 1).trim();
@@ -2103,6 +2107,22 @@ var placeholder = (ctx, node, x, y, slot) => {
 // src/core/components/form.ts
 var LABEL_GAP = 12;
 var LABEL_TOP = 8;
+var STAR_GAP = 4;
+function measureFieldLabel(ctx, node, fontSize) {
+  const label = measureLabel(ctx, node.text, fontSize);
+  const star2 = node.opts.required ? ctx.measure("*", fontSize) : null;
+  return { label, star: star2, w: label.w + (star2 ? STAR_GAP + star2.w : 0) };
+}
+function drawFieldLabel(ctx, x, y, m, o = {}) {
+  drawLabel(ctx, x, y, m.label, o);
+  if (m.star) {
+    const fontSize = o.fontSize ? { fontSize: o.fontSize } : {};
+    ctx.text(x + m.label.w + STAR_GAP, y, "*", m.star, {
+      color: ctx.theme.colors.error,
+      ...fontSize
+    });
+  }
+}
 function alignLabels(ctx, node) {
   const columns2 = [];
   const add = (child, i) => {
@@ -2114,7 +2134,7 @@ function alignLabels(ctx, node) {
   }
   for (const fields of columns2) {
     if (!fields) continue;
-    const w = node.opts.label || Math.max(...fields.map((f) => measureLabel(ctx, f.text).w));
+    const w = node.opts.label || Math.max(...fields.map((f) => measureFieldLabel(ctx, f).w));
     for (const f of fields) ctx.labelWidths.set(f, w);
   }
 }
@@ -2125,25 +2145,25 @@ var form = (ctx, node, x, y, slot) => {
 var field = (ctx, node, x, y, slot) => {
   const inner = node.children[0];
   if (node.opts.floating) return floating(ctx, node, inner, x, y, slot);
-  const label = measureLabel(ctx, node.text);
+  const label = measureFieldLabel(ctx, node);
   const labelW = ctx.labelWidths.get(node) ?? label.w;
   const offset = labelW + LABEL_GAP;
   const innerSlot = slot?.w ? { w: slot.w - offset } : void 0;
   const size = ctx.size(inner, innerSlot);
-  const H = Math.max(size.h, label.h);
-  drawLabel(ctx, x, y + Math.min((H - label.h) / 2, LABEL_TOP), label);
+  const H = Math.max(size.h, label.label.h);
+  drawFieldLabel(ctx, x, y + Math.min((H - label.label.h) / 2, LABEL_TOP), label);
   ctx.draw(inner, x + offset, y + (H - size.h) / 2, innerSlot);
   return { w: offset + size.w, h: H };
 };
 function floating(ctx, node, inner, x, y, slot) {
   const { colors } = ctx.theme;
   const fontSize = Math.round(ctx.fontSize * 0.75);
-  const label = measureLabel(ctx, node.text, fontSize);
-  const top = label.h / 2;
+  const label = measureFieldLabel(ctx, node, fontSize);
+  const top = label.label.h / 2;
   const size = ctx.draw(inner, x, y + top, slot);
-  ctx.rect(x + 8, y, label.w + 8, label.h, { fill: colors.paper, noStroke: true });
+  ctx.rect(x + 8, y, label.w + 8, label.label.h, { fill: colors.paper, noStroke: true });
   const grey = ctx.ink === colors.disabled ? {} : { color: colors.muted };
-  drawLabel(ctx, x + 12, y, label, { fontSize, ...grey });
+  drawFieldLabel(ctx, x + 12, y, label, { fontSize, ...grey });
   return { w: size.w, h: size.h + top };
 }
 
@@ -2955,6 +2975,34 @@ var LIGHT_SURFACES = /* @__PURE__ */ new Set([
   "pagination",
   "menu"
 ]);
+var MARK_GAP = 6;
+var markSize = (ctx) => Math.round(ctx.measure(" ").h * 0.8);
+function markInvalid(ctx, x, y, size) {
+  const GAP2 = MARK_GAP;
+  const red = ctx.theme.colors.error;
+  const s = markSize(ctx);
+  const mx = x + size.w + GAP2, my = y + (size.h - s) / 2;
+  ctx.rect(x, y, size.w, size.h, { width: 2, color: red });
+  ctx.ellipse(mx, my, s, s, { color: red });
+  const i = s * 0.3;
+  ctx.line(
+    [
+      [mx + i, my + i],
+      [mx + s - i, my + s - i]
+    ],
+    1,
+    red
+  );
+  ctx.line(
+    [
+      [mx + s - i, my + i],
+      [mx + i, my + s - i]
+    ],
+    1,
+    red
+  );
+  return { w: size.w + GAP2 + s, h: size.h };
+}
 function layout(tree2, origin, env) {
   const ops = [];
   const textStyle = { fontSize: env.style.fontSize, fontFamily: env.style.fontFamily };
@@ -3025,7 +3073,9 @@ function layout(tree2, origin, env) {
       if (node.opts.disabled) ctx.ink = colors.disabled;
       else if (node.opts.dark) ctx.ink = colors.onDark;
       else if (ink === colors.onDark && LIGHT_SURFACES.has(node.type)) ctx.ink = null;
-      const r = COMPONENTS[node.type](ctx, node, x, y, slot);
+      const own = node.opts.invalid && slot?.w ? { ...slot, w: slot.w - MARK_GAP - markSize(ctx) } : slot;
+      let r = COMPONENTS[node.type](ctx, node, x, y, own);
+      if (node.opts.invalid) r = markInvalid(ctx, x, y, r);
       ctx.ink = ink;
       return r;
     },

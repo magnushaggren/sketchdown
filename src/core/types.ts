@@ -154,6 +154,8 @@ export interface Theme {
     stripe: string;
     /** Text of [links]. */
     link: string;
+    /** The (required) star and the (invalid) outline and mark. */
+    error: string;
   };
   gap: { root: number; stack: number; row: number; pad: number };
 }
