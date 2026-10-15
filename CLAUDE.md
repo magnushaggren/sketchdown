@@ -47,6 +47,8 @@ src/
     block.ts     renders a ```sketchdown note block to SVG (no Obsidian imports)
     blockView.ts puts a rendered block on the page
     measure.ts   text measuring outside a drawing (canvas, Excalidraw line heights)
+  cli/
+    sketch.ts    npm run sketch: check a spec and render it to SVG/PNG (Node only)
 tests/           vitest; parser, layout and snapshot tests of DrawOps
 prototype/       Phase 1 script, kept as reference (do not edit)
 ```
@@ -145,6 +147,9 @@ top-left, delete them, draw the new version at that point.
   `tests/gallery.test.ts` renders `tests/fixtures/gallery.ts` to
   `docs/gallery.svg` and fails when it differs; add every new component to
   the gallery, and run `npm test -- -u` to accept an intended change.
+- `npm run sketch -- spec.txt out.svg out.png`: report errors, unknown
+  icons and placeholders, and render a spec (PNG through headless Chrome or
+  Edge; `SKETCHDOWN_CHROME` overrides the path). Text is measured fixed-width.
 - `npm run lint`, `npm run format`: ESLint and Prettier
 - `npm run deploy`: build, then copy `main.js`, `manifest.json` and
   `styles.css` to the plugin folder named in `deploy.local.json` (not

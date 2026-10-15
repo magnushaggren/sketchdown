@@ -130,6 +130,8 @@ icon, `[text]` a link and `-text-` grey text. The full reference is
 - `npm run dev`: watch build to `main.js`
 - `npm run build`: type-check and production build
 - `npm test`: run the tests
+- `npm run sketch -- spec.txt out.svg out.png`: check a spec and render it
+  outside Obsidian
 - `npm run cheatsheet`: regenerate the cheat sheet above from
   `docs/SYNTAX.md`
 

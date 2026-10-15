@@ -15,7 +15,7 @@ Update the Status column as work lands.
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
 | M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
-| M6 | Screenshot to wireframe (a skill for LLM agents) | in progress: step 1 (placeholder) done; CLI next |
+| M6 | Screenshot to wireframe (a skill for LLM agents) | in progress: steps 1 (placeholder) and 2 (CLI) done; the skill next |
 
 ## M0 – Scaffold and port
 
@@ -226,7 +226,9 @@ as an agent skill.
    collected in `docs/component-ideas.md`.
 5. Pick the gaps to build in M7. Candidates seen so far: form field with an
    aligned label column, collapsible section header with a count, toolbar,
-   card, floating-label field, vertical split, icon rail, grid extras
+   card, floating-label field, vertical split, icon rail (an icon-only
+   `nav` is still about 120 wide), a spacer to push items right in a `row`,
+   grid extras
    (filter row, group-by bar, status bar), more icons (refresh, print,
    database, clock, code, key, error, ban).
 
