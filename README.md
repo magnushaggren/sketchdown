@@ -21,10 +21,11 @@ Sketchdown needs the
 [Excalidraw plugin](https://github.com/zsviczian/obsidian-excalidraw-plugin)
 2.0.0 or newer.
 
-While Sketchdown is in beta, install it with
+Until Sketchdown is listed in Obsidian's community plugins, install it with
 [BRAT](https://github.com/TfTHacker/obsidian42-brat): run **BRAT: Add a beta
 plugin for testing** and enter `magnushaggren/sketchdown`. Then enable Sketchdown
-under Community plugins.
+under Community plugins. Sketchdown is desktop-only for now; it hasn't been
+tested on mobile yet.
 
 ## Use
 
