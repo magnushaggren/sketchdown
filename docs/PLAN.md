@@ -192,8 +192,11 @@ Agreed 2026-10-14.
    5–10 ms, a note block in 14–27 ms; 500 rows are 3,761 ops, laid out in
    12–23 ms, a note block in 41–87 ms and 80–220 ms to insert and paint the
    SVG. The modal preview is debounced (120 ms). Nothing needs caching.
-   Left for the owner: how long Excalidraw takes to add a 500-row grid to a
-   drawing, which can only be timed in Obsidian.
+   In the owner's vault (2026-10-26), a 500-row grid draws in a note in
+   under a second, takes 1–2 s to send to a drawing and 2–3 s to edit and
+   regenerate, pans and zooms smoothly, and reopens after a short loading
+   message. Most of that is Excalidraw adding 3,761 elements; good enough
+   for 1.0.
 5. Dark mode: the rest of the check started in M4 (dialog shadow, tooltip,
    disabled grey, links), on the canvas and in notes. Checked by the owner
    (2026-10-26): fine.
