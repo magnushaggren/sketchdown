@@ -183,10 +183,20 @@ Agreed 2026-10-14.
 3. Mobile: one pass on a phone or tablet (paste, modal, note blocks, copy).
    No mobile app to test with yet, so the beta is desktop-only (2026-10-14).
    If something is broken and not cheap to fix, release desktop-only.
+   Deferred by the owner (2026-10-26): 1.0 ships desktop-only and the
+   mobile pass comes later.
 4. Performance: time 100- and 500-row grids, on the canvas and as a note
    block; fix what is slow (likely by caching measurements).
+   Measured 2026-10-26 in headless Chromium with canvas text measuring, on
+   a five-column striped grid: 100 rows are 761 draw ops, laid out in
+   5–10 ms, a note block in 14–27 ms; 500 rows are 3,761 ops, laid out in
+   12–23 ms, a note block in 41–87 ms and 80–220 ms to insert and paint the
+   SVG. The modal preview is debounced (120 ms). Nothing needs caching.
+   Left for the owner: how long Excalidraw takes to add a 500-row grid to a
+   drawing, which can only be timed in Obsidian.
 5. Dark mode: the rest of the check started in M4 (dialog shadow, tooltip,
-   disabled grey, links), on the canvas and in notes.
+   disabled grey, links), on the canvas and in notes. Checked by the owner
+   (2026-10-26): fine.
 6. README: install, a syntax cheat sheet generated from SYNTAX.md, the
    gallery, settings, credits (Balsamiq, Wireframy, Excalidraw and the
    Obsidian Excalidraw plugin). The owner records two or three GIFs.
