@@ -14,9 +14,9 @@ Update the Status column as work lands.
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
-| M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); the 1.0 submission to come |
+| M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); 0.10.0 beta with M7 on BRAT (2026-10-15); the 1.0 submission to come |
 | M6 | Screenshot to wireframe (a skill for LLM agents) | done: placeholder, `npm run sketch`, the skill, three trial screens, ranked ideas (2026-10-15) |
-| M7 | Forms and detail panels | done (2026-10-15); ships in 1.1, after 1.0 |
+| M7 | Forms and detail panels | done: shipped in the 0.10.0 beta (2026-10-15), so 1.0 includes it |
 
 ## M0 – Scaffold and port
 
@@ -196,7 +196,8 @@ Agreed 2026-10-14.
 8. Publish: a public GitHub repo under the owner's account (created with
    `gh`, checked with the owner before the first push), a 0.9 beta for
    BRAT, then 1.0 and the pull request to `obsidianmd/obsidian-releases`,
-   which the owner opens from his account.
+   which the owner opens from his account. Betas so far: 0.9.0 and 0.9.1
+   (2026-10-14), 0.10.0 with M7 (2026-10-15).
 
 **Done when** the plugin is listed or the submission is open, and a new user
 can install it and draw a first wireframe from the README alone.
@@ -301,7 +302,8 @@ Decided 2026-10-15:
    `field` was already an alias of `input`, so without such a `|` it stays
    one, and old specs draw as before.
 2. `(required)` is a red `*` after the label; `(invalid)` covers the icon.
-3. 1.0 is submitted first as planned; M7 ships in 1.1.
+3. 1.0 is submitted first as planned; M7 ships in 1.1. Superseded the
+   same day: M7 went out in the 0.10.0 beta, so 1.0 includes it.
 
 ## Decided questions
 
