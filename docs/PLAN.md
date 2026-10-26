@@ -14,7 +14,7 @@ Update the Status column as work lands.
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
-| M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); 0.10.0 beta with M7 on BRAT (2026-10-15); the 1.0 submission to come |
+| M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); 0.10.0 beta with M7 on BRAT (2026-10-15); checks done and 1.0.0 bumped, desktop-only (2026-10-26); the 1.0 submission to come |
 | M6 | Screenshot to wireframe (a skill for LLM agents) | done: placeholder, `npm run sketch`, the skill, three trial screens, ranked ideas (2026-10-15) |
 | M7 | Forms and detail panels | done: shipped in the 0.10.0 beta (2026-10-15), so 1.0 includes it |
 
