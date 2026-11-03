@@ -47,7 +47,7 @@ export const grid: Component = (ctx, node, x, y, slot) => {
     padY = 7,
     gap = 6;
   let textH = 0;
-  const colW: number[] = new Array(ncols).fill(0);
+  const colW = new Array<number>(ncols).fill(0);
   parsed.forEach((r) =>
     r.cells.forEach((cell, i) => {
       textH = Math.max(textH, cell.m.h);

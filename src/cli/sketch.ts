@@ -171,7 +171,7 @@ export function main(argv: string[]): number {
         rmSync(tmp, { recursive: true, force: true });
       }
     }
-    console.log(report(result, [...args.svg, ...args.png]));
+    process.stdout.write(`${report(result, [...args.svg, ...args.png])}\n`);
     return result.errors.length ? 1 : 0;
   } catch (e) {
     console.error(e instanceof Error ? e.message : String(e));

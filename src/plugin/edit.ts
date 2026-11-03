@@ -19,7 +19,7 @@ export interface EditHost {
    * pickSnippet asks for the snippet palette to be open from the start.
    */
   prompt(initial: string, placeholder: string, pickSnippet: boolean): Promise<string | null>;
-  notify(message: string): void;
+  notify: (message: string) => void;
 }
 
 export function getTag(el: EaElement): SketchdownTag | undefined {
@@ -114,7 +114,7 @@ export async function createOrEdit(
 export interface DrawOptions {
   settings?: Settings;
   /** Receives parse errors as one message. */
-  notify?(message: string): void;
+  notify?: (message: string) => void;
   /** Elements to delete once the new ones are added, i.e. the old version. */
   replace?: EaElement[];
 }

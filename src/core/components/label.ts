@@ -37,7 +37,7 @@ interface Token {
 function tokens(str: string): Token[] {
   const out: Token[] = [];
   for (const m of str.matchAll(TOKEN)) {
-    const at = { index: m.index!, length: m[0].length };
+    const at = { index: m.index, length: m[0].length };
     if (m[1] !== undefined) {
       if (isIcon(m[1])) out.push({ ...at, part: { kind: "icon", name: m[1] } });
     } else if (m[2] !== undefined) {

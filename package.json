@@ -23,6 +23,7 @@
     "esbuild": "^0.28.2",
     "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-obsidianmd": "^0.4.2",
     "obsidian": "^1.14.4",
     "prettier": "^3.9.10",
     "typescript": "^6.0.3",
@@ -35,5 +36,11 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/magnushaggren/sketchdown.git"
+  },
+  "overrides": {
+    "eslint-plugin-obsidianmd": {
+      "obsidian": "$obsidian",
+      "@eslint/js": "$@eslint/js"
+    }
   }
 }

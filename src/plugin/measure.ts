@@ -42,7 +42,7 @@ let context: CanvasRenderingContext2D | null = null;
 
 /** Width of a line of text in a font, from a canvas the page never shows. */
 export function domTextWidth(font: string, text: string): number {
-  context ??= document.createElement("canvas").getContext("2d");
+  context ??= createEl("canvas").getContext("2d");
   if (!context) return text.length * parseFloat(font) * 0.6; // no canvas: a rough guess
   context.font = font;
   return context.measureText(text).width;

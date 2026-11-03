@@ -171,7 +171,9 @@ top-left, delete them, draw the new version at that point.
   and bundled checker (from src/cli); `tests/skill.test.ts` fails while
   they are stale, so run it after changing either. The repo is public:
   skill examples use invented data, never the owner's work screenshots.
-- `npm run lint`, `npm run format`: ESLint and Prettier
+- `npm run lint`, `npm run format`: ESLint and Prettier. Lint uses
+  `eslint-plugin-obsidianmd`'s recommended config, the same rules the
+  community plugin review runs, so fix its errors before tagging a release.
 - `npm run deploy`: build, then copy `main.js`, `manifest.json` and
   `styles.css` to the plugin folder named in `deploy.local.json` (not
   committed; `{ "pluginDir": "<vault>/.obsidian/plugins/sketchdown" }`)

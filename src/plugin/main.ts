@@ -333,8 +333,8 @@ function pastedOnCanvas(data: PasteHookData): boolean {
   const container = (data.view as { containerEl?: HTMLElement } | null | undefined)?.containerEl;
   if (!(target instanceof HTMLElement) || !container || container.contains(target)) return true;
   const editable =
-    target instanceof HTMLInputElement ||
-    target instanceof HTMLTextAreaElement ||
+    target.instanceOf(HTMLInputElement) ||
+    target.instanceOf(HTMLTextAreaElement) ||
     target.isContentEditable;
   return !editable;
 }
