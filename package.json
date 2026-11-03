@@ -1,6 +1,6 @@
 {
   "name": "sketchdown",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Balsamiq-style wireframes for Excalidraw inside Obsidian",
   "main": "main.js",
   "private": true,
