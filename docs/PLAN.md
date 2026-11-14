@@ -14,7 +14,7 @@ Update the Status column as work lands.
 | M3a | Foundations and the portal patterns | done (checked in owner's vault 2026-10-14) |
 | M3b | Rest of the component library | done (checked in owner's vault 2026-10-14) |
 | M4 | Wireframes in markdown notes (SVG renderer) | done (checked in owner's vault 2026-10-14) |
-| M5 | Polish and release | in progress: 0.9.1 beta on BRAT, verified in a fresh vault; README GIFs added (2026-10-14); 0.10.0 beta with M7 on BRAT (2026-10-15); checks done and 1.0.0 bumped, desktop-only (2026-10-26); the 1.0 submission to come |
+| M5 | Polish and release | done: 1.0.0 released (2026-11-01); 1.0.1 with the community review fixes (2026-11-03), listed in Obsidian's community plugins, desktop-only. The mobile pass is deferred |
 | M6 | Screenshot to wireframe (a skill for LLM agents) | done: placeholder, `npm run sketch`, the skill, three trial screens, ranked ideas (2026-10-15) |
 | M7 | Forms and detail panels | done: shipped in the 0.10.0 beta (2026-10-15), so 1.0 includes it |
 
@@ -211,6 +211,9 @@ Agreed 2026-10-14.
    BRAT, then 1.0 and the pull request to `obsidianmd/obsidian-releases`,
    which the owner opens from his account. Betas so far: 0.9.0 and 0.9.1
    (2026-10-14), 0.10.0 with M7 (2026-10-15).
+   Released 1.0.0 (2026-11-01) and 1.0.1 (2026-11-03), which fixed the
+   review's findings and raised `minAppVersion` to 1.7.2. Sketchdown is
+   listed in `community-plugins.json` (checked 2026-11-14).
 
 **Done when** the plugin is listed or the submission is open, and a new user
 can install it and draw a first wireframe from the README alone.
